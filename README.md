@@ -1,93 +1,182 @@
-# 10x Astro Starter
+# My Photo Portfolio
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+A modern, professional photography portfolio web application that replaces social media profiles as the primary showcase for photographers. Built with Astro 5, React 19, and Supabase.
+
+## Table of Contents
+
+- [Project Description](#project-description)
+- [Tech Stack](#tech-stack)
+- [Getting Started Locally](#getting-started-locally)
+- [Available Scripts](#available-scripts)
+- [Project Scope](#project-scope)
+- [Project Status](#project-status)
+- [License](#license)
+
+## Project Description
+
+My Photo Portfolio is a web application designed to give photographers full control over their online presence. It solves common problems with social media platforms such as:
+
+- Algorithm limitations affecting content reach
+- Lack of thematic organization options
+- Distracting advertisements and unrelated content
+- Unprofessional appearance mixing portfolio with personal posts
+- Dependency on external platform policies
+- Hidden or hard-to-find contact information
+
+The application consists of two main parts:
+
+- **Public Gallery** - A beautiful, responsive portfolio for visitors and potential clients
+- **Admin Panel** - A comprehensive management interface for the photographer
+
+### Key Features
+
+- Category-based photo organization with masonry gallery layout
+- Lightbox viewer with keyboard and touch navigation
+- Drag-and-drop batch photo upload with progress indicators
+- Client-side image compression and optimization
+- SEO and Open Graph meta tags for social sharing
+- Mobile-first responsive design
+- Secure authentication for admin access
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+### Frontend
 
-## Prerequisites
+| Technology | Purpose |
+|------------|---------|
+| **Astro 5** | SSG/SSR framework with View Transitions and Partial Hydration |
+| **React 19** | Interactive components (admin panel, lightbox, forms) |
+| **TypeScript 5** | Type-safe development |
+| **Tailwind CSS 4** | Utility-first styling |
+| **Shadcn/ui** | Accessible UI components built on Radix UI |
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+### Backend
 
-## Getting Started
+| Technology | Purpose |
+|------------|---------|
+| **Supabase** | PostgreSQL database, authentication, and image storage |
+| **Row Level Security** | Database-level access control |
+
+### Infrastructure
+
+| Technology | Purpose |
+|------------|---------|
+| **Docker** | Containerized deployment |
+| **DigitalOcean** | Cloud hosting |
+| **GitHub Actions** | CI/CD pipelines |
+
+### Image Processing
+
+| Technology | Purpose |
+|------------|---------|
+| **browser-image-compression** | Client-side image compression and resizing |
+
+## Getting Started Locally
+
+### Prerequisites
+
+- Node.js v22.14.0 (see `.nvmrc`)
+- npm or yarn
+- Supabase account (for backend services)
+
+### Installation
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
+   ```bash
+   git clone <repository-url>
+   cd 10x-project
+   ```
 
-2. Install dependencies:
+2. Install the correct Node.js version:
 
-```bash
-npm install
-```
+   ```bash
+   nvm use
+   ```
 
-3. Run the development server:
+3. Install dependencies:
 
-```bash
-npm run dev
-```
+   ```bash
+   npm install
+   ```
 
-4. Build for production:
+4. Set up environment variables:
 
-```bash
-npm run build
-```
+   Create a `.env` file in the root directory with the following variables:
+
+   ```env
+   PUBLIC_SUPABASE_URL=your_supabase_project_url
+   PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+5. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+   The application will be available at `http://localhost:3000`.
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server on port 3000 |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Fix ESLint issues automatically |
+| `npm run format` | Format code with Prettier |
+| `npm run clean` | Remove node_modules, dist, and .astro directories |
+| `npm run clean:build` | Remove dist and .astro directories |
 
-## Project Structure
+## Project Scope
 
-```md
-.
-├── src/
-│ ├── layouts/ # Astro layouts
-│ ├── pages/ # Astro pages
-│ │ └── api/ # API endpoints
-│ ├── components/ # UI components (Astro & React)
-│ └── assets/ # Static assets
-├── public/ # Public assets
-```
+### MVP Features
 
-## AI Development Support
+- Public photo gallery with category organization
+- Admin panel for managing photos and categories
+- "About Me" page with bio and contact information
+- Single photographer authentication system
+- Automatic image processing (thumbnail and preview generation)
+- Responsive design (mobile-first)
+- Basic SEO and Open Graph support
+- Custom 404 page
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+### Technical Limits
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
+| Parameter | Value |
+|-----------|-------|
+| Maximum photos | 200 |
+| Maximum categories | 10 |
+| Maximum file size | 10 MB |
+| Supported format | JPEG |
+| Thumbnail size | 400px width |
+| Preview size | 1200px width |
+| Supabase Storage | 1GB (free tier) |
 
-### Cursor IDE
+### Out of Scope (Future Phases)
 
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
+- Multi-photographer support / registration system
+- Private galleries with password/link access
+- Client interactions (favorites, comments, ordering)
+- Tag system
+- Watermarks on photos
+- Custom domain support
+- Additional image format support
 
-### GitHub Copilot
+## Project Status
 
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
+This project is currently in **early development** (MVP phase).
 
-### Windsurf
+### URL Structure
 
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+| Route | Description |
+|-------|-------------|
+| `/` | Homepage with category tiles |
+| `/kategoria/[slug]` | Photo gallery for a specific category |
+| `/o-mnie` | About page with bio and contact info |
+| `/admin` | Admin panel (protected) |
 
 ## License
 
