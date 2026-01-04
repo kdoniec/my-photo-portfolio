@@ -1,18 +1,16 @@
-# CLAUDE.md
+# AI Rules for My Photo Portfolio
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Project Overview
-
-10x Astro Starter - A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications using Astro 5, React 19, TypeScript 5, and Tailwind CSS 4.
+A modern photo portfolio application built with Astro 5, React 19, TypeScript 5, and Tailwind CSS 4. Uses Supabase for backend services (PostgreSQL, Auth, Storage) and deploys via Docker to DigitalOcean.
 
 ## Tech Stack
 
-- **Astro 5** - Server-side rendering framework with hybrid rendering support
-- **React 19** - UI library for interactive components (no Next.js directives)
+- **Astro 5** - SSG/SSR framework with View Transitions and Partial Hydration
+- **React 19** - Interactive components (admin panel, lightbox, forms)
 - **TypeScript 5** - Type-safe development
-- **Tailwind CSS 4** - Utility-first CSS with custom variants
-- **Shadcn/ui** - UI component library built with Radix UI
+- **Tailwind CSS 4** - Utility-first styling with oklch() colors
+- **Shadcn/ui** - Accessible UI components built on Radix UI
+- **Supabase** - PostgreSQL database, authentication, and image storage
+- **Docker** - Containerized deployment to DigitalOcean
 - **Node.js v22.14.0** - Runtime (see `.nvmrc`)
 
 ## Development Commands
@@ -26,15 +24,15 @@ npm run lint:fix   # Fix ESLint issues automatically
 npm run format     # Format code with Prettier
 ```
 
-## Architecture
+## Project Architecture
 
 ### Rendering Strategy
 
-The project uses **server-side rendering** (`output: "server"` in astro.config.mjs) with the Node.js adapter in standalone mode. This means:
+The project uses **server-side rendering** (`output: "server"` in astro.config.mjs) with the Node.js adapter in standalone mode:
 - All pages are server-rendered by default
 - Use `export const prerender = false` for API routes
 - Static components use Astro (.astro files)
-- Interactive components use React (client-side)
+- Interactive components use React (client-side islands)
 
 ### Directory Structure
 
@@ -47,8 +45,10 @@ src/
 │   └── index.ts      # Astro middleware
 ├── components/       # UI components
 │   ├── ui/          # Shadcn/ui components
+│   ├── hooks/       # Custom React hooks
 │   └── *.astro      # Static Astro components
 ├── lib/             # Services and helpers
+│   ├── services/    # Business logic
 │   └── utils.ts     # cn() utility for className merging
 ├── db/              # Supabase clients and types
 ├── types.ts         # Shared types (Entities, DTOs)
@@ -57,36 +57,86 @@ src/
     └── global.css   # Tailwind imports and theme
 ```
 
-### Component Strategy
+## Frontend Guidelines
 
-- **Astro components (.astro)**: Use for static content and layouts
-- **React components**: Only when interactivity is needed
-- **Never use** "use client" or other Next.js directives
+### Astro Standards
+
+- Use Astro components (.astro) for static content and layout
+- Implement React components only when interactivity is needed
+- Leverage View Transitions API for smooth page transitions
+- Use content collections with type safety for structured content
+- Implement middleware for request/response modification
+- Use image optimization with the Astro Image integration
+- Leverage Server Endpoints for API routes in `src/pages/api/`
+- Implement hybrid rendering with server-side rendering where needed
+- Use `Astro.cookies` for server-side cookie management
+- Access environment variables via `import.meta.env`
+
+### React Standards
+
+- Use functional components with hooks (no class components)
+- **Never use** "use client", "use server", or other Next.js directives
 - Extract React logic into custom hooks in `src/components/hooks`
+- Implement `React.memo()` for components with expensive renders
+- Use `React.lazy()` and Suspense for code-splitting
+- Use `useCallback` for event handlers passed to child components
+- Use `useMemo` for expensive calculations
+- Use `useId()` for generating unique IDs for accessibility attributes
+- Use `useTransition` for non-urgent state updates to keep UI responsive
+- Consider `useOptimistic` for optimistic UI updates in forms
+
+### Tailwind CSS 4 Standards
+
+- Global styles defined in `src/styles/global.css`
+- Custom dark mode variant: `@custom-variant dark (&:is(.dark *))`
+- Theme variables use `oklch()` color space for consistent colors
+- Use `@theme inline` for CSS variable mappings
+- Use `@layer` directive to organize styles into base, components, utilities
+- Utility function: `cn()` from `src/lib/utils.ts` for className merging
+- Use arbitrary values `[value]` for precise one-off designs
+- Use responsive variants (sm:, md:, lg:, xl:, 2xl:) for adaptive designs
+- Use state variants (hover:, focus:, active:, disabled:) for interactions
+- Extract component patterns instead of copying utility classes
+
+### Accessibility (ARIA) Standards
+
+- Use ARIA landmarks to identify regions (main, navigation, search, etc.)
+- Apply appropriate ARIA roles to custom elements lacking semantic HTML
+- Set `aria-expanded` and `aria-controls` for expandable content (accordions, dropdowns)
+- Use `aria-live` regions with appropriate politeness for dynamic updates
+- Implement `aria-hidden` to hide decorative content from screen readers
+- Apply `aria-label` or `aria-labelledby` for elements without visible text labels
+- Use `aria-describedby` to associate descriptive text with form inputs
+- Implement `aria-current` for indicating current item in navigation
+- Avoid redundant ARIA that duplicates native HTML semantics
+- Apply `aria-invalid` and error messaging for form validation
+
+## Backend Integration
+
+### Supabase
+
+- Access via `context.locals.supabase` in Astro routes
+- Use `SupabaseClient` type from `src/db/supabase.client.ts`
+- Validate all data exchange with Zod schemas
+- Row Level Security (RLS) for access control at database level
+- Storage for images: thumbnails (400px) and previews (1200px)
+- Authentication: email/password via built-in auth system
+
+### Image Processing
+
+- Use `browser-image-compression` for client-side compression
+- Generate two versions: thumbnail (400px width), preview (1200px width)
+- Maximum upload size: 10 MB
+- Supported format: JPEG only
+- Maximum photos: 200, Maximum categories: 10
 
 ### API Routes
 
 - Server endpoints in `src/pages/api/`
-- Use uppercase HTTP method exports: `POST`, `GET`
+- Use uppercase HTTP method exports: `POST`, `GET`, `PUT`, `DELETE`
 - Always use `export const prerender = false`
 - Validate input with Zod schemas
 - Extract business logic into services in `src/lib/services`
-
-### Styling with Tailwind CSS 4
-
-The project uses Tailwind v4 with custom variants:
-- Global styles in `src/styles/global.css`
-- Custom dark mode variant: `@custom-variant dark (&:is(.dark *))`
-- Theme variables use `oklch()` color space
-- Use `@theme inline` for CSS variable mappings
-- Utility function: `cn()` from `src/lib/utils.ts` for className merging
-
-### Backend Integration
-
-- **Supabase** for authentication and database
-- Access via `context.locals.supabase` in Astro routes
-- Use `SupabaseClient` type from `src/db/supabase.client.ts`
-- Validate all data exchange with Zod schemas
 
 ## Coding Practices
 
@@ -98,36 +148,30 @@ The project uses Tailwind v4 with custom variants:
 - Avoid unnecessary else statements; use if-return pattern
 - Use guard clauses for preconditions
 
-### React Best Practices
+### General Principles
 
-- Functional components with hooks (no class components)
-- Use `React.memo()` for components with expensive renders
-- Use `React.lazy()` and Suspense for code-splitting
-- Use `useCallback` for event handlers passed to children
-- Use `useMemo` for expensive calculations
-- Use `useId()` for accessibility IDs
-- Use `useTransition` for non-urgent state updates
-
-### Accessibility
-
-- Use ARIA landmarks (main, navigation, search)
-- Set `aria-expanded`, `aria-controls` for expandable content
-- Use `aria-live` regions for dynamic updates
-- Apply `aria-label` or `aria-labelledby` when no visible label
-- Avoid redundant ARIA that duplicates native HTML semantics
-
-### Astro Patterns
-
-- Leverage View Transitions API with ClientRouter
-- Use content collections with type safety
-- Use `Astro.cookies` for server-side cookie management
-- Access environment variables via `import.meta.env`
-- Implement hybrid rendering where needed
+- Keep solutions simple and focused on the task
+- Avoid over-engineering - only make changes directly requested
+- Don't add features, refactor code, or make "improvements" beyond scope
+- Only add comments where logic isn't self-evident
+- Don't create helpers or abstractions for one-time operations
+- If something is unused, delete it completely
 
 ## Git Workflow
 
-The project uses:
 - **Husky** for Git hooks
-- **lint-staged** for pre-commit checks
+- **lint-staged** for pre-commit checks:
   - Auto-fix ESLint on `.ts`, `.tsx`, `.astro`
   - Format with Prettier on `.json`, `.css`, `.md`
+
+## Technical Limits
+
+| Parameter | Value |
+|-----------|-------|
+| Maximum photos | 200 |
+| Maximum categories | 10 |
+| Maximum file size | 10 MB |
+| Supported format | JPEG |
+| Thumbnail size | 400px width |
+| Preview size | 1200px width |
+| Supabase Storage | 1GB (free tier) |
