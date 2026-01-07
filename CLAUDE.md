@@ -157,12 +157,67 @@ src/
 - Don't create helpers or abstractions for one-time operations
 - If something is unused, delete it completely
 
+## Database Migrations
+
+Migration files are stored in `supabase/migrations/` and managed by Supabase CLI.
+
+### File Naming Convention
+
+```
+YYYYMMDDHHmmss_short_description.sql
+```
+
+Example: `20240906123045_create_profiles.sql`
+
+### SQL Guidelines
+
+- Write all SQL in lowercase
+- Include header comments explaining migration purpose
+- Add comments for destructive commands (DROP, TRUNCATE, ALTER)
+- **Always enable RLS** on new tables, even for public access
+- Create granular RLS policies:
+  - Separate policies for each operation (`select`, `insert`, `update`, `delete`)
+  - Separate policies for each role (`anon`, `authenticated`)
+  - Never combine policies even if functionality is identical
+
+## Shadcn/ui Components
+
+Components are located in `src/components/ui/` with "new-york" style variant and "neutral" base color.
+
+### Installation
+
+```bash
+npx shadcn@latest add [component-name]
+```
+
+Example: `npx shadcn@latest add accordion`
+
+### Usage
+
+```tsx
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+```
+
+### Available Components
+
+Accordion, Alert, AlertDialog, AspectRatio, Avatar, Calendar, Checkbox, Collapsible, Command, ContextMenu, DataTable, DatePicker, DropdownMenu, Form, HoverCard, Menubar, NavigationMenu, Popover, Progress, RadioGroup, ScrollArea, Select, Separator, Sheet, Skeleton, Slider, Switch, Table, Tabs, Textarea, Sonner, Toggle, Tooltip
+
+Full list: https://ui.shadcn.com/r
+
 ## Git Workflow
 
 - **Husky** for Git hooks
 - **lint-staged** for pre-commit checks:
   - Auto-fix ESLint on `.ts`, `.tsx`, `.astro`
   - Format with Prettier on `.json`, `.css`, `.md`
+- **Conventional Commits** for commit messages: https://www.conventionalcommits.org/
+  - Format: `<type>(<scope>): <description>`
+  - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`
+  - Examples:
+    - `feat(auth): add login with email`
+    - `fix(gallery): resolve image loading issue`
+    - `docs(readme): update installation steps`
 
 ## Technical Limits
 
