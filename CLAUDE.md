@@ -29,6 +29,7 @@ npm run format     # Format code with Prettier
 ### Rendering Strategy
 
 The project uses **server-side rendering** (`output: "server"` in astro.config.mjs) with the Node.js adapter in standalone mode:
+
 - All pages are server-rendered by default
 - Use `export const prerender = false` for API routes
 - Static components use Astro (.astro files)
@@ -195,8 +196,8 @@ Example: `npx shadcn@latest add accordion`
 ### Usage
 
 ```tsx
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 ```
 
 ### Available Components
@@ -221,12 +222,12 @@ Full list: https://ui.shadcn.com/r
 
 ## Technical Limits
 
-| Parameter | Value |
-|-----------|-------|
-| Maximum photos | 200 |
-| Maximum categories | 10 |
-| Maximum file size | 10 MB |
-| Supported format | JPEG |
-| Thumbnail size | 400px width |
-| Preview size | 1200px width |
-| Supabase Storage | 1GB (free tier) |
+| Parameter          | Value           |
+| ------------------ | --------------- |
+| Maximum photos     | 200             |
+| Maximum categories | 10              |
+| Maximum file size  | 10 MB           |
+| Supported format   | JPEG            |
+| Thumbnail size     | 400px width     |
+| Preview size       | 1200px width    |
+| Supabase Storage   | 1GB (free tier) |

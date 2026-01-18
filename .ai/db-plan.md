@@ -8,46 +8,47 @@ Tabela `auth.users` będzie obsługiwana przez Supabase Auth
 
 Dane biznesowe fotografa, powiązane 1:1 z `auth.users`.
 
-| Kolumna | Typ | Ograniczenia |
-|---------|-----|--------------|
-| id | uuid | PRIMARY KEY, REFERENCES auth.users(id) ON DELETE CASCADE |
-| display_name | varchar(100) | NOT NULL |
-| bio | text | NULL |
-| contact_email | varchar(255) | NULL |
-| contact_phone | varchar(20) | NULL |
-| created_at | timestamptz | NOT NULL DEFAULT now() |
-| updated_at | timestamptz | NOT NULL DEFAULT now() |
+| Kolumna       | Typ          | Ograniczenia                                             |
+| ------------- | ------------ | -------------------------------------------------------- |
+| id            | uuid         | PRIMARY KEY, REFERENCES auth.users(id) ON DELETE CASCADE |
+| display_name  | varchar(100) | NOT NULL                                                 |
+| bio           | text         | NULL                                                     |
+| contact_email | varchar(255) | NULL                                                     |
+| contact_phone | varchar(20)  | NULL                                                     |
+| created_at    | timestamptz  | NOT NULL DEFAULT now()                                   |
+| updated_at    | timestamptz  | NOT NULL DEFAULT now()                                   |
 
 ### 1.2 photographer_settings
 
 Ustawienia SEO fotografa, powiązane 1:1 z `profiles`.
 
-| Kolumna | Typ | Ograniczenia |
-|---------|-----|--------------|
-| id | uuid | PRIMARY KEY DEFAULT gen_random_uuid() |
-| photographer_id | uuid | NOT NULL UNIQUE, REFERENCES profiles(id) ON DELETE CASCADE |
-| site_title | varchar(100) | NULL |
-| site_description | varchar(300) | NULL |
-| created_at | timestamptz | NOT NULL DEFAULT now() |
-| updated_at | timestamptz | NOT NULL DEFAULT now() |
+| Kolumna          | Typ          | Ograniczenia                                               |
+| ---------------- | ------------ | ---------------------------------------------------------- |
+| id               | uuid         | PRIMARY KEY DEFAULT gen_random_uuid()                      |
+| photographer_id  | uuid         | NOT NULL UNIQUE, REFERENCES profiles(id) ON DELETE CASCADE |
+| site_title       | varchar(100) | NULL                                                       |
+| site_description | varchar(300) | NULL                                                       |
+| created_at       | timestamptz  | NOT NULL DEFAULT now()                                     |
+| updated_at       | timestamptz  | NOT NULL DEFAULT now()                                     |
 
 ### 1.3 categories
 
 Kategorie zdjęć fotografa.
 
-| Kolumna | Typ | Ograniczenia |
-|---------|-----|--------------|
-| id | uuid | PRIMARY KEY DEFAULT gen_random_uuid() |
-| photographer_id | uuid | NOT NULL, REFERENCES profiles(id) ON DELETE CASCADE |
-| name | varchar(100) | NOT NULL |
-| slug | varchar(100) | NOT NULL |
-| description | text | NULL |
-| cover_photo_id | uuid | NULL |
-| display_order | integer | NOT NULL |
-| created_at | timestamptz | NOT NULL DEFAULT now() |
-| updated_at | timestamptz | NOT NULL DEFAULT now() |
+| Kolumna         | Typ          | Ograniczenia                                        |
+| --------------- | ------------ | --------------------------------------------------- |
+| id              | uuid         | PRIMARY KEY DEFAULT gen_random_uuid()               |
+| photographer_id | uuid         | NOT NULL, REFERENCES profiles(id) ON DELETE CASCADE |
+| name            | varchar(100) | NOT NULL                                            |
+| slug            | varchar(100) | NOT NULL                                            |
+| description     | text         | NULL                                                |
+| cover_photo_id  | uuid         | NULL                                                |
+| display_order   | integer      | NOT NULL                                            |
+| created_at      | timestamptz  | NOT NULL DEFAULT now()                              |
+| updated_at      | timestamptz  | NOT NULL DEFAULT now()                              |
 
 **Constraints:**
+
 - UNIQUE(photographer_id, slug)
 
 > **Uwaga:** FK `cover_photo_id` → `photos(id) ON DELETE SET NULL` jest dodawany przez ALTER TABLE po utworzeniu tabeli `photos` ze względu na circular dependency.
@@ -56,21 +57,21 @@ Kategorie zdjęć fotografa.
 
 Zdjęcia fotografa z referencjami do Supabase Storage.
 
-| Kolumna | Typ | Ograniczenia |
-|---------|-----|--------------|
-| id | uuid | PRIMARY KEY DEFAULT gen_random_uuid() |
-| photographer_id | uuid | NOT NULL, REFERENCES profiles(id) ON DELETE CASCADE |
-| category_id | uuid | NULL, REFERENCES categories(id) ON DELETE SET NULL |
-| title | varchar(200) | NULL |
-| thumbnail_path | text | NOT NULL |
-| preview_path | text | NOT NULL |
-| original_width | integer | NOT NULL |
-| original_height | integer | NOT NULL |
-| file_size_bytes | integer | NOT NULL |
-| mime_type | varchar(50) | NOT NULL DEFAULT 'image/jpeg' |
-| is_published | boolean | NOT NULL DEFAULT false |
-| created_at | timestamptz | NOT NULL DEFAULT now() |
-| updated_at | timestamptz | NOT NULL DEFAULT now() |
+| Kolumna         | Typ          | Ograniczenia                                        |
+| --------------- | ------------ | --------------------------------------------------- |
+| id              | uuid         | PRIMARY KEY DEFAULT gen_random_uuid()               |
+| photographer_id | uuid         | NOT NULL, REFERENCES profiles(id) ON DELETE CASCADE |
+| category_id     | uuid         | NULL, REFERENCES categories(id) ON DELETE SET NULL  |
+| title           | varchar(200) | NULL                                                |
+| thumbnail_path  | text         | NOT NULL                                            |
+| preview_path    | text         | NOT NULL                                            |
+| original_width  | integer      | NOT NULL                                            |
+| original_height | integer      | NOT NULL                                            |
+| file_size_bytes | integer      | NOT NULL                                            |
+| mime_type       | varchar(50)  | NOT NULL DEFAULT 'image/jpeg'                       |
+| is_published    | boolean      | NOT NULL DEFAULT false                              |
+| created_at      | timestamptz  | NOT NULL DEFAULT now()                              |
+| updated_at      | timestamptz  | NOT NULL DEFAULT now()                              |
 
 ---
 
@@ -99,14 +100,14 @@ Zdjęcia fotografa z referencjami do Supabase Storage.
 
 ### Opis relacji
 
-| Relacja | Typ | Opis |
-|---------|-----|------|
-| auth.users → profiles | 1:1 | Każdy użytkownik Supabase Auth ma dokładnie jeden profil |
-| profiles → photographer_settings | 1:1 | Każdy profil ma dokładnie jedno ustawienie SEO |
-| profiles → categories | 1:N | Fotograf może mieć wiele kategorii (limit 10) |
-| profiles → photos | 1:N | Fotograf może mieć wiele zdjęć (limit 200) |
-| categories → photos | 1:N | Kategoria może zawierać wiele zdjęć |
-| categories.cover_photo_id → photos | N:1 | Kategoria może mieć jedno zdjęcie okładkowe (nullable) |
+| Relacja                            | Typ | Opis                                                     |
+| ---------------------------------- | --- | -------------------------------------------------------- |
+| auth.users → profiles              | 1:1 | Każdy użytkownik Supabase Auth ma dokładnie jeden profil |
+| profiles → photographer_settings   | 1:1 | Każdy profil ma dokładnie jedno ustawienie SEO           |
+| profiles → categories              | 1:N | Fotograf może mieć wiele kategorii (limit 10)            |
+| profiles → photos                  | 1:N | Fotograf może mieć wiele zdjęć (limit 200)               |
+| categories → photos                | 1:N | Kategoria może zawierać wiele zdjęć                      |
+| categories.cover_photo_id → photos | N:1 | Kategoria może mieć jedno zdjęcie okładkowe (nullable)   |
 
 ---
 
@@ -440,6 +441,7 @@ Bucket: photos
 ### 7.1 Circular dependency
 
 Między tabelami `categories` i `photos` istnieje zależność cykliczna:
+
 - `photos.category_id` → `categories.id`
 - `categories.cover_photo_id` → `photos.id`
 
@@ -448,6 +450,7 @@ Między tabelami `categories` i `photos` istnieje zależność cykliczna:
 ### 7.2 Walidacja limitów
 
 Limity (200 zdjęć, 10 kategorii) są walidowane po stronie aplikacji, nie przez triggery bazodanowe. Pozwala to na:
+
 - Lepszą kontrolę nad komunikatami błędów
 - Łatwiejsze testowanie
 - Możliwość zmiany limitów bez migracji
@@ -455,6 +458,7 @@ Limity (200 zdjęć, 10 kategorii) są walidowane po stronie aplikacji, nie prze
 ### 7.3 Soft delete
 
 Projekt używa hard delete zamiast soft delete. Zdjęcia i kategorie są trwale usuwane. Decyzja podyktowana:
+
 - Prostotą implementacji w MVP
 - Ograniczeniami storage (1GB free tier)
 - Brakiem wymagań dotyczących przywracania danych
@@ -462,6 +466,7 @@ Projekt używa hard delete zamiast soft delete. Zdjęcia i kategorie są trwale 
 ### 7.4 Multi-tenant architecture
 
 Schemat jest przygotowany na obsługę wielu fotografów (`photographer_id` w tabelach), mimo że MVP obsługuje jednego. Pozwala to na:
+
 - Łatwe rozszerzenie w przyszłości
 - Izolację danych per fotograf
 - Niezależne limity per konto
@@ -469,6 +474,7 @@ Schemat jest przygotowany na obsługę wielu fotografów (`photographer_id` w ta
 ### 7.5 Wymiary zdjęć
 
 Pola `original_width` i `original_height` przechowują oryginalne wymiary zdjęcia (przed resize). Służą do:
+
 - Obliczania aspect ratio dla masonry layout
 - Eliminacji content shift podczas ładowania
 - Rezerwacji miejsca w UI

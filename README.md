@@ -42,33 +42,33 @@ The application consists of two main parts:
 
 ### Frontend
 
-| Technology | Purpose |
-|------------|---------|
-| **Astro 5** | SSG/SSR framework with View Transitions and Partial Hydration |
-| **React 19** | Interactive components (admin panel, lightbox, forms) |
-| **TypeScript 5** | Type-safe development |
-| **Tailwind CSS 4** | Utility-first styling |
-| **Shadcn/ui** | Accessible UI components built on Radix UI |
+| Technology         | Purpose                                                       |
+| ------------------ | ------------------------------------------------------------- |
+| **Astro 5**        | SSG/SSR framework with View Transitions and Partial Hydration |
+| **React 19**       | Interactive components (admin panel, lightbox, forms)         |
+| **TypeScript 5**   | Type-safe development                                         |
+| **Tailwind CSS 4** | Utility-first styling                                         |
+| **Shadcn/ui**      | Accessible UI components built on Radix UI                    |
 
 ### Backend
 
-| Technology | Purpose |
-|------------|---------|
-| **Supabase** | PostgreSQL database, authentication, and image storage |
-| **Row Level Security** | Database-level access control |
+| Technology             | Purpose                                                |
+| ---------------------- | ------------------------------------------------------ |
+| **Supabase**           | PostgreSQL database, authentication, and image storage |
+| **Row Level Security** | Database-level access control                          |
 
 ### Infrastructure
 
-| Technology | Purpose |
-|------------|---------|
-| **Docker** | Containerized deployment |
-| **DigitalOcean** | Cloud hosting |
-| **GitHub Actions** | CI/CD pipelines |
+| Technology         | Purpose                  |
+| ------------------ | ------------------------ |
+| **Docker**         | Containerized deployment |
+| **DigitalOcean**   | Cloud hosting            |
+| **GitHub Actions** | CI/CD pipelines          |
 
 ### Image Processing
 
-| Technology | Purpose |
-|------------|---------|
+| Technology                    | Purpose                                    |
+| ----------------------------- | ------------------------------------------ |
 | **browser-image-compression** | Client-side image compression and resizing |
 
 ## Getting Started Locally
@@ -119,16 +119,16 @@ The application consists of two main parts:
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server on port 3000 |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint issues automatically |
-| `npm run format` | Format code with Prettier |
-| `npm run clean` | Remove node_modules, dist, and .astro directories |
-| `npm run clean:build` | Remove dist and .astro directories |
+| Script                | Description                                       |
+| --------------------- | ------------------------------------------------- |
+| `npm run dev`         | Start development server on port 3000             |
+| `npm run build`       | Build for production                              |
+| `npm run preview`     | Preview production build                          |
+| `npm run lint`        | Run ESLint                                        |
+| `npm run lint:fix`    | Fix ESLint issues automatically                   |
+| `npm run format`      | Format code with Prettier                         |
+| `npm run clean`       | Remove node_modules, dist, and .astro directories |
+| `npm run clean:build` | Remove dist and .astro directories                |
 
 ## Project Scope
 
@@ -145,15 +145,15 @@ The application consists of two main parts:
 
 ### Technical Limits
 
-| Parameter | Value |
-|-----------|-------|
-| Maximum photos | 200 |
-| Maximum categories | 10 |
-| Maximum file size | 10 MB |
-| Supported format | JPEG |
-| Thumbnail size | 400px width |
-| Preview size | 1200px width |
-| Supabase Storage | 1GB (free tier) |
+| Parameter          | Value           |
+| ------------------ | --------------- |
+| Maximum photos     | 200             |
+| Maximum categories | 10              |
+| Maximum file size  | 10 MB           |
+| Supported format   | JPEG            |
+| Thumbnail size     | 400px width     |
+| Preview size       | 1200px width    |
+| Supabase Storage   | 1GB (free tier) |
 
 ### Out of Scope (Future Phases)
 
@@ -171,12 +171,12 @@ This project is currently in **early development** (MVP phase).
 
 ### URL Structure
 
-| Route | Description |
-|-------|-------------|
-| `/` | Homepage with category tiles |
+| Route               | Description                           |
+| ------------------- | ------------------------------------- |
+| `/`                 | Homepage with category tiles          |
 | `/kategoria/[slug]` | Photo gallery for a specific category |
-| `/o-mnie` | About page with bio and contact info |
-| `/admin` | Admin panel (protected) |
+| `/o-mnie`           | About page with bio and contact info  |
+| `/admin`            | Admin panel (protected)               |
 
 ## License
 
