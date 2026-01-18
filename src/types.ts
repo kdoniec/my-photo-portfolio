@@ -147,7 +147,7 @@ export interface CategoryOrderItem {
 /**
  * Command for reordering categories - PUT /api/categories/reorder
  */
-export interface ReorderCategoriesCommand {
+export interface ReorderCategoryCommand {
   order: CategoryOrderItem[];
 }
 
@@ -273,7 +273,7 @@ export interface BatchUploadSummary {
 /**
  * Response for batch photo upload - POST /api/photos/batch
  */
-export interface PhotoBatchUploadResponseDTO {
+export interface BatchPhotoUploadResponseDTO {
   uploaded: BatchUploadedPhoto[];
   failed: BatchFailedPhoto[];
   summary: BatchUploadSummary;

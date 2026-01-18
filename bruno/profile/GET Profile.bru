@@ -1,0 +1,25 @@
+meta {
+  name: GET Profile
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/profile
+  body: none
+  auth: none
+}
+
+docs {
+  # GET /api/profile
+
+  Pobiera profil zalogowanego użytkownika.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Odpowiedzi
+  - 200: Profil użytkownika
+  - 401: Brak autoryzacji
+  - 404: Profil nie istnieje
+}

@@ -1,0 +1,31 @@
+meta {
+  name: PUT Profile - Invalid Email
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/profile
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "display_name": "Jan Kowalski",
+    "contact_email": "not-an-email"
+  }
+}
+
+docs {
+  # PUT /api/profile - Test walidacji email
+
+  Test sprawdzający walidację nieprawidłowego formatu email.
+
+  ## Oczekiwana odpowiedź
+  - 400 VALIDATION_ERROR: "Invalid email format"
+}

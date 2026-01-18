@@ -1,0 +1,42 @@
+meta {
+  name: PUT Profile
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/api/profile
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "display_name": "Jan Kowalski",
+    "bio": "Fotograf przyrody",
+    "contact_email": "jan@example.com",
+    "contact_phone": "+48123456789"
+  }
+}
+
+docs {
+  # PUT /api/profile
+
+  Aktualizuje profil zalogowanego użytkownika.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+  - display_name (wymagany, max 100 znaków)
+  - bio (opcjonalny)
+  - contact_email (opcjonalny, musi być poprawny email, max 255 znaków)
+  - contact_phone (opcjonalny, max 20 znaków)
+
+  ## Odpowiedzi
+  - 200: Zaktualizowany profil
+  - 400: Błąd walidacji
+  - 401: Brak autoryzacji
+}

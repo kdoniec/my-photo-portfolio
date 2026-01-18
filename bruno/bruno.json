@@ -1,0 +1,6 @@
+{
+  "version": "1",
+  "name": "10x-project API",
+  "type": "collection",
+  "ignore": ["node_modules", ".git"]
+}

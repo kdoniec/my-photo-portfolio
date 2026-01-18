@@ -1,0 +1,20 @@
+meta {
+  name: GET Profile - No Auth
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/profile
+  body: none
+  auth: none
+}
+
+docs {
+  # GET /api/profile - Test bez autoryzacji
+
+  Test sprawdzający odpowiedź dla requestu bez tokena.
+
+  ## Oczekiwana odpowiedź
+  - 401 UNAUTHORIZED: "Authentication required"
+}

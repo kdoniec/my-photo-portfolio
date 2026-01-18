@@ -1,0 +1,30 @@
+meta {
+  name: PUT Profile - Empty Name
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/api/profile
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "display_name": ""
+  }
+}
+
+docs {
+  # PUT /api/profile - Test walidacji
+
+  Test sprawdzający walidację pustego display_name.
+
+  ## Oczekiwana odpowiedź
+  - 400 VALIDATION_ERROR: "Display name is required"
+}

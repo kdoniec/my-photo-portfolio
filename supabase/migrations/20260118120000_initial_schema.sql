@@ -7,6 +7,7 @@
 --   - handles circular dependency between categories and photos
 --   - creates trigger for automatic profile creation on user signup
 --   - sets up storage bucket with rls policies
+--   - RLS DISABLED FOR DEVELOPMENT - enable before production!
 -- ============================================================================
 
 -- ============================================================================
@@ -45,8 +46,8 @@ create table profiles (
 -- add comment to table
 comment on table profiles is 'photographer business profiles, linked 1:1 with auth.users';
 
--- enable rls on profiles
-alter table profiles enable row level security;
+-- rls disabled for development - enable before production!
+-- alter table profiles enable row level security;
 
 -- trigger: auto-update updated_at on profiles
 create trigger set_profiles_updated_at
@@ -69,8 +70,8 @@ create table photographer_settings (
 -- add comment to table
 comment on table photographer_settings is 'seo and site settings for each photographer';
 
--- enable rls on photographer_settings
-alter table photographer_settings enable row level security;
+-- rls disabled for development - enable before production!
+-- alter table photographer_settings enable row level security;
 
 -- trigger: auto-update updated_at on photographer_settings
 create trigger set_settings_updated_at
@@ -100,8 +101,8 @@ create table categories (
 -- add comment to table
 comment on table categories is 'photo categories for organizing photographer portfolio';
 
--- enable rls on categories
-alter table categories enable row level security;
+-- rls disabled for development - enable before production!
+-- alter table categories enable row level security;
 
 -- trigger: auto-update updated_at on categories
 create trigger set_categories_updated_at
@@ -131,8 +132,8 @@ create table photos (
 -- add comment to table
 comment on table photos is 'photo metadata with references to storage paths';
 
--- enable rls on photos
-alter table photos enable row level security;
+-- rls disabled for development - enable before production!
+-- alter table photos enable row level security;
 
 -- trigger: auto-update updated_at on photos
 create trigger set_photos_updated_at
@@ -269,8 +270,10 @@ for each row execute function update_category_cover_on_photo_delete();
 
 -- ============================================================================
 -- section 5: row level security (rls) policies
+-- DISABLED FOR DEVELOPMENT - uncomment before production!
 -- ============================================================================
 
+/*
 -- ----------------------------------------------------------------------------
 -- rls policies for profiles table
 -- ----------------------------------------------------------------------------
@@ -430,6 +433,7 @@ on photos
 for delete
 to authenticated
 using (photographer_id = auth.uid());
+*/
 
 -- ============================================================================
 -- section 6: storage bucket and policies
@@ -444,8 +448,10 @@ values ('photos', 'photos', true);
 
 -- ----------------------------------------------------------------------------
 -- storage rls policies
+-- DISABLED FOR DEVELOPMENT - uncomment before production!
 -- ----------------------------------------------------------------------------
 
+/*
 -- policy: anonymous users can read all files in photos bucket
 -- rationale: public gallery needs to display images
 create policy "photos_bucket_select_anon"
@@ -484,6 +490,7 @@ using (
   bucket_id = 'photos'
   and (storage.foldername(name))[1] = auth.uid()::text
 );
+*/
 
 -- ============================================================================
 -- end of migration
