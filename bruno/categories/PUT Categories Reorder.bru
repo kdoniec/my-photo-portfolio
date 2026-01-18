@@ -1,0 +1,41 @@
+meta {
+  name: PUT Categories Reorder
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/api/categories/reorder
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "order": [
+      { "id": "{{categoryId}}", "display_order": 0 }
+    ]
+  }
+}
+
+docs {
+  # PUT /api/categories/reorder
+
+  Zmienia kolejność wyświetlania kategorii.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Body
+  - order (wymagane): Tablica obiektów z id i display_order
+
+  ## Odpowiedzi
+  - 200: { message: "Categories reordered successfully" }
+  - 400: Błąd walidacji
+  - 401: Brak autoryzacji
+}

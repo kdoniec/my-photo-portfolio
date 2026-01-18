@@ -1,0 +1,48 @@
+meta {
+  name: POST Category
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/categories
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Wesela",
+    "description": "Fotografie ślubne i weselne"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("categoryId", res.body.id);
+  }
+}
+
+docs {
+  # POST /api/categories
+
+  Tworzy nową kategorię.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Body
+  - name (wymagane): Nazwa kategorii (1-100 znaków)
+  - description (opcjonalne): Opis kategorii (max 500 znaków)
+
+  ## Odpowiedzi
+  - 201: Utworzona kategoria
+  - 400: Błąd walidacji
+  - 401: Brak autoryzacji
+  - 409: Limit kategorii osiągnięty (max 10)
+}

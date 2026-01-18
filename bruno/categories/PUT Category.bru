@@ -1,0 +1,44 @@
+meta {
+  name: PUT Category
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/categories/{{categoryId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Wesela i Śluby",
+    "description": "Profesjonalne fotografie ślubne i weselne"
+  }
+}
+
+docs {
+  # PUT /api/categories/:id
+
+  Aktualizuje istniejącą kategorię.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+  - categoryId w URL (UUID)
+
+  ## Body
+  - name (wymagane): Nazwa kategorii (1-100 znaków)
+  - description (opcjonalne): Opis kategorii (max 500 znaków)
+  - cover_photo_id (opcjonalne): UUID zdjęcia okładkowego
+
+  ## Odpowiedzi
+  - 200: Zaktualizowana kategoria
+  - 400: Błąd walidacji lub duplikat nazwy
+  - 401: Brak autoryzacji
+  - 404: Kategoria nie znaleziona
+}

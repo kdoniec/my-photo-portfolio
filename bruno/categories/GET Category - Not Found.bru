@@ -1,0 +1,24 @@
+meta {
+  name: GET Category - Not Found
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/api/categories/00000000-0000-0000-0000-000000000000
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/categories/:id - Not Found
+
+  Test błędu - kategoria nie istnieje.
+
+  ## Oczekiwana odpowiedź
+  - 404: { error: { code: "NOT_FOUND", message: "Category not found" } }
+}

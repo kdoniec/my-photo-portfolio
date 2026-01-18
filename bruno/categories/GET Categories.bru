@@ -1,0 +1,32 @@
+meta {
+  name: GET Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/categories
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/categories
+
+  Pobiera listę wszystkich kategorii zalogowanego użytkownika.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Query Parameters (opcjonalne)
+  - sort: display_order (domyślny) | name | created_at
+  - order: asc (domyślny) | desc
+
+  ## Odpowiedzi
+  - 200: Lista kategorii z total i limit
+  - 401: Brak autoryzacji
+}

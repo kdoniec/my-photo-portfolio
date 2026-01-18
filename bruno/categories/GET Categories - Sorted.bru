@@ -1,0 +1,28 @@
+meta {
+  name: GET Categories - Sorted
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/categories?sort=name&order=desc
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/categories - Sorted
+
+  Pobiera listę kategorii posortowaną po nazwie malejąco.
+
+  ## Query Parameters
+  - sort: name
+  - order: desc
+
+  ## Odpowiedzi
+  - 200: Lista kategorii posortowana po nazwie
+}

@@ -1,0 +1,31 @@
+meta {
+  name: DELETE Category
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/api/categories/{{categoryId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # DELETE /api/categories/:id
+
+  Usuwa kategorię. Powiązane zdjęcia stają się "uncategorized".
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+  - categoryId w URL (UUID)
+
+  ## Odpowiedzi
+  - 200: { message, affected_photos_count }
+  - 400: Nieprawidłowy UUID
+  - 401: Brak autoryzacji
+  - 404: Kategoria nie znaleziona
+}

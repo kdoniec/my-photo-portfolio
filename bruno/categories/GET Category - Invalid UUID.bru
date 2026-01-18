@@ -1,0 +1,24 @@
+meta {
+  name: GET Category - Invalid UUID
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/api/categories/not-a-uuid
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/categories/:id - Invalid UUID
+
+  Test błędu - nieprawidłowy format UUID.
+
+  ## Oczekiwana odpowiedź
+  - 400: { error: { code: "VALIDATION_ERROR", message: "Invalid category ID" } }
+}
