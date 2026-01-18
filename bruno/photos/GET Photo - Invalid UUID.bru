@@ -1,0 +1,24 @@
+meta {
+  name: GET Photo - Invalid UUID
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/api/photos/invalid-uuid
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/photos/:id - nieprawidłowe UUID
+
+  Test błędu 400 dla nieprawidłowego formatu UUID.
+
+  ## Oczekiwana odpowiedź
+  - 400: { error: { code: "VALIDATION_ERROR", message: "Invalid photo ID" } }
+}

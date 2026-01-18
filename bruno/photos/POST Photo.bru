@@ -1,0 +1,60 @@
+meta {
+  name: POST Photo
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/photos
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:multipart-form {
+  thumbnail: @file(/tmp/thumb1.jpg)
+  preview: @file(/tmp/preview1.jpg)
+  original_width: 1920
+  original_height: 1080
+  file_size_bytes: 2048576
+  title: Moje zdjęcie
+  is_published: false
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("photoId", res.body.id);
+  }
+}
+
+docs {
+  # POST /api/photos
+
+  Przesyła nowe zdjęcie (thumbnail + preview).
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+  - Content-Type: multipart/form-data
+
+  ## Form Data (wymagane)
+  - thumbnail: plik JPEG (max 10MB)
+  - preview: plik JPEG (max 10MB)
+  - original_width: oryginalna szerokość
+  - original_height: oryginalna wysokość
+  - file_size_bytes: rozmiar oryginalnego pliku
+
+  ## Form Data (opcjonalne)
+  - title: tytuł (max 200 znaków)
+  - category_id: UUID kategorii
+  - is_published: true/false (domyślnie false)
+
+  ## Odpowiedzi
+  - 201: Utworzone zdjęcie (PhotoDTO)
+  - 400: Błąd walidacji / nieprawidłowa kategoria
+  - 401: Brak autoryzacji
+  - 409: Limit zdjęć osiągnięty (max 200)
+  - 500: Błąd uploadu
+}

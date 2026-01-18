@@ -1,14 +1,17 @@
 import { defineMiddleware } from "astro:middleware";
-import { createServerClient, parseCookieHeader, type CookieOptionsWithName } from "@supabase/ssr";
+import { createServerClient, parseCookieHeader, type CookieOptions } from "@supabase/ssr";
 import type { Database } from "../db/database.types";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createServerClient<Database>(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY, {
     cookies: {
       getAll() {
-        return parseCookieHeader(context.request.headers.get("Cookie") ?? "");
+        return parseCookieHeader(context.request.headers.get("Cookie") ?? "").map((cookie) => ({
+          name: cookie.name,
+          value: cookie.value ?? "",
+        }));
       },
-      setAll(cookiesToSet: CookieOptionsWithName[]) {
+      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
         cookiesToSet.forEach(({ name, value, options }) => {
           context.cookies.set(name, value, options);
         });

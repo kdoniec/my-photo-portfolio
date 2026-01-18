@@ -1,0 +1,28 @@
+meta {
+  name: GET Photos - Filtered
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/photos?is_published=true&page=1&limit=10&sort=created_at&order=desc
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/photos - z filtrami
+
+  Pobiera listę opublikowanych zdjęć z paginacją.
+
+  ## Query Parameters
+  - is_published=true: tylko opublikowane
+  - page=1: pierwsza strona
+  - limit=10: 10 elementów
+  - sort=created_at: sortowanie po dacie utworzenia
+  - order=desc: od najnowszych
+}

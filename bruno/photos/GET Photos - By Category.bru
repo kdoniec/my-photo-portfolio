@@ -1,0 +1,22 @@
+meta {
+  name: GET Photos - By Category
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/photos?category_id={{categoryId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/photos - filtr po kategorii
+
+  Pobiera zdjęcia z konkretnej kategorii.
+  Użyj category_id=uncategorized aby pobrać zdjęcia bez kategorii.
+}

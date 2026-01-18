@@ -1,0 +1,61 @@
+meta {
+  name: POST Photos Batch
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/photos/batch
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:multipart-form {
+  thumbnail_0: @file(/tmp/thumb1.jpg)
+  preview_0: @file(/tmp/preview1.jpg)
+  original_width_0: 1920
+  original_height_0: 1080
+  file_size_bytes_0: 2048576
+  title_0: Zdjęcie 1
+  thumbnail_1: @file(/tmp/thumb2.jpg)
+  preview_1: @file(/tmp/preview2.jpg)
+  original_width_1: 1920
+  original_height_1: 1080
+  file_size_bytes_1: 1548576
+  title_1: Zdjęcie 2
+  is_published: false
+}
+
+docs {
+  # POST /api/photos/batch
+
+  Masowe przesyłanie wielu zdjęć.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+  - Content-Type: multipart/form-data
+
+  ## Form Data (dla każdego zdjęcia, indeksowane 0, 1, 2...)
+  - thumbnail_{index}: plik JPEG (max 10MB)
+  - preview_{index}: plik JPEG (max 10MB)
+  - original_width_{index}: oryginalna szerokość
+  - original_height_{index}: oryginalna wysokość
+  - file_size_bytes_{index}: rozmiar oryginalnego pliku
+  - title_{index}: tytuł (opcjonalne)
+
+  ## Form Data (wspólne dla wszystkich)
+  - category_id: UUID kategorii (opcjonalne)
+  - is_published: true/false (opcjonalne, domyślnie false)
+
+  ## Odpowiedzi
+  - 201: BatchPhotoUploadResponseDTO
+    - uploaded: [{ id, thumbnail_url, preview_url }]
+    - failed: [{ filename, error }]
+    - summary: { total, successful, failed }
+  - 400: Błąd walidacji
+  - 401: Brak autoryzacji
+}

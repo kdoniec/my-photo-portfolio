@@ -1,0 +1,43 @@
+meta {
+  name: PUT Photo
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/api/photos/{{photoId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "title": "Zaktualizowany tytuł",
+    "is_published": true
+  }
+}
+
+docs {
+  # PUT /api/photos/:id
+
+  Aktualizuje metadane zdjęcia.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Body (wszystkie opcjonalne)
+  - title: tytuł (max 200 znaków, null aby usunąć)
+  - category_id: UUID kategorii (null aby usunąć)
+  - is_published: true/false
+
+  ## Odpowiedzi
+  - 200: Zaktualizowane zdjęcie (PhotoDTO)
+  - 400: Błąd walidacji / nieprawidłowa kategoria
+  - 401: Brak autoryzacji
+  - 404: Zdjęcie nie znalezione
+}

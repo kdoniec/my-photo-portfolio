@@ -1,0 +1,24 @@
+meta {
+  name: GET Photo - Not Found
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/photos/00000000-0000-0000-0000-000000000000
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/photos/:id - nie znaleziono
+
+  Test błędu 404 dla nieistniejącego zdjęcia.
+
+  ## Oczekiwana odpowiedź
+  - 404: { error: { code: "NOT_FOUND", message: "Photo not found" } }
+}

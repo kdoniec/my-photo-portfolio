@@ -1,0 +1,40 @@
+meta {
+  name: PATCH Photo Publish
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/api/photos/{{photoId}}/publish
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "is_published": true
+  }
+}
+
+docs {
+  # PATCH /api/photos/:id/publish
+
+  Przełącza status publikacji zdjęcia.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Body
+  - is_published: true/false (wymagane)
+
+  ## Odpowiedzi
+  - 200: { id, is_published, updated_at }
+  - 400: Błąd walidacji
+  - 401: Brak autoryzacji
+  - 404: Zdjęcie nie znalezione
+}

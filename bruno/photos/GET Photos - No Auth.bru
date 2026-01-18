@@ -1,0 +1,20 @@
+meta {
+  name: GET Photos - No Auth
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/photos
+  body: none
+  auth: none
+}
+
+docs {
+  # GET /api/photos - bez autoryzacji
+
+  Test błędu 401 gdy brak tokenu.
+
+  ## Oczekiwana odpowiedź
+  - 401: { error: { code: "UNAUTHORIZED", message: "Authentication required" } }
+}

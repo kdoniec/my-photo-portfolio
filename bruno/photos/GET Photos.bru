@@ -1,0 +1,36 @@
+meta {
+  name: GET Photos
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/photos
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/photos
+
+  Pobiera listę zdjęć z filtrowaniem, sortowaniem i paginacją.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Query Parameters (opcjonalne)
+  - category_id: UUID kategorii lub "uncategorized"
+  - is_published: "true" | "false"
+  - page: numer strony (domyślnie 1)
+  - limit: elementów na stronę (1-50, domyślnie 20)
+  - sort: created_at (domyślny) | title
+  - order: asc | desc (domyślnie desc)
+
+  ## Odpowiedzi
+  - 200: Lista zdjęć z paginacją
+  - 401: Brak autoryzacji
+}

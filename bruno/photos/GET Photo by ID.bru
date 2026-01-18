@@ -1,0 +1,30 @@
+meta {
+  name: GET Photo by ID
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/photos/{{photoId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/photos/:id
+
+  Pobiera pojedyncze zdjęcie po ID.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Odpowiedzi
+  - 200: Zdjęcie (PhotoDTO)
+  - 400: Nieprawidłowe UUID
+  - 401: Brak autoryzacji
+  - 404: Zdjęcie nie znalezione
+}
