@@ -1,0 +1,44 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{supabaseUrl}}/auth/v1/token?grant_type=password
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{supabaseKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "{{userEmail}}",
+    "password": "{{userPassword}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("accessToken", res.body.access_token);
+  }
+}
+
+docs {
+  # Login
+  
+  Loguje użytkownika przez Supabase Auth.
+  
+  ## Wymagane zmienne środowiskowe
+  - supabaseUrl
+  - supabaseKey
+  - userEmail
+  - userPassword
+  
+  ## Po wykonaniu
+  - accessToken zostanie automatycznie zapisany
+}

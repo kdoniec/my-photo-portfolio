@@ -11,30 +11,31 @@ put {
 }
 
 headers {
+  Authorization: Bearer {{accessToken}}
   Content-Type: application/json
 }
 
 body:json {
   {
-    "display_name": "Jan Kowalski",
-    "bio": "Fotograf przyrody",
-    "contact_email": "jan@example.com",
+    "display_name": "Tester Testowski",
+    "bio": "Fotograf ślubny",
+    "contact_email": "test@test.pl",
     "contact_phone": "+48123456789"
   }
 }
 
 docs {
   # PUT /api/profile
-
+  
   Aktualizuje profil zalogowanego użytkownika.
-
+  
   ## Wymagania
   - Bearer token w nagłówku Authorization
   - display_name (wymagany, max 100 znaków)
   - bio (opcjonalny)
   - contact_email (opcjonalny, musi być poprawny email, max 255 znaków)
   - contact_phone (opcjonalny, max 20 znaków)
-
+  
   ## Odpowiedzi
   - 200: Zaktualizowany profil
   - 400: Błąd walidacji

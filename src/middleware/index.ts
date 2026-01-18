@@ -18,11 +18,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   context.locals.supabase = supabase;
 
-  // Get current user session
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  context.locals.user = user;
+  // Try to get user from Bearer token first, then from session
+  const authHeader = context.request.headers.get("Authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.substring(7);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser(token);
+    context.locals.user = user;
+  } else {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    context.locals.user = user;
+  }
 
   return next();
 });

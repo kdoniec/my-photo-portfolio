@@ -10,14 +10,18 @@ get {
   auth: none
 }
 
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
 docs {
   # GET /api/profile
-
+  
   Pobiera profil zalogowanego użytkownika.
-
+  
   ## Wymagania
   - Bearer token w nagłówku Authorization
-
+  
   ## Odpowiedzi
   - 200: Profil użytkownika
   - 401: Brak autoryzacji

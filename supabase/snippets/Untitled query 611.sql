@@ -1,1 +1,1 @@
-select * from public.photographer_settings;
+select * from public.profiles;
