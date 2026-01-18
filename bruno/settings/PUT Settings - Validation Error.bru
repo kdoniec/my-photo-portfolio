@@ -1,0 +1,31 @@
+meta {
+  name: PUT Settings - Validation Error
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/settings
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "site_title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
+  }
+}
+
+docs {
+  # PUT /api/settings - Błąd walidacji
+
+  Test endpointu z za długim site_title (>100 znaków).
+
+  ## Oczekiwana odpowiedź
+  - 400: Błąd walidacji (site_title przekracza 100 znaków)
+}

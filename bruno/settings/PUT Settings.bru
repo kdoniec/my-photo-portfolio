@@ -1,0 +1,39 @@
+meta {
+  name: PUT Settings
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/api/settings
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "site_title": "Moje Portfolio Fotograficzne",
+    "site_description": "Profesjonalna fotografia ślubna i portretowa"
+  }
+}
+
+docs {
+  # PUT /api/settings
+
+  Aktualizuje ustawienia SEO zalogowanego użytkownika.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+  - site_title (opcjonalny, max 100 znaków)
+  - site_description (opcjonalny, max 300 znaków)
+
+  ## Odpowiedzi
+  - 200: Zaktualizowane ustawienia
+  - 400: Błąd walidacji
+  - 401: Brak autoryzacji
+}
