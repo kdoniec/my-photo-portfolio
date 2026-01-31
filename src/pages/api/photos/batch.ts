@@ -82,7 +82,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
       // Validate thumbnail
       const thumbnailResult = validatePhotoFile(thumbnail, `thumbnail_${index}`);
       if (!thumbnailResult.success) {
-        errors.push({ index, error: thumbnailResult.error });
+        errors.push({ index, error: thumbnailResult.error.message });
         index++;
         continue;
       }
@@ -90,7 +90,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
       // Validate preview
       const previewResult = validatePhotoFile(preview, `preview_${index}`);
       if (!previewResult.success) {
-        errors.push({ index, error: previewResult.error });
+        errors.push({ index, error: previewResult.error.message });
         index++;
         continue;
       }

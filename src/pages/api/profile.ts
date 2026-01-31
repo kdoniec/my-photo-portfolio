@@ -5,16 +5,16 @@ import { jsonResponse, errorResponse } from "../../lib/api-utils";
 
 export const prerender = false;
 
-// TODO: Włączyć auth gdy będzie gotowe
-const TEST_USER_ID = "fd049c35-cca3-4933-87b9-fc66bb53f125";
-
 export const GET: APIRoute = async ({ locals }) => {
   const { supabase, user } = locals;
-  const userId = user?.id ?? TEST_USER_ID;
+
+  if (!user) {
+    return errorResponse("UNAUTHORIZED", "Authentication required", 401);
+  }
 
   try {
     const profileService = new ProfileService(supabase);
-    const profile = await profileService.getProfile(userId);
+    const profile = await profileService.getProfile(user.id);
 
     if (!profile) {
       return errorResponse("NOT_FOUND", "Profile not found", 404);
@@ -29,7 +29,10 @@ export const GET: APIRoute = async ({ locals }) => {
 
 export const PUT: APIRoute = async ({ locals, request }) => {
   const { supabase, user } = locals;
-  const userId = user?.id ?? TEST_USER_ID;
+
+  if (!user) {
+    return errorResponse("UNAUTHORIZED", "Authentication required", 401);
+  }
 
   try {
     const body = await request.json();
@@ -44,7 +47,7 @@ export const PUT: APIRoute = async ({ locals, request }) => {
     }
 
     const profileService = new ProfileService(supabase);
-    const updatedProfile = await profileService.updateProfile(userId, validation.data);
+    const updatedProfile = await profileService.updateProfile(user.id, validation.data);
 
     return jsonResponse(updatedProfile);
   } catch (error) {

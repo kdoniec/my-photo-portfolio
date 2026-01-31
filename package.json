@@ -10,6 +10,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "clean": "npx rimraf node_modules dist .astro",
     "clean:build": "npx rimraf dist .astro"
   },

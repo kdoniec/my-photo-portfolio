@@ -4,21 +4,16 @@ import { jsonResponse, errorResponse } from "../../lib/api-utils";
 
 export const prerender = false;
 
-// TODO: Remove when auth is fully implemented
-const TEST_USER_ID = "fd049c35-cca3-4933-87b9-fc66bb53f125";
-
 export const GET: APIRoute = async ({ locals }) => {
   const { supabase, user } = locals;
-  const userId = user?.id ?? TEST_USER_ID;
 
-  // Require authentication
-  if (!user && !TEST_USER_ID) {
-    return errorResponse("UNAUTHORIZED", "Not authenticated", 401);
+  if (!user) {
+    return errorResponse("UNAUTHORIZED", "Authentication required", 401);
   }
 
   try {
     const statsService = new StatsService(supabase);
-    const stats = await statsService.getStats(userId);
+    const stats = await statsService.getStats(user.id);
 
     return jsonResponse(stats);
   } catch (error) {

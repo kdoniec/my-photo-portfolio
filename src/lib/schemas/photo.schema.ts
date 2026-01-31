@@ -47,21 +47,29 @@ export const ALLOWED_MIME_TYPES = ["image/jpeg"] as const;
 export const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 export const MAX_PHOTOS = 200;
 
+// File validation error codes
+export type FileValidationErrorCode = "REQUIRED" | "INVALID_TYPE" | "FILE_TOO_LARGE";
+
+export interface FileValidationError {
+  code: FileValidationErrorCode;
+  message: string;
+}
+
 // Helper function to validate uploaded file
 export function validatePhotoFile(
   file: File | null | undefined,
   fieldName: string
-): { success: true; data: File } | { success: false; error: string } {
+): { success: true; data: File } | { success: false; error: FileValidationError } {
   if (!file || !(file instanceof File)) {
-    return { success: false, error: `${fieldName} is required` };
+    return { success: false, error: { code: "REQUIRED", message: `${fieldName} is required` } };
   }
 
   if (!ALLOWED_MIME_TYPES.includes(file.type as (typeof ALLOWED_MIME_TYPES)[number])) {
-    return { success: false, error: `${fieldName} must be JPEG` };
+    return { success: false, error: { code: "INVALID_TYPE", message: `${fieldName} must be JPEG` } };
   }
 
   if (file.size > MAX_FILE_SIZE_BYTES) {
-    return { success: false, error: `${fieldName} must be at most 10MB` };
+    return { success: false, error: { code: "FILE_TOO_LARGE", message: `${fieldName} must be at most 10MB` } };
   }
 
   return { success: true, data: file };

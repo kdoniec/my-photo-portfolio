@@ -67,16 +67,20 @@ export const POST: APIRoute = async ({ locals, request }) => {
     // Extract and validate files
     const thumbnailResult = validatePhotoFile(formData.get("thumbnail") as File | null, "thumbnail");
     if (!thumbnailResult.success) {
-      return errorResponse("VALIDATION_ERROR", thumbnailResult.error, 400, {
-        field: "thumbnail",
-      });
+      const { code, message } = thumbnailResult.error;
+      if (code === "FILE_TOO_LARGE") {
+        return errorResponse("FILE_TOO_LARGE", message, 413, { field: "thumbnail" });
+      }
+      return errorResponse("VALIDATION_ERROR", message, 400, { field: "thumbnail" });
     }
 
     const previewResult = validatePhotoFile(formData.get("preview") as File | null, "preview");
     if (!previewResult.success) {
-      return errorResponse("VALIDATION_ERROR", previewResult.error, 400, {
-        field: "preview",
-      });
+      const { code, message } = previewResult.error;
+      if (code === "FILE_TOO_LARGE") {
+        return errorResponse("FILE_TOO_LARGE", message, 413, { field: "preview" });
+      }
+      return errorResponse("VALIDATION_ERROR", message, 400, { field: "preview" });
     }
 
     // Extract and validate file dimensions

@@ -7,11 +7,11 @@ Najpierw dokładnie przejrzyj dostarczony plan wdrożenia:
 </implementation_plan>
 
 <types>
-{{types}} <- dodaj referencje do definicji typów (np. @types)
+   @src/types.ts  
 </types>
 
 <implementation_rules>
-{{backend-rules}} <- dodaj referencje do reguł backendowych (np. @shared.mdc, @backend.mdc, @astro.mdc)
+   @.cursor/rules/shared.mdc @.cursor/rules/backend.mdc, @.cursor/rules/astro.mdc  
 </implementation_rules>
 
 <implementation_approach>
