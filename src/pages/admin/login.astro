@@ -1,6 +1,5 @@
 ---
 import { DirectLoginForm } from "@/components/admin/auth/DirectLoginForm";
-import { EnvDebug } from "@/components/admin/auth/EnvDebug";
 import "@/styles/global.css";
 
 const user = Astro.locals.user;
@@ -27,7 +26,6 @@ if (user) {
         </div>
 
         <div class="rounded-lg border bg-card p-6 shadow-sm">
-          <EnvDebug client:only="react" />
           <DirectLoginForm client:only="react" />
         </div>
       </div>

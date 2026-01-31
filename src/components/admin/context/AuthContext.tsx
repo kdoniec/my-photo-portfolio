@@ -66,6 +66,15 @@ export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
+    // Return safe defaults during SSR or when outside provider
+    if (typeof window === "undefined") {
+      return {
+        user: null,
+        isLoading: false,
+        signIn: async () => {},
+        signOut: async () => {},
+      };
+    }
     throw new Error("useAuth must be used within AuthProvider");
   }
 

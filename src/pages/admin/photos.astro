@@ -1,7 +1,6 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
-import { PhotosManager } from "@/components/admin/photos/PhotosManager";
-import { StatsProvider } from "@/components/admin/context/StatsContext";
+import { PhotosPage } from "@/components/admin/photos/PhotosPage";
 import type { PhotoListResponseDTO, CategoryListResponseDTO, StatsDTO } from "@/types";
 
 const supabase = Astro.locals.supabase;
@@ -108,9 +107,7 @@ try {
 
     {
       !photosError && !categoriesError && !statsError && photos && stats && (
-        <StatsProvider initialStats={stats} client:load>
-          <PhotosManager initialPhotos={photos} categories={categories} stats={stats} client:load />
-        </StatsProvider>
+        <PhotosPage initialPhotos={photos} categories={categories} stats={stats} client:load />
       )
     }
   </div>

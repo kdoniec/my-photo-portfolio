@@ -31,14 +31,14 @@ if (!user) {
       <header
         class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       >
-        <AdminHeader activeNav={activeNav} user={user} client:load />
+        <AdminHeader activeNav={activeNav} user={user} />
       </header>
 
       <main class="container mx-auto px-4 py-6">
         <slot />
       </main>
 
-      <Toaster client:load />
+      <Toaster />
     </AuthProvider>
   </body>
 </html>

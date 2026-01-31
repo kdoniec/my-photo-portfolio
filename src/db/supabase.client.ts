@@ -1,8 +1,8 @@
-import { createClient, type SupabaseClient as SupabaseClientBase } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
 import type { Database } from "../db/database.types.ts";
 
-export type SupabaseClient = SupabaseClientBase<Database>;
+export type SupabaseClient = ReturnType<typeof createBrowserClient<Database>>;
 
 // Lazy initialization - only create client when accessed (browser-only)
 let _client: SupabaseClient | null = null;
@@ -21,7 +21,7 @@ function getSupabaseClient(): SupabaseClient {
     );
   }
 
-  _client = createClient<Database>(supabaseUrl, supabaseAnonKey);
+  _client = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
   return _client;
 }
 

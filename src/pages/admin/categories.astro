@@ -1,7 +1,6 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
-import { CategoriesManager } from "@/components/admin/categories/CategoriesManager";
-import { StatsProvider } from "@/components/admin/context/StatsContext";
+import { CategoriesPage } from "@/components/admin/categories/CategoriesPage";
 import type { CategoryListResponseDTO, StatsDTO } from "@/types";
 
 const supabase = Astro.locals.supabase;
@@ -77,9 +76,7 @@ try {
 
     {
       !categoriesError && !statsError && stats && (
-        <StatsProvider initialStats={stats} client:load>
-          <CategoriesManager initialCategories={categories} stats={stats} client:load />
-        </StatsProvider>
+        <CategoriesPage initialCategories={categories} stats={stats} client:load />
       )
     }
   </div>

@@ -49,6 +49,15 @@ export function useStats() {
   const context = useContext(StatsContext);
 
   if (!context) {
+    // Return safe defaults during SSR or when outside provider
+    if (typeof window === "undefined") {
+      return {
+        stats: null,
+        isLoading: false,
+        error: null,
+        refreshStats: async () => {},
+      };
+    }
     throw new Error("useStats must be used within StatsProvider");
   }
 

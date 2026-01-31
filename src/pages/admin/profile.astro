@@ -1,7 +1,6 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
-import { StatsProvider } from "@/components/admin/context/StatsContext";
-import { ProfileManager } from "@/components/admin/profile/ProfileManager";
+import { ProfilePage } from "@/components/admin/profile/ProfilePage";
 import type { ProfileDTO, SettingsDTO, StatsDTO } from "@/types";
 
 const supabase = Astro.locals.supabase;
@@ -107,9 +106,7 @@ try {
 
     {
       !profileError && !settingsError && !statsError && profile && settings && stats && (
-        <StatsProvider initialStats={stats} client:load>
-          <ProfileManager profile={profile} settings={settings} stats={stats} client:load />
-        </StatsProvider>
+        <ProfilePage profile={profile} settings={settings} stats={stats} client:load />
       )
     }
   </div>
