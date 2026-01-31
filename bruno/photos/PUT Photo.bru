@@ -18,23 +18,28 @@ headers {
 body:json {
   {
     "title": "Zaktualizowany tytuł",
-    "is_published": true
+    "is_published": true,
+    "category_id": "9b042ecf-7c64-419c-b8fa-70293ad02d50"
   }
+}
+
+vars:pre-request {
+  photoId: c7ca8172-123b-44df-949a-f8bf63d1e159
 }
 
 docs {
   # PUT /api/photos/:id
-
+  
   Aktualizuje metadane zdjęcia.
-
+  
   ## Wymagania
   - Bearer token w nagłówku Authorization
-
+  
   ## Body (wszystkie opcjonalne)
   - title: tytuł (max 200 znaków, null aby usunąć)
   - category_id: UUID kategorii (null aby usunąć)
   - is_published: true/false
-
+  
   ## Odpowiedzi
   - 200: Zaktualizowane zdjęcie (PhotoDTO)
   - 400: Błąd walidacji / nieprawidłowa kategoria
