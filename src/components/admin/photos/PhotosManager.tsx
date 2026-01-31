@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { PhotoDTO, CategoryDTO, StatsDTO, PhotoListResponseDTO } from "@/types";
 import type { PhotoFormData } from "@/lib/schemas/photo.schema";
 import { usePhotos } from "@/components/hooks/usePhotos";
@@ -18,7 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface PhotosManagerProps {
@@ -28,10 +28,29 @@ interface PhotosManagerProps {
 }
 
 export function PhotosManager({ initialPhotos, categories, stats }: PhotosManagerProps) {
-  const { photos, pagination, filter, isLoading, updatePhoto, togglePublish, deletePhoto, fetchPhotos } = usePhotos(
+  const { photos, pagination, filter, isLoading, isLoadingMore, hasMore, updatePhoto, togglePublish, deletePhoto, fetchPhotos, loadMore } = usePhotos(
     initialPhotos,
     categories
   );
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Infinite scroll with IntersectionObserver
+  useEffect(() => {
+    const sentinel = loadMoreRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+          loadMore();
+        }
+      },
+      { rootMargin: "400px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, isLoadingMore, loadMore]);
   const [uploadDialog, setUploadDialog] = useState(false);
   const [photoDialog, setPhotoDialog] = useState<{
     isOpen: boolean;
@@ -115,11 +134,7 @@ export function PhotosManager({ initialPhotos, categories, stats }: PhotosManage
   };
 
   const handleCategoryFilterChange = (value: string) => {
-    fetchPhotos({ category_id: value as "all" | "uncategorized" | string, page: 1 });
-  };
-
-  const handlePageChange = (newPage: number) => {
-    fetchPhotos({ page: newPage });
+    fetchPhotos({ category_id: value as "all" | "uncategorized" | string });
   };
 
   const isLimitReached = stats.photos.count >= stats.photos.limit;
@@ -173,32 +188,20 @@ export function PhotosManager({ initialPhotos, categories, stats }: PhotosManage
         onTogglePublish={handleTogglePublish}
       />
 
-      {/* Pagination controls */}
-      {pagination.total_pages > 1 && (
-        <div className="flex items-center justify-center gap-4 pt-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(pagination.page - 1)}
-            disabled={pagination.page <= 1 || isLoading}
-          >
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            Poprzednia
-          </Button>
+      {/* Infinite scroll sentinel and loading indicator */}
+      <div ref={loadMoreRef} className="flex items-center justify-center py-4">
+        {isLoadingMore && (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span className="text-sm">Ładowanie więcej zdjęć...</span>
+          </div>
+        )}
+        {!hasMore && photos.length > 0 && (
           <span className="text-sm text-muted-foreground">
-            Strona {pagination.page} z {pagination.total_pages} ({pagination.total} zdjęć)
+            Wyświetlono wszystkie zdjęcia ({pagination.total})
           </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(pagination.page + 1)}
-            disabled={pagination.page >= pagination.total_pages || isLoading}
-          >
-            Następna
-            <ChevronRight className="ml-1 h-4 w-4" />
-          </Button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Photo upload zone */}
       <PhotoUploadZone

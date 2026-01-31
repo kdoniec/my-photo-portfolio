@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import type { PhotoDTO, PhotoListResponseDTO, UpdatePhotoCommand, PaginationDTO, CategoryDTO } from "@/types";
 import { useStats } from "@/components/admin/context/StatsContext";
 
@@ -17,19 +17,22 @@ export function usePhotos(initialData: PhotoListResponseDTO, categories: Categor
     limit: 20,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { refreshStats } = useStats();
+
+  const hasMore = pagination.page < pagination.total_pages;
 
   const fetchPhotos = async (newFilter?: Partial<PhotoFilterState>): Promise<void> => {
     setIsLoading(true);
     setError(null);
 
-    const currentFilter = newFilter ? { ...filter, ...newFilter } : filter;
+    const currentFilter = newFilter ? { ...filter, ...newFilter, page: 1 } : { ...filter, page: 1 };
     setFilter(currentFilter);
 
     try {
       const params = new URLSearchParams({
-        page: currentFilter.page.toString(),
+        page: "1",
         limit: currentFilter.limit.toString(),
       });
 
@@ -54,6 +57,43 @@ export function usePhotos(initialData: PhotoListResponseDTO, categories: Categor
       setIsLoading(false);
     }
   };
+
+  const loadMore = useCallback(async (): Promise<void> => {
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+    setError(null);
+
+    const nextPage = pagination.page + 1;
+
+    try {
+      const params = new URLSearchParams({
+        page: nextPage.toString(),
+        limit: filter.limit.toString(),
+      });
+
+      if (filter.category_id !== "all") {
+        params.append("category_id", filter.category_id);
+      }
+
+      const response = await fetch(`/api/photos?${params.toString()}`);
+
+      if (!response.ok) {
+        throw new Error("Nie udało się pobrać więcej zdjęć");
+      }
+
+      const data: PhotoListResponseDTO = await response.json();
+      setPhotos((prev) => [...prev, ...data.data]);
+      setPagination(data.pagination);
+      setFilter((prev) => ({ ...prev, page: nextPage }));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Nie udało się pobrać więcej zdjęć";
+      setError(errorMessage);
+      console.error("Błąd podczas pobierania więcej zdjęć:", err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [isLoadingMore, hasMore, pagination.page, filter.limit, filter.category_id]);
 
   const updatePhoto = async (id: string, data: UpdatePhotoCommand): Promise<PhotoDTO> => {
     setIsLoading(true);
@@ -137,8 +177,11 @@ export function usePhotos(initialData: PhotoListResponseDTO, categories: Categor
     filter,
     setFilter,
     isLoading,
+    isLoadingMore,
+    hasMore,
     error,
     fetchPhotos,
+    loadMore,
     updatePhoto,
     togglePublish,
     deletePhoto,
