@@ -39,7 +39,7 @@ export function PhotoCard({ photo, onEdit, onDelete, onTogglePublish }: PhotoCar
           <Button
             variant="secondary"
             size="icon"
-            className="h-8 w-8 text-destructive shadow-md hover:bg-destructive hover:text-destructive-foreground"
+            className="h-8 w-8 text-destructive shadow-md hover:bg-destructive hover:text-white"
             onClick={onDelete}
             aria-label={`Usuń zdjęcie ${photo.title || photo.id}`}
           >

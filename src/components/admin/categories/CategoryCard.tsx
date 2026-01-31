@@ -57,7 +57,7 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
             variant="outline"
             size="sm"
             onClick={onDelete}
-            className="flex-1 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+            className="flex-1 border-destructive/50 text-destructive hover:border-destructive hover:bg-destructive hover:text-white"
             aria-label={`Usuń kategorię ${category.name}`}
           >
             <Trash2 className="mr-2 h-4 w-4" />

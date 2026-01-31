@@ -1,5 +1,6 @@
 import type { CategoryDTO, StatsDTO } from "@/types";
 import { StatsProvider } from "@/components/admin/context/StatsContext";
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { CategoriesManager } from "./CategoriesManager";
 
 interface CategoriesPageProps {
@@ -9,8 +10,10 @@ interface CategoriesPageProps {
 
 export function CategoriesPage({ initialCategories, stats }: CategoriesPageProps) {
   return (
-    <StatsProvider initialStats={stats}>
-      <CategoriesManager initialCategories={initialCategories} stats={stats} />
-    </StatsProvider>
+    <ErrorBoundary>
+      <StatsProvider initialStats={stats}>
+        <CategoriesManager initialCategories={initialCategories} stats={stats} />
+      </StatsProvider>
+    </ErrorBoundary>
   );
 }

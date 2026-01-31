@@ -48,6 +48,24 @@ export default function PhotoLightbox({ photos, currentIndex, onClose, onNavigat
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleNext, handlePrevious, onClose]);
 
+  // Preload adjacent photos for smoother navigation
+  useEffect(() => {
+    const preloadImage = (url: string) => {
+      const img = new Image();
+      img.src = url;
+    };
+
+    // Preload previous photo
+    if (currentIndex > 0) {
+      preloadImage(photos[currentIndex - 1].preview_url);
+    }
+
+    // Preload next photo
+    if (currentIndex < photos.length - 1) {
+      preloadImage(photos[currentIndex + 1].preview_url);
+    }
+  }, [currentIndex, photos]);
+
   // Swipe handlers for mobile
   const swipeHandlers = useSwipeable({
     onSwipedLeft: handleNext,

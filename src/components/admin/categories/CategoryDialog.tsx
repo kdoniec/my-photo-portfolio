@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { CoverPhotoSelector } from "./CoverPhotoSelector";
 
 interface CategoryDialogProps {
   isOpen: boolean;
@@ -51,6 +52,7 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: {
@@ -61,6 +63,7 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
   });
 
   const nameValue = watch("name");
+  const coverPhotoId = watch("cover_photo_id");
 
   // Update slug preview when name changes
   useEffect(() => {
@@ -160,13 +163,15 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
             )}
           </div>
 
-          {/* CoverPhotoSelector will be added in future steps */}
+          {/* Cover photo selector - only in edit mode when category has photos */}
           {mode === "edit" && category && category.photos_count > 0 && (
             <div className="space-y-2">
               <Label>Zdjęcie okładkowe</Label>
-              <p className="text-sm text-muted-foreground">
-                CoverPhotoSelector będzie dostępny w kolejnych krokach implementacji
-              </p>
+              <CoverPhotoSelector
+                categoryId={category.id}
+                currentCoverId={coverPhotoId}
+                onSelect={(photoId) => setValue("cover_photo_id", photoId)}
+              />
             </div>
           )}
 
