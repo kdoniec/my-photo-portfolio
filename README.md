@@ -8,6 +8,7 @@ A modern, professional photography portfolio web application that replaces socia
 - [Tech Stack](#tech-stack)
 - [Getting Started Locally](#getting-started-locally)
 - [Available Scripts](#available-scripts)
+- [API Testing](#api-testing)
 - [Project Scope](#project-scope)
 - [Project Status](#project-status)
 - [License](#license)
@@ -129,6 +130,28 @@ The application consists of two main parts:
 | `npm run format`      | Format code with Prettier                         |
 | `npm run clean`       | Remove node_modules, dist, and .astro directories |
 | `npm run clean:build` | Remove dist and .astro directories                |
+
+## API Testing
+
+The project uses [Bruno](https://www.usebruno.com/) for API testing. Bruno is a fast, git-friendly API client.
+
+### Setup
+
+1. Install Bruno from [usebruno.com](https://www.usebruno.com/)
+2. Open the `bruno/` directory as a collection in Bruno
+3. Select the `local` environment
+
+### Available Collections
+
+| Collection | Description                                    |
+| ---------- | ---------------------------------------------- |
+| `auth`     | Authentication endpoints (login)               |
+| `profile`  | User profile management                        |
+| `settings` | Site settings management                       |
+| `categories` | Category CRUD operations                     |
+| `photos`   | Photo CRUD and batch upload                    |
+| `public`   | Public endpoints (no auth required)            |
+| `stats`    | Usage statistics                               |
 
 ## Project Scope
 
