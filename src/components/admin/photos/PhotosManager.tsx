@@ -18,7 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 interface PhotosManagerProps {
@@ -28,7 +28,7 @@ interface PhotosManagerProps {
 }
 
 export function PhotosManager({ initialPhotos, categories, stats }: PhotosManagerProps) {
-  const { photos, filter, setFilter, isLoading, updatePhoto, togglePublish, deletePhoto, fetchPhotos } = usePhotos(
+  const { photos, pagination, filter, isLoading, updatePhoto, togglePublish, deletePhoto, fetchPhotos } = usePhotos(
     initialPhotos,
     categories
   );
@@ -115,7 +115,11 @@ export function PhotosManager({ initialPhotos, categories, stats }: PhotosManage
   };
 
   const handleCategoryFilterChange = (value: string) => {
-    setFilter({ category_id: value, page: 1 });
+    fetchPhotos({ category_id: value as "all" | "uncategorized" | string, page: 1 });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    fetchPhotos({ page: newPage });
   };
 
   const isLimitReached = stats.photos.count >= stats.photos.limit;
@@ -168,6 +172,33 @@ export function PhotosManager({ initialPhotos, categories, stats }: PhotosManage
         onDelete={handleDeleteClick}
         onTogglePublish={handleTogglePublish}
       />
+
+      {/* Pagination controls */}
+      {pagination.total_pages > 1 && (
+        <div className="flex items-center justify-center gap-4 pt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(pagination.page - 1)}
+            disabled={pagination.page <= 1 || isLoading}
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            Poprzednia
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Strona {pagination.page} z {pagination.total_pages} ({pagination.total} zdjęć)
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(pagination.page + 1)}
+            disabled={pagination.page >= pagination.total_pages || isLoading}
+          >
+            Następna
+            <ChevronRight className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
+      )}
 
       {/* Photo upload zone */}
       <PhotoUploadZone
