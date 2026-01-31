@@ -42,7 +42,7 @@ export function StatsCard({ stats }: StatsCardProps) {
               <p className="text-xs text-muted-foreground">pozostało</p>
             </div>
           </div>
-          <Progress value={photosPercentage} className={getProgressColor(photosPercentage)} />
+          <Progress value={photosPercentage} />
         </div>
 
         {/* Categories stats */}
@@ -59,7 +59,7 @@ export function StatsCard({ stats }: StatsCardProps) {
               <p className="text-xs text-muted-foreground">pozostało</p>
             </div>
           </div>
-          <Progress value={categoriesPercentage} className={getProgressColor(categoriesPercentage)} />
+          <Progress value={categoriesPercentage} />
         </div>
 
         {/* Published photos stats */}
@@ -68,17 +68,26 @@ export function StatsCard({ stats }: StatsCardProps) {
             <div>
               <p className="text-sm font-medium">Opublikowane zdjęcia</p>
               <p className="text-xs text-muted-foreground">
-                {stats.photos.published_count} z {stats.photos.count}
+                {stats.photos.published_count ?? 0} z {stats.photos.count}
               </p>
             </div>
             <div className="text-right">
               <p className="text-sm font-medium">
-                {stats.photos.count > 0 ? Math.round((stats.photos.published_count / stats.photos.count) * 100) : 0}%
+                {stats.photos.count > 0 && stats.photos.published_count != null
+                  ? Math.round((stats.photos.published_count / stats.photos.count) * 100)
+                  : 0}
+                %
               </p>
               <p className="text-xs text-muted-foreground">widoczne</p>
             </div>
           </div>
-          <Progress value={stats.photos.count > 0 ? (stats.photos.published_count / stats.photos.count) * 100 : 0} />
+          <Progress
+            value={
+              stats.photos.count > 0 && stats.photos.published_count != null
+                ? (stats.photos.published_count / stats.photos.count) * 100
+                : 0
+            }
+          />
         </div>
       </div>
     </div>

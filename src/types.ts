@@ -313,10 +313,17 @@ export interface ResourceStats {
 }
 
 /**
+ * Photo resource stats with published count
+ */
+export interface PhotoStats extends ResourceStats {
+  published_count: number | null;
+}
+
+/**
  * Stats DTO - Response for GET /api/stats
  */
 export interface StatsDTO {
-  photos: ResourceStats;
+  photos: PhotoStats;
   categories: ResourceStats;
   storage_used_bytes: number | null;
 }

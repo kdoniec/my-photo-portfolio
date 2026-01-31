@@ -4,8 +4,8 @@ import type { BatchPhotoUploadResponseDTO } from "@/types";
 import type { PhotoUploadFile, PhotoUploadSettings } from "@/components/admin/types";
 import { useStats } from "@/components/admin/context/StatsContext";
 
-const MAX_FILES_PER_BATCH = 20;
-const MAX_FILE_SIZE_MB = 10;
+const MAX_FILES_PER_BATCH = 100; // Increased from 20 for bulk uploads
+const MAX_FILE_SIZE_MB = 50; // Increased from 10MB - we compress anyway
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 export function usePhotoUpload(currentCount: number, limit: number) {
@@ -20,7 +20,11 @@ export function usePhotoUpload(currentCount: number, limit: number) {
   const addFiles = (newFiles: File[]) => {
     // Validate and filter files
     const validFiles = newFiles
-      .filter((f) => f.type === "image/jpeg")
+      .filter((f) => {
+        // Check file extension instead of MIME type (more reliable)
+        const extension = f.name.toLowerCase().split(".").pop();
+        return extension === "jpg" || extension === "jpeg";
+      })
       .filter((f) => f.size <= MAX_FILE_SIZE_BYTES)
       .slice(0, MAX_FILES_PER_BATCH - files.length) // Max 20 files per batch
       .slice(0, limit - currentCount - files.length); // Don't exceed global limit

@@ -21,6 +21,17 @@ export class StatsService {
       throw photosError;
     }
 
+    // Count published photos
+    const { count: publishedCount, error: publishedError } = await this.supabase
+      .from("photos")
+      .select("*", { count: "exact", head: true })
+      .eq("photographer_id", userId)
+      .eq("is_published", true);
+
+    if (publishedError) {
+      throw publishedError;
+    }
+
     // Count user's categories
     const { count: categoriesCount, error: categoriesError } = await this.supabase
       .from("categories")
@@ -47,6 +58,7 @@ export class StatsService {
       photos: {
         count: photosCount || 0,
         limit: MAX_PHOTOS,
+        published_count: publishedCount ?? null,
       },
       categories: {
         count: categoriesCount || 0,

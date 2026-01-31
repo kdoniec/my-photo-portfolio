@@ -53,17 +53,25 @@ export function PhotoUploadZone({
       // Show errors for rejected files
       if (rejectedFiles.length > 0) {
         const errors = rejectedFiles.map((rejection) => {
+          const errorCodes = rejection.errors.map((e) => e.code).join(", ");
+          const fileSize = (rejection.file.size / 1024 / 1024).toFixed(2);
+
           if (rejection.errors.some((e) => e.code === "file-invalid-type")) {
-            return `${rejection.file.name}: Tylko pliki JPEG są dozwolone`;
+            return `${rejection.file.name}: Tylko pliki JPEG są dozwolone (typ: ${rejection.file.type || "brak"})`;
           }
           if (rejection.errors.some((e) => e.code === "file-too-large")) {
-            return `${rejection.file.name}: Plik jest za duży (max 10MB)`;
+            return `${rejection.file.name}: Plik jest za duży (${fileSize}MB, max 50MB)`;
           }
-          return `${rejection.file.name}: Nieprawidłowy plik`;
+          if (rejection.errors.some((e) => e.code === "invalid-extension")) {
+            return `${rejection.file.name}: Nieprawidłowe rozszerzenie`;
+          }
+          return `${rejection.file.name}: Nieprawidłowy plik (${errorCodes})`;
         });
 
+        console.log("Rejected files:", rejectedFiles); // Debug info
         toast.error("Niektóre pliki zostały odrzucone", {
-          description: errors.join(", "),
+          description: errors.slice(0, 5).join(", ") + (errors.length > 5 ? ` ... i ${errors.length - 5} więcej` : ""),
+          duration: 10000, // 10 seconds to read the error
         });
       }
 
@@ -79,11 +87,24 @@ export function PhotoUploadZone({
     onDrop,
     accept: {
       "image/jpeg": [".jpg", ".jpeg"],
+      "image/jpg": [".jpg"], // Some systems use this incorrect MIME type
+      "image/pjpeg": [".jpg", ".jpeg"], // Progressive JPEG
     },
-    maxSize: 10 * 1024 * 1024, // 10MB
-    maxFiles: 20,
+    maxSize: 50 * 1024 * 1024, // 50MB (we compress anyway)
+    maxFiles: 100, // Allow bulk uploads
     multiple: true,
     disabled: isUploading,
+    validator: (file) => {
+      // Additional validation - accept any file with .jpg or .jpeg extension
+      const extension = file.name.toLowerCase().split(".").pop();
+      if (extension === "jpg" || extension === "jpeg") {
+        return null; // Valid
+      }
+      return {
+        code: "invalid-extension",
+        message: "Tylko pliki JPG/JPEG są dozwolone",
+      };
+    },
   });
 
   const handleUpload = async () => {
@@ -123,7 +144,7 @@ export function PhotoUploadZone({
         <DialogHeader>
           <DialogTitle>Dodaj zdjęcia</DialogTitle>
           <DialogDescription>
-            Przeciągnij i upuść pliki JPEG lub kliknij, aby wybrać (max 20 plików, max 10MB każdy)
+            Przeciągnij i upuść pliki JPEG lub kliknij, aby wybrać (max 100 plików, max 50MB każdy)
           </DialogDescription>
         </DialogHeader>
 
