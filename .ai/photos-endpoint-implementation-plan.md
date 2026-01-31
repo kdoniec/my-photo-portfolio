@@ -4,21 +4,22 @@
 
 Photos API obsługuje pełne zarządzanie zdjęciami fotografa - od przesyłania plików, przez listowanie z filtrowaniem i paginacją, po aktualizację metadanych i usuwanie. API składa się z 7 endpointów:
 
-| Endpoint | Metoda | Opis |
-|----------|--------|------|
-| `/api/photos` | GET | Lista zdjęć z filtrowaniem, paginacją i sortowaniem |
-| `/api/photos` | POST | Upload pojedynczego zdjęcia (thumbnail + preview) |
-| `/api/photos/:id` | GET | Pobierz pojedyncze zdjęcie |
-| `/api/photos/:id` | PUT | Aktualizuj metadane zdjęcia |
-| `/api/photos/:id` | DELETE | Usuń zdjęcie i pliki ze storage |
-| `/api/photos/:id/publish` | PATCH | Przełącz status publikacji |
-| `/api/photos/batch` | POST | Masowe przesyłanie wielu zdjęć |
+| Endpoint                  | Metoda | Opis                                                |
+| ------------------------- | ------ | --------------------------------------------------- |
+| `/api/photos`             | GET    | Lista zdjęć z filtrowaniem, paginacją i sortowaniem |
+| `/api/photos`             | POST   | Upload pojedynczego zdjęcia (thumbnail + preview)   |
+| `/api/photos/:id`         | GET    | Pobierz pojedyncze zdjęcie                          |
+| `/api/photos/:id`         | PUT    | Aktualizuj metadane zdjęcia                         |
+| `/api/photos/:id`         | DELETE | Usuń zdjęcie i pliki ze storage                     |
+| `/api/photos/:id/publish` | PATCH  | Przełącz status publikacji                          |
+| `/api/photos/batch`       | POST   | Masowe przesyłanie wielu zdjęć                      |
 
 ## 2. Szczegóły żądania
 
 ### GET /api/photos
 
 **Nagłówki:**
+
 - `Authorization: Bearer <access_token>` (wymagane)
 
 **Query Parameters:**
@@ -34,6 +35,7 @@ Photos API obsługuje pełne zarządzanie zdjęciami fotografa - od przesyłania
 ### POST /api/photos
 
 **Nagłówki:**
+
 - `Authorization: Bearer <access_token>` (wymagane)
 - `Content-Type: multipart/form-data`
 
@@ -52,17 +54,21 @@ Photos API obsługuje pełne zarządzanie zdjęciami fotografa - od przesyłania
 ### GET /api/photos/:id
 
 **Nagłówki:**
+
 - `Authorization: Bearer <access_token>` (wymagane)
 
 **Path Parameters:**
+
 - `id` - UUID zdjęcia
 
 ### PUT /api/photos/:id
 
 **Nagłówki:**
+
 - `Authorization: Bearer <access_token>` (wymagane)
 
 **Request Body (JSON):**
+
 ```json
 {
   "title": "string | null",
@@ -74,14 +80,17 @@ Photos API obsługuje pełne zarządzanie zdjęciami fotografa - od przesyłania
 ### DELETE /api/photos/:id
 
 **Nagłówki:**
+
 - `Authorization: Bearer <access_token>` (wymagane)
 
 ### PATCH /api/photos/:id/publish
 
 **Nagłówki:**
+
 - `Authorization: Bearer <access_token>` (wymagane)
 
 **Request Body (JSON):**
+
 ```json
 {
   "is_published": "boolean"
@@ -91,6 +100,7 @@ Photos API obsługuje pełne zarządzanie zdjęciami fotografa - od przesyłania
 ### POST /api/photos/batch
 
 **Nagłówki:**
+
 - `Authorization: Bearer <access_token>` (wymagane)
 - `Content-Type: multipart/form-data`
 
@@ -242,12 +252,8 @@ interface PhotoFileInput {
 
 ```json
 {
-  "uploaded": [
-    { "id": "uuid", "thumbnail_url": "https://...", "preview_url": "https://..." }
-  ],
-  "failed": [
-    { "filename": "photo3.jpg", "error": "File exceeds 10MB limit" }
-  ],
+  "uploaded": [{ "id": "uuid", "thumbnail_url": "https://...", "preview_url": "https://..." }],
+  "failed": [{ "filename": "photo3.jpg", "error": "File exceeds 10MB limit" }],
   "summary": {
     "total": 3,
     "successful": 2,
@@ -345,16 +351,19 @@ interface PhotoFileInput {
 ## 6. Względy bezpieczeństwa
 
 ### Uwierzytelnianie
+
 - Wszystkie endpointy wymagają Bearer token w nagłówku `Authorization`
 - Token weryfikowany przez middleware via `supabase.auth.getUser(token)`
 - Brak tokenu → 401 Unauthorized
 
 ### Autoryzacja
+
 - RLS w Supabase zapewnia dostęp tylko do własnych zdjęć
 - Dodatkowa walidacja `photographer_id = auth.uid()` w każdym query
 - Walidacja ownership kategorii przy przypisywaniu `category_id`
 
 ### Walidacja danych
+
 - Zod schemas dla wszystkich inputów (query params, body, form data)
 - Walidacja typu pliku: tylko `image/jpeg`
 - Walidacja rozmiaru pliku: max 10MB
@@ -362,23 +371,24 @@ interface PhotoFileInput {
 - Sanityzacja i max length dla `title` (200 znaków)
 
 ### Storage
+
 - Pliki przechowywane w strukturze `{photographer_id}/...` - izolacja per użytkownik
 - Storage RLS policies pozwalają na upload/delete tylko w własnym folderze
 - Bucket publiczny - pliki dostępne bez auth (akceptowalne dla MVP)
 
 ## 7. Obsługa błędów
 
-| Kod błędu | HTTP Status | Scenariusz |
-|-----------|-------------|------------|
-| `UNAUTHORIZED` | 401 | Brak lub nieprawidłowy token |
-| `VALIDATION_ERROR` | 400 | Nieprawidłowe dane wejściowe (Zod) |
-| `NOT_FOUND` | 404 | Zdjęcie nie istnieje lub nie należy do użytkownika |
-| `LIMIT_REACHED` | 409 | Osiągnięto limit 200 zdjęć |
-| `INVALID_CATEGORY` | 400 | Kategoria nie istnieje lub nie należy do użytkownika |
-| `UPLOAD_FAILED` | 500 | Błąd uploadu do Supabase Storage |
-| `INVALID_FILE_TYPE` | 400 | Plik nie jest JPEG |
-| `FILE_TOO_LARGE` | 413 | Plik przekracza 10MB |
-| `INTERNAL_ERROR` | 500 | Nieoczekiwany błąd serwera |
+| Kod błędu           | HTTP Status | Scenariusz                                           |
+| ------------------- | ----------- | ---------------------------------------------------- |
+| `UNAUTHORIZED`      | 401         | Brak lub nieprawidłowy token                         |
+| `VALIDATION_ERROR`  | 400         | Nieprawidłowe dane wejściowe (Zod)                   |
+| `NOT_FOUND`         | 404         | Zdjęcie nie istnieje lub nie należy do użytkownika   |
+| `LIMIT_REACHED`     | 409         | Osiągnięto limit 200 zdjęć                           |
+| `INVALID_CATEGORY`  | 400         | Kategoria nie istnieje lub nie należy do użytkownika |
+| `UPLOAD_FAILED`     | 500         | Błąd uploadu do Supabase Storage                     |
+| `INVALID_FILE_TYPE` | 400         | Plik nie jest JPEG                                   |
+| `FILE_TOO_LARGE`    | 413         | Plik przekracza 10MB                                 |
+| `INTERNAL_ERROR`    | 500         | Nieoczekiwany błąd serwera                           |
 
 ### Cleanup przy błędach uploadu
 
@@ -401,11 +411,13 @@ try {
 ## 8. Rozważania dotyczące wydajności
 
 ### Paginacja
+
 - Użycie `.range(from, to)` zamiast ładowania wszystkich rekordów
 - Osobne query dla count z `head: true` (tylko metadata)
 - Domyślny limit 20, max 50 rekordów na stronę
 
 ### Indeksy bazy danych (już zdefiniowane w db-plan.md)
+
 ```sql
 -- Partial index dla galerii publicznej
 CREATE INDEX idx_photos_published_by_category
@@ -418,10 +430,12 @@ ON photos (photographer_id, created_at DESC);
 ```
 
 ### Optymalizacja query
+
 - Join z `categories` dla `category_name` zamiast N+1 queries
 - Użycie `select()` tylko potrzebnych kolumn
 
 ### Storage
+
 - Generowanie URL synchroniczne (bez dodatkowych requestów)
 - Bucket publiczny - brak potrzeby signed URLs
 
@@ -437,11 +451,11 @@ import { z } from "zod";
 export const photoIdSchema = z.string().uuid("Invalid photo ID");
 
 export const photoListQuerySchema = z.object({
-  category_id: z.union([
-    z.string().uuid("Invalid category ID"),
-    z.literal("uncategorized")
-  ]).optional(),
-  is_published: z.enum(["true", "false"]).transform(v => v === "true").optional(),
+  category_id: z.union([z.string().uuid("Invalid category ID"), z.literal("uncategorized")]).optional(),
+  is_published: z
+    .enum(["true", "false"])
+    .transform((v) => v === "true")
+    .optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(20),
   sort: z.enum(["created_at", "title"]).default("created_at"),
@@ -455,12 +469,14 @@ export const createPhotoMetadataSchema = z.object({
 });
 
 export const photoFileSchema = z.object({
-  thumbnail: z.instanceof(File)
-    .refine(f => f.type === "image/jpeg", "Thumbnail must be JPEG")
-    .refine(f => f.size <= 10 * 1024 * 1024, "Thumbnail must be at most 10MB"),
-  preview: z.instanceof(File)
-    .refine(f => f.type === "image/jpeg", "Preview must be JPEG")
-    .refine(f => f.size <= 10 * 1024 * 1024, "Preview must be at most 10MB"),
+  thumbnail: z
+    .instanceof(File)
+    .refine((f) => f.type === "image/jpeg", "Thumbnail must be JPEG")
+    .refine((f) => f.size <= 10 * 1024 * 1024, "Thumbnail must be at most 10MB"),
+  preview: z
+    .instanceof(File)
+    .refine((f) => f.type === "image/jpeg", "Preview must be JPEG")
+    .refine((f) => f.size <= 10 * 1024 * 1024, "Preview must be at most 10MB"),
   original_width: z.coerce.number().int().positive(),
   original_height: z.coerce.number().int().positive(),
   file_size_bytes: z.coerce.number().int().positive(),
@@ -488,6 +504,7 @@ export type PublishPhotoInput = z.infer<typeof publishPhotoSchema>;
 **Plik:** `src/lib/services/photo.service.ts`
 
 Metody do zaimplementowania:
+
 1. `getPhotos(userId, query)` - lista z filtrowaniem i paginacją
 2. `getPhotoById(userId, photoId)` - pojedyncze zdjęcie
 3. `createPhoto(userId, files, metadata)` - upload z walidacją limitu
@@ -497,6 +514,7 @@ Metody do zaimplementowania:
 7. `deletePhoto(userId, photoId)` - usunięcie z cleanup storage
 
 Metody pomocnicze:
+
 - `getPhotoUrl(path)` - generowanie URL ze ścieżki storage
 - `getCategoryName(categoryId)` - pobieranie nazwy kategorii
 - `validateCategory(userId, categoryId)` - walidacja ownership
@@ -534,14 +552,14 @@ Metody pomocnicze:
 
 ## 10. Pliki do modyfikacji/utworzenia
 
-| Plik | Akcja | Opis |
-|------|-------|------|
-| `src/lib/schemas/photo.schema.ts` | CREATE | Schematy walidacji Zod |
-| `src/lib/services/photo.service.ts` | CREATE | Logika biznesowa |
-| `src/pages/api/photos/index.ts` | CREATE | GET + POST |
-| `src/pages/api/photos/[id].ts` | CREATE | GET + PUT + DELETE |
-| `src/pages/api/photos/[id]/publish.ts` | CREATE | PATCH |
-| `src/pages/api/photos/batch.ts` | CREATE | POST batch upload |
+| Plik                                   | Akcja  | Opis                   |
+| -------------------------------------- | ------ | ---------------------- |
+| `src/lib/schemas/photo.schema.ts`      | CREATE | Schematy walidacji Zod |
+| `src/lib/services/photo.service.ts`    | CREATE | Logika biznesowa       |
+| `src/pages/api/photos/index.ts`        | CREATE | GET + POST             |
+| `src/pages/api/photos/[id].ts`         | CREATE | GET + PUT + DELETE     |
+| `src/pages/api/photos/[id]/publish.ts` | CREATE | PATCH                  |
+| `src/pages/api/photos/batch.ts`        | CREATE | POST batch upload      |
 
 ## 11. Weryfikacja implementacji
 

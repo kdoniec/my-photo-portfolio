@@ -1,0 +1,47 @@
+---
+import PublicLayout from "../layouts/PublicLayout.astro";
+import ContactInfo from "../components/profile/ContactInfo.astro";
+import { PublicService } from "../lib/services/public.service";
+
+// Fetch data on server side
+const publicService = new PublicService(Astro.locals.supabase);
+
+const [settings, profile] = await Promise.all([publicService.getPublicSettings(), publicService.getPublicProfile()]);
+
+// Fallbacks for missing data
+const siteName = settings?.site_title || "Portfolio";
+const displayName = profile?.display_name || "Fotograf";
+const bio = profile?.bio || "";
+const pageTitle = `O mnie - ${siteName}`;
+const pageDescription = bio || `Poznaj ${displayName}`;
+---
+
+<PublicLayout title={pageTitle} siteName={siteName} description={pageDescription}>
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-3xl mx-auto">
+      <!-- Profile Header -->
+      <header class="mb-8">
+        <h1 class="text-4xl font-bold text-foreground mb-6">
+          {displayName}
+        </h1>
+      </header>
+
+      <!-- Bio -->
+      {
+        bio && (
+          <section class="mb-8">
+            <div class="prose prose-lg max-w-none text-muted-foreground">
+              <p class="whitespace-pre-line leading-relaxed">{bio}</p>
+            </div>
+          </section>
+        )
+      }
+
+      <!-- Contact Info -->
+      <section>
+        <h2 class="text-2xl font-semibold text-foreground mb-4">Kontakt</h2>
+        <ContactInfo email={profile?.contact_email} phone={profile?.contact_phone} />
+      </section>
+    </div>
+  </div>
+</PublicLayout>

@@ -64,14 +64,8 @@ export interface UpdateSettingsCommand {
 import { z } from "zod";
 
 export const updateSettingsSchema = z.object({
-  site_title: z
-    .string()
-    .max(100, "Site title must be at most 100 characters")
-    .nullish(),
-  site_description: z
-    .string()
-    .max(300, "Site description must be at most 300 characters")
-    .nullish(),
+  site_title: z.string().max(100, "Site title must be at most 100 characters").nullish(),
+  site_description: z.string().max(300, "Site description must be at most 300 characters").nullish(),
 });
 
 export type UpdateSettingsInput = z.infer<typeof updateSettingsSchema>;
@@ -96,11 +90,11 @@ export type UpdateSettingsInput = z.infer<typeof updateSettingsSchema>;
 
 **Error Responses:**
 
-| Status | Kod błędu       | Opis                    |
-| ------ | --------------- | ----------------------- |
-| 401    | UNAUTHORIZED    | Brak uwierzytelnienia   |
-| 404    | NOT_FOUND       | Ustawienia nie istnieją |
-| 500    | INTERNAL_ERROR  | Błąd serwera            |
+| Status | Kod błędu      | Opis                    |
+| ------ | -------------- | ----------------------- |
+| 401    | UNAUTHORIZED   | Brak uwierzytelnienia   |
+| 404    | NOT_FOUND      | Ustawienia nie istnieją |
+| 500    | INTERNAL_ERROR | Błąd serwera            |
 
 ### PUT /api/settings
 
@@ -119,11 +113,11 @@ export type UpdateSettingsInput = z.infer<typeof updateSettingsSchema>;
 
 **Error Responses:**
 
-| Status | Kod błędu        | Opis                             |
-| ------ | ---------------- | -------------------------------- |
-| 400    | VALIDATION_ERROR | Nieprawidłowe dane wejściowe     |
-| 401    | UNAUTHORIZED     | Brak uwierzytelnienia            |
-| 500    | INTERNAL_ERROR   | Błąd serwera                     |
+| Status | Kod błędu        | Opis                         |
+| ------ | ---------------- | ---------------------------- |
+| 400    | VALIDATION_ERROR | Nieprawidłowe dane wejściowe |
+| 401    | UNAUTHORIZED     | Brak uwierzytelnienia        |
+| 500    | INTERNAL_ERROR   | Błąd serwera                 |
 
 ## 5. Przepływ danych
 
@@ -189,15 +183,15 @@ export type UpdateSettingsInput = z.infer<typeof updateSettingsSchema>;
 
 ### Scenariusze błędów
 
-| Scenariusz                    | Status | Kod błędu        | Wiadomość                        |
-| ----------------------------- | ------ | ---------------- | -------------------------------- |
-| Brak tokenu auth              | 401    | UNAUTHORIZED     | Authentication required          |
-| Nieprawidłowy token           | 401    | UNAUTHORIZED     | Authentication required          |
-| Ustawienia nie znalezione     | 404    | NOT_FOUND        | Settings not found               |
-| Nieprawidłowy JSON            | 400    | VALIDATION_ERROR | Invalid JSON body                |
-| Walidacja Zod nieudana        | 400    | VALIDATION_ERROR | [Szczegóły błędu walidacji]      |
-| Błąd bazy danych              | 500    | INTERNAL_ERROR   | An unexpected error occurred     |
-| Nieoczekiwany błąd            | 500    | INTERNAL_ERROR   | An unexpected error occurred     |
+| Scenariusz                | Status | Kod błędu        | Wiadomość                    |
+| ------------------------- | ------ | ---------------- | ---------------------------- |
+| Brak tokenu auth          | 401    | UNAUTHORIZED     | Authentication required      |
+| Nieprawidłowy token       | 401    | UNAUTHORIZED     | Authentication required      |
+| Ustawienia nie znalezione | 404    | NOT_FOUND        | Settings not found           |
+| Nieprawidłowy JSON        | 400    | VALIDATION_ERROR | Invalid JSON body            |
+| Walidacja Zod nieudana    | 400    | VALIDATION_ERROR | [Szczegóły błędu walidacji]  |
+| Błąd bazy danych          | 500    | INTERNAL_ERROR   | An unexpected error occurred |
+| Nieoczekiwany błąd        | 500    | INTERNAL_ERROR   | An unexpected error occurred |
 
 ### Logowanie błędów
 
@@ -235,14 +229,8 @@ Plik: `src/lib/schemas/settings.schema.ts`
 import { z } from "zod";
 
 export const updateSettingsSchema = z.object({
-  site_title: z
-    .string()
-    .max(100, "Site title must be at most 100 characters")
-    .nullish(),
-  site_description: z
-    .string()
-    .max(300, "Site description must be at most 300 characters")
-    .nullish(),
+  site_title: z.string().max(100, "Site title must be at most 100 characters").nullish(),
+  site_description: z.string().max(300, "Site description must be at most 300 characters").nullish(),
 });
 
 export type UpdateSettingsInput = z.infer<typeof updateSettingsSchema>;
@@ -277,10 +265,7 @@ export class SettingsService {
     return data;
   }
 
-  async updateSettings(
-    userId: string,
-    command: UpdateSettingsCommand
-  ): Promise<SettingsDTO> {
+  async updateSettings(userId: string, command: UpdateSettingsCommand): Promise<SettingsDTO> {
     const { data, error } = await this.supabase
       .from("photographer_settings")
       .update({
@@ -354,10 +339,7 @@ export const PUT: APIRoute = async ({ locals, request }) => {
     }
 
     const settingsService = new SettingsService(supabase);
-    const updatedSettings = await settingsService.updateSettings(
-      user.id,
-      validation.data
-    );
+    const updatedSettings = await settingsService.updateSettings(user.id, validation.data);
 
     return jsonResponse(updatedSettings);
   } catch (error) {
@@ -373,12 +355,14 @@ export const PUT: APIRoute = async ({ locals, request }) => {
 ### Krok 4: Testowanie
 
 1. **Test GET bez auth:**
+
    ```bash
    curl -X GET http://localhost:3000/api/settings
    # Oczekiwany: 401 Unauthorized
    ```
 
 2. **Test GET z auth:**
+
    ```bash
    curl -X GET http://localhost:3000/api/settings \
      -H "Authorization: Bearer <token>"
@@ -386,6 +370,7 @@ export const PUT: APIRoute = async ({ locals, request }) => {
    ```
 
 3. **Test PUT z walidacją:**
+
    ```bash
    curl -X PUT http://localhost:3000/api/settings \
      -H "Authorization: Bearer <token>" \

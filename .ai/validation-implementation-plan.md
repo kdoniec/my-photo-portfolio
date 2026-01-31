@@ -11,15 +11,15 @@ Ten dokument zawiera szczegółowy plan implementacji walidacji i logiki bizneso
 
 ### Status implementacji
 
-| Komponent | Status | Lokalizacja |
-|-----------|--------|-------------|
-| Profile Schema | ✅ Zaimplementowane | `src/lib/schemas/profile.schema.ts` |
-| Settings Schema | ✅ Zaimplementowane | `src/lib/schemas/settings.schema.ts` |
-| Category Schema | ✅ Zaimplementowane | `src/lib/schemas/category.schema.ts` |
-| Photo Schema | ✅ Zaimplementowane | `src/lib/schemas/photo.schema.ts` |
-| Slug Generation | ✅ Zaimplementowane | `src/lib/utils/slug.ts` |
+| Komponent          | Status              | Lokalizacja                              |
+| ------------------ | ------------------- | ---------------------------------------- |
+| Profile Schema     | ✅ Zaimplementowane | `src/lib/schemas/profile.schema.ts`      |
+| Settings Schema    | ✅ Zaimplementowane | `src/lib/schemas/settings.schema.ts`     |
+| Category Schema    | ✅ Zaimplementowane | `src/lib/schemas/category.schema.ts`     |
+| Photo Schema       | ✅ Zaimplementowane | `src/lib/schemas/photo.schema.ts`        |
+| Slug Generation    | ✅ Zaimplementowane | `src/lib/utils/slug.ts`                  |
 | Limits Enforcement | ✅ Zaimplementowane | Services (CategoryService, PhotoService) |
-| API Response Utils | ✅ Zaimplementowane | `src/lib/api-utils.ts` |
+| API Response Utils | ✅ Zaimplementowane | `src/lib/api-utils.ts`                   |
 
 ---
 
@@ -29,14 +29,15 @@ Ten dokument zawiera szczegółowy plan implementacji walidacji i logiki bizneso
 
 **Lokalizacja:** `src/lib/schemas/profile.schema.ts`
 
-| Pole | Typ | Ograniczenia | Zod Schema |
-|------|-----|--------------|------------|
-| `display_name` | string | Required, max 100 znaków | `.min(1).max(100)` |
-| `bio` | string | Optional, bez limitu | `.nullish()` |
+| Pole            | Typ    | Ograniczenia                   | Zod Schema                    |
+| --------------- | ------ | ------------------------------ | ----------------------------- |
+| `display_name`  | string | Required, max 100 znaków       | `.min(1).max(100)`            |
+| `bio`           | string | Optional, bez limitu           | `.nullish()`                  |
 | `contact_email` | string | Optional, valid email, max 255 | `.email().max(255).nullish()` |
-| `contact_phone` | string | Optional, max 20 znaków | `.max(20).nullish()` |
+| `contact_phone` | string | Optional, max 20 znaków        | `.max(20).nullish()`          |
 
 **Istniejąca implementacja:**
+
 ```typescript
 // src/lib/schemas/profile.schema.ts
 export const updateProfileSchema = z.object({
@@ -51,12 +52,13 @@ export const updateProfileSchema = z.object({
 
 **Lokalizacja:** `src/lib/schemas/settings.schema.ts`
 
-| Pole | Typ | Ograniczenia | Zod Schema |
-|------|-----|--------------|------------|
-| `site_title` | string | Optional, max 100 znaków | `.max(100).nullish()` |
+| Pole               | Typ    | Ograniczenia             | Zod Schema            |
+| ------------------ | ------ | ------------------------ | --------------------- |
+| `site_title`       | string | Optional, max 100 znaków | `.max(100).nullish()` |
 | `site_description` | string | Optional, max 300 znaków | `.max(300).nullish()` |
 
 **Istniejąca implementacja:**
+
 ```typescript
 // src/lib/schemas/settings.schema.ts
 export const updateSettingsSchema = z.object({
@@ -69,15 +71,16 @@ export const updateSettingsSchema = z.object({
 
 **Lokalizacja:** `src/lib/schemas/category.schema.ts`
 
-| Pole | Typ | Ograniczenia | Zod Schema |
-|------|-----|--------------|------------|
-| `name` | string | Required, max 100 znaków | `.min(1).max(100)` |
-| `slug` | string | Auto-generated, unique per photographer | N/A (generowany przez service) |
-| `description` | string | Optional, max 500 znaków | `.max(500).nullish()` |
-| `cover_photo_id` | uuid | Optional, musi należeć do fotografa | `.uuid().nullish()` |
-| `display_order` | integer | Auto-assigned | N/A (generowany przez service) |
+| Pole             | Typ     | Ograniczenia                            | Zod Schema                     |
+| ---------------- | ------- | --------------------------------------- | ------------------------------ |
+| `name`           | string  | Required, max 100 znaków                | `.min(1).max(100)`             |
+| `slug`           | string  | Auto-generated, unique per photographer | N/A (generowany przez service) |
+| `description`    | string  | Optional, max 500 znaków                | `.max(500).nullish()`          |
+| `cover_photo_id` | uuid    | Optional, musi należeć do fotografa     | `.uuid().nullish()`            |
+| `display_order`  | integer | Auto-assigned                           | N/A (generowany przez service) |
 
 **Istniejące schematy:**
+
 ```typescript
 // src/lib/schemas/category.schema.ts
 export const createCategorySchema = z.object({
@@ -92,10 +95,14 @@ export const updateCategorySchema = z.object({
 });
 
 export const reorderCategorySchema = z.object({
-  order: z.array(z.object({
-    id: z.string().uuid(),
-    display_order: z.number().int().min(0),
-  })).min(1),
+  order: z
+    .array(
+      z.object({
+        id: z.string().uuid(),
+        display_order: z.number().int().min(0),
+      })
+    )
+    .min(1),
 });
 
 export const categoryIdSchema = z.string().uuid();
@@ -110,14 +117,15 @@ export const categoryListQuerySchema = z.object({
 
 **Lokalizacja:** `src/lib/schemas/photo.schema.ts`
 
-| Pole | Typ | Ograniczenia | Zod Schema / Helper |
-|------|-----|--------------|---------------------|
-| `file` | file | Required, JPEG only, max 10MB | `validatePhotoFile()` |
-| `title` | string | Optional, max 200 znaków | `.max(200).nullish()` |
-| `category_id` | uuid | Optional, musi należeć do fotografa | `.uuid().nullish()` |
-| `is_published` | boolean | Default: false | `.boolean().default(false)` |
+| Pole           | Typ     | Ograniczenia                        | Zod Schema / Helper         |
+| -------------- | ------- | ----------------------------------- | --------------------------- |
+| `file`         | file    | Required, JPEG only, max 10MB       | `validatePhotoFile()`       |
+| `title`        | string  | Optional, max 200 znaków            | `.max(200).nullish()`       |
+| `category_id`  | uuid    | Optional, musi należeć do fotografa | `.uuid().nullish()`         |
+| `is_published` | boolean | Default: false                      | `.boolean().default(false)` |
 
 **Istniejące schematy i helpery:**
+
 ```typescript
 // Stałe
 export const ALLOWED_MIME_TYPES = ["image/jpeg"] as const;
@@ -167,7 +175,10 @@ export const publishPhotoSchema = z.object({
 
 export const photoListQuerySchema = z.object({
   category_id: z.union([z.string().uuid(), z.literal("uncategorized")]).optional(),
-  is_published: z.enum(["true", "false"]).transform((v) => v === "true").optional(),
+  is_published: z
+    .enum(["true", "false"])
+    .transform((v) => v === "true")
+    .optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(20),
   sort: z.enum(["created_at", "title"]).default("created_at"),
@@ -307,6 +318,7 @@ export interface MessageResponseDTO {
 **Lokalizacja:** `src/lib/utils/slug.ts`
 
 **Algorytm:**
+
 1. Konwersja na małe litery
 2. Normalizacja Unicode (NFD) - rozdzielenie znaków diakrytycznych
 3. Usunięcie znaków diakrytycznych ([\u0300-\u036f])
@@ -315,15 +327,16 @@ export interface MessageResponseDTO {
 6. Limit długości do 100 znaków
 
 **Istniejąca implementacja:**
+
 ```typescript
 export function generateSlug(name: string): string {
   return name
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-    .replace(/[^a-z0-9]+/g, "-")     // Replace non-alphanumeric with dash
-    .replace(/^-+|-+$/g, "")         // Remove leading/trailing dashes
-    .substring(0, 100);               // Limit length
+    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with dash
+    .replace(/^-+|-+$/g, "") // Remove leading/trailing dashes
+    .substring(0, 100); // Limit length
 }
 ```
 
@@ -338,12 +351,13 @@ export function generateSlug(name: string): string {
 
 **Lokalizacja:** Services (CategoryService, PhotoService)
 
-| Zasób | Limit | Błąd |
-|-------|-------|------|
-| Photos | 200 per photographer | `409 Conflict` - LIMIT_REACHED |
-| Categories | 10 per photographer | `409 Conflict` - LIMIT_REACHED |
+| Zasób      | Limit                | Błąd                           |
+| ---------- | -------------------- | ------------------------------ |
+| Photos     | 200 per photographer | `409 Conflict` - LIMIT_REACHED |
+| Categories | 10 per photographer  | `409 Conflict` - LIMIT_REACHED |
 
 **Implementacja w CategoryService:**
+
 ```typescript
 async createCategory(userId: string, command: CreateCategoryCommand): Promise<CategoryDTO> {
   // Check category limit
@@ -362,6 +376,7 @@ async createCategory(userId: string, command: CreateCategoryCommand): Promise<Ca
 ```
 
 **Implementacja w PhotoService:**
+
 ```typescript
 async createPhoto(userId: string, input: CreatePhotoInput): Promise<PhotoDTO> {
   const photoCount = await this.countUserPhotos(userId);
@@ -377,11 +392,13 @@ async createPhoto(userId: string, input: CreatePhotoInput): Promise<PhotoDTO> {
 ### 4.3 Przetwarzanie Obrazów
 
 **Strona klienta** (browser-image-compression):
+
 - Thumbnail: 400px szerokości, zachowanie proporcji
 - Preview: 1200px szerokości, zachowanie proporcji
 - Oryginał nie jest przechowywany (oszczędność miejsca)
 
 **Walidacja na serwerze:**
+
 - Tylko format JPEG (`image/jpeg`)
 - Maksymalny rozmiar: 10MB
 - Wymiary przesyłane jako metadane (original_width, original_height)
@@ -389,6 +406,7 @@ async createPhoto(userId: string, input: CreatePhotoInput): Promise<PhotoDTO> {
 ### 4.4 Cover Photo kategorii
 
 **Logika:**
+
 - Kategoria może mieć jedno zdjęcie okładkowe (`cover_photo_id`)
 - Cover musi należeć do tej samej kategorii
 - Walidacja własności zdjęcia w CategoryService:
@@ -412,6 +430,7 @@ if (command.cover_photo_id) {
 ```
 
 **Trigger bazodanowy** (gdy cover photo jest usuwane):
+
 ```sql
 -- Istniejący trigger w bazie
 create trigger after_photo_delete
@@ -422,11 +441,13 @@ for each row execute function update_category_cover_on_photo_delete();
 ### 4.5 Publikacja Zdjęć
 
 **Reguły:**
+
 - Niepublikowane zdjęcia (`is_published = false`) są ukryte z publicznych endpointów
 - Zdjęcia bez kategorii (`category_id = null`) są ukryte z publicznych (nawet jeśli opublikowane)
 - Zmiana statusu przez `PATCH /api/photos/:id/publish` lub `PUT /api/photos/:id`
 
 **RLS Policy:**
+
 ```sql
 -- Publiczny dostęp tylko do opublikowanych zdjęć z kategorią
 create policy "photos_select_anon" on photos
@@ -436,13 +457,14 @@ using (is_published = true and category_id is not null);
 
 ### 4.6 Kaskadowe Usuwanie
 
-| Operacja | Efekt |
-|----------|-------|
-| Profile deletion | Cascades to: settings, categories, photos (DB FK) |
+| Operacja          | Efekt                                                  |
+| ----------------- | ------------------------------------------------------ |
+| Profile deletion  | Cascades to: settings, categories, photos (DB FK)      |
 | Category deletion | Photos get `category_id = null` (soft unassign, DB FK) |
-| Photo deletion | Files removed from storage (application logic) |
+| Photo deletion    | Files removed from storage (application logic)         |
 
 **Usuwanie plików Storage (PhotoService):**
+
 ```typescript
 async deletePhoto(userId: string, photoId: string) {
   // Get file paths
@@ -466,6 +488,7 @@ async deletePhoto(userId: string, photoId: string) {
 ### 4.7 Display Order
 
 **Automatyczne przypisanie (trigger bazodanowy):**
+
 ```sql
 create trigger before_category_insert
 before insert on categories
@@ -473,6 +496,7 @@ for each row execute function set_category_display_order();
 ```
 
 **Zmiana kolejności (CategoryService):**
+
 ```typescript
 async reorderCategories(userId: string, order: CategoryOrderItem[]): Promise<void> {
   for (const item of order) {
@@ -600,21 +624,21 @@ export const POST: APIRoute = async ({ locals, request }) => {
 
 ### 7.1 Kody błędów
 
-| Kod HTTP | Error Code | Znaczenie |
-|----------|------------|-----------|
-| 200 | - | Sukces GET/PUT/PATCH/DELETE |
-| 201 | - | Sukces POST (zasób utworzony) |
-| 400 | VALIDATION_ERROR | Błąd walidacji, nieprawidłowe dane |
-| 400 | DUPLICATE_SLUG | Kategoria o tej nazwie już istnieje |
-| 400 | INVALID_CATEGORY | Kategoria nie istnieje lub nie należy do użytkownika |
-| 400 | INVALID_PHOTO | Zdjęcie nie istnieje lub nie należy do użytkownika |
-| 401 | UNAUTHORIZED | Brak lub nieprawidłowe uwierzytelnienie |
-| 403 | FORBIDDEN | Uwierzytelniony ale bez uprawnień |
-| 404 | NOT_FOUND | Zasób nie istnieje |
-| 409 | LIMIT_REACHED | Przekroczony limit zasobów |
-| 413 | FILE_TOO_LARGE | Plik przekracza limit rozmiaru |
-| 500 | INTERNAL_ERROR | Nieoczekiwany błąd serwera |
-| 500 | UPLOAD_FAILED | Błąd uploadu do Storage |
+| Kod HTTP | Error Code       | Znaczenie                                            |
+| -------- | ---------------- | ---------------------------------------------------- |
+| 200      | -                | Sukces GET/PUT/PATCH/DELETE                          |
+| 201      | -                | Sukces POST (zasób utworzony)                        |
+| 400      | VALIDATION_ERROR | Błąd walidacji, nieprawidłowe dane                   |
+| 400      | DUPLICATE_SLUG   | Kategoria o tej nazwie już istnieje                  |
+| 400      | INVALID_CATEGORY | Kategoria nie istnieje lub nie należy do użytkownika |
+| 400      | INVALID_PHOTO    | Zdjęcie nie istnieje lub nie należy do użytkownika   |
+| 401      | UNAUTHORIZED     | Brak lub nieprawidłowe uwierzytelnienie              |
+| 403      | FORBIDDEN        | Uwierzytelniony ale bez uprawnień                    |
+| 404      | NOT_FOUND        | Zasób nie istnieje                                   |
+| 409      | LIMIT_REACHED    | Przekroczony limit zasobów                           |
+| 413      | FILE_TOO_LARGE   | Plik przekracza limit rozmiaru                       |
+| 500      | INTERNAL_ERROR   | Nieoczekiwany błąd serwera                           |
+| 500      | UPLOAD_FAILED    | Błąd uploadu do Storage                              |
 
 ### 7.2 Format Odpowiedzi Błędu
 
@@ -634,6 +658,7 @@ export function errorResponse(
 ```
 
 **Przykład odpowiedzi:**
+
 ```json
 {
   "error": {
@@ -663,6 +688,7 @@ if (error.code === "PGRST116") {
 ### 8.1 Indeksy Bazodanowe
 
 Zdefiniowane w schemacie bazy:
+
 - `idx_photos_published_by_category` - partial index dla galerii publicznej
 - `idx_photos_by_photographer` - filtrowanie w panelu admina
 - `idx_categories_photographer_slug` - routing URL

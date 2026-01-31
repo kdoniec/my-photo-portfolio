@@ -1,0 +1,46 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  canonicalUrl?: string;
+}
+
+const {
+  title,
+  description,
+  ogTitle = title,
+  ogDescription = description,
+  ogImage,
+  ogType = "website",
+  canonicalUrl,
+} = Astro.props;
+
+const currentUrl = canonicalUrl || Astro.url.href;
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+
+<!-- Canonical URL -->
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={currentUrl} />
+<meta property="og:title" content={ogTitle} />
+{ogDescription && <meta property="og:description" content={ogDescription} />}
+{ogImage && <meta property="og:image" content={ogImage} />}
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={currentUrl} />
+<meta property="twitter:title" content={ogTitle} />
+{ogDescription && <meta property="twitter:description" content={ogDescription} />}
+{ogImage && <meta property="twitter:image" content={ogImage} />}

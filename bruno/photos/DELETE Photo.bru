@@ -14,14 +14,18 @@ headers {
   Authorization: Bearer {{accessToken}}
 }
 
+vars:pre-request {
+  photoId: 1cd3c9af-1178-4599-b82a-950b924cd3fb
+}
+
 docs {
   # DELETE /api/photos/:id
-
+  
   Usuwa zdjęcie i pliki ze storage.
-
+  
   ## Wymagania
   - Bearer token w nagłówku Authorization
-
+  
   ## Odpowiedzi
   - 200: { message: "Photo deleted successfully" }
   - 400: Nieprawidłowe UUID

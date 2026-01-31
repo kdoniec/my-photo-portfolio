@@ -5,24 +5,28 @@
 My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kontekstów użytkownika:
 
 ### 1.1 Publiczna galeria (dla odwiedzających)
+
 - Prezentacja portfolio fotografa w formie responsywnej galerii
 - Dostęp bez autoryzacji dla potencjalnych klientów
 - Focus na estetyce i szybkości ładowania (<3s FCP)
 - Struktura: Strona główna (kategorie) → Galeria kategorii → Lightbox → Strona "O mnie"
 
 ### 1.2 Panel administracyjny (dla fotografa)
+
 - Zarządzanie treścią portfolio (kategorie, zdjęcia, profil)
 - Chroniony autentykacją Supabase Auth
 - Topbar navigation zamiast sidebar dla lepszej responsywności
 - Limity: 200 zdjęć, 10 kategorii
 
 ### 1.3 Strategia renderowania
+
 - **SSR (Server-Side Rendering):** Wszystkie strony renderowane po stronie serwera (Astro output: "server")
 - **Hybrydowe podejście:** SSR pierwszych 20 elementów + CSR (infinite scroll) dla kolejnych
 - **React Islands:** Komponenty interaktywne (lightbox, formularze, upload) jako client-side islands
 - **View Transitions API:** Płynne przejścia między stronami w obrębie tego samego layoutu
 
 ### 1.4 Kluczowe założenia UX
+
 - **Mobile-first:** Design zaczyna się od mobile, skaluje do desktop
 - **Accessibility:** ARIA attributes, keyboard navigation, semantic HTML
 - **Performance:** Lazy loading, image compression, code splitting
@@ -42,12 +46,14 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Prezentacja wszystkich kategorii portfolio jako punktu wejścia dla odwiedzających.
 
 **Kluczowe informacje:**
+
 - Grid kart kategorii (responsywny: 1/2/3 kolumny)
 - Każda karta: okładka (aspect ratio 4:3), nazwa, opis, badge z liczbą zdjęć
 - Logo/nazwa fotografa w nawigacji
 - Link do strony "O mnie"
 
 **Kluczowe komponenty:**
+
 - `PublicLayout.astro` - główny layout z nawigacją
 - `CategoryGrid.tsx` - responsywny grid kontener
 - `CategoryCard.tsx` - pojedyncza karta kategorii z overlay
@@ -55,6 +61,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - `SEO.astro` - meta tags dla SEO
 
 **UX, dostępność i bezpieczeństwo:**
+
 - **UX:** Hover effect na kartach (scale/brightness), wyraźne CTA w overlay
 - **Accessibility:** Semantic HTML (`<main>`, `<article>`), alt text dla okładek, aria-label="Main navigation"
 - **Security:** Brak (public view), tylko published categories z API
@@ -69,12 +76,14 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Wyświetlenie zdjęć w kategorii w estetycznym układzie masonry z możliwością powiększenia.
 
 **Kluczowe informacje:**
+
 - Nazwa i opis kategorii (header)
 - Masonry grid zdjęć (preserved aspect ratio)
 - Infinite scroll (SSR pierwszych 20 + CSR kolejnych stron)
 - Lightbox fullscreen po kliknięciu
 
 **Kluczowe komponenty:**
+
 - `PublicLayout.astro`
 - `PhotoMasonry.tsx` - masonry layout z react-masonry-css, infinite scroll
 - `PhotoLightbox.tsx` - fullscreen viewer z React portal
@@ -82,6 +91,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - `useInfiniteScroll.ts` - custom hook z Intersection Observer
 
 **UX, dostępność i bezpieczeństwo:**
+
 - **UX:**
   - Smooth infinite scroll z debouncing
   - Skeleton cards podczas loading
@@ -103,6 +113,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
   - Body scroll lock podczas lightbox open
 
 **Lightbox - szczegółowa specyfikacja:**
+
 - **Desktop:** Backdrop blur, max 90vw/90vh, duże przyciski po bokach
 - **Mobile:** Fullscreen (position: fixed; inset: 0), małe przyciski, swipe gestures
 - **Keyboard:** Escape (close), Arrow Left/Right (nawigacja)
@@ -119,17 +130,20 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Prezentacja fotografa i danych kontaktowych dla potencjalnych klientów.
 
 **Kluczowe informacje:**
+
 - Display name (h1)
 - Bio (paragraf z preserved whitespace)
 - Email kontaktowy (klikalny mailto:)
 - Telefon kontaktowy (klikalny tel: na mobile)
 
 **Kluczowe komponenty:**
+
 - `PublicLayout.astro`
 - Centered card (max-width 600px)
 - Ikony kontaktu (Lucide: Mail, Phone)
 
 **UX, dostępność i bezpieczeństwo:**
+
 - **UX:** Minimalistyczny design, focus na treści, ikony dla czytelności
 - **Accessibility:** Semantic HTML (`<h1>`, `<p>`), aria-label dla ikon
 - **Security:** Brak (public view)
@@ -144,15 +158,18 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Obsługa błędnych URL z przyjaznym komunikatem.
 
 **Kluczowe informacje:**
+
 - Heading "404"
 - Komunikat "Strona nie została znaleziona"
 - Przycisk "Wróć do strony głównej"
 
 **Kluczowe komponenty:**
+
 - Minimalistyczny layout (bez pełnego PublicLayout)
 - Button component linkujący do `/`
 
 **UX, dostępność i bezpieczeństwo:**
+
 - **UX:** Estetyczna strona spójna z designem portfolio
 - **Accessibility:** role="main", semantic headings
 - **Security:** Brak
@@ -169,17 +186,20 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Autentykacja fotografa przed dostępem do panelu administracyjnego.
 
 **Kluczowe informacje:**
+
 - Logo/nazwa aplikacji (centered)
 - Formularz: email, hasło
 - Komunikaty błędów (nieprawidłowe dane, błąd sieci)
 
 **Kluczowe komponenty:**
+
 - Minimalistyczny layout (bez AdminLayout)
 - `LoginForm.tsx` - react-hook-form + Zod validation
 - Supabase Auth integration (signInWithPassword)
 - Error Alert component
 
 **UX, dostępność i bezpieczeństwo:**
+
 - **UX:**
   - Przycisk submit disabled podczas loading (spinner)
   - Auto-focus na email input
@@ -200,6 +220,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Performance:** Lekka strona, brak heavy dependencies
 
 **Flow:**
+
 1. User wprowadza email + hasło
 2. Submit → Supabase Auth signInWithPassword
 3. Success → AuthContext update → redirect `/admin/photos`
@@ -214,6 +235,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Przekierowanie do głównego widoku administracyjnego.
 
 **Logika:**
+
 - Jeśli niezalogowany → redirect `/admin/login`
 - Jeśli zalogowany → redirect `/admin/photos`
 
@@ -228,11 +250,13 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Zarządzanie kategoriami portfolio (CRUD operations).
 
 **Kluczowe informacje:**
+
 - Header: h1 "Kategorie" + Badge "X/10" + Button "Dodaj kategorię"
 - Grid kart kategorii (1-2 kolumny responsive)
 - Każda karta: miniaturka okładki (80x80px), nazwa, opis (truncated), badge count zdjęć, actions (Edit, Delete)
 
 **Kluczowe komponenty:**
+
 - `AdminLayout.astro` - topbar z user menu
 - `CategoriesGrid.tsx` - grid kontener
 - `CategoryCard.tsx` - pojedyncza karta
@@ -241,6 +265,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - `AlertDialog` - delete confirmation (Shadcn/ui)
 
 **UX, dostępność i bezpieczeństwo:**
+
 - **UX:**
   - Hover effect na kartach (actions visible)
   - Badge z limitem (X/10) - kolor progresowy (green/yellow/red)
@@ -264,6 +289,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
   - Optimistic update dla edycji (optional)
 
 **CategoryDialog - szczegóły:**
+
 - **Title:** "Dodaj kategorię" / "Edytuj kategorię"
 - **Fields:**
   - Nazwa: Input (required, max 100 chars)
@@ -274,6 +300,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Validation:** react-hook-form + Zod (zgodne ze schema backendu)
 
 **CoverPhotoSelector - szczegóły:**
+
 - **Trigger:** Button "Wybierz okładkę"
 - **Content:** Popover z grid miniaturek (3-4 kolumny, max height 400px, scroll)
 - **Empty state:** "Brak zdjęć w kategorii"
@@ -281,6 +308,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Data:** Filtrowane zdjęcia z category_id (tylko published w MVP? - check)
 
 **Delete confirmation - szczegóły:**
+
 - **Trigger:** Trash icon button
 - **AlertDialog:**
   - Title: "Usuń kategorię?"
@@ -289,6 +317,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Flow:** Confirm → API DELETE → Success toast → Remove from list
 
 **Limit enforcement:**
+
 - Gdy 10/10 → Button "Dodaj kategorię" disabled
 - Tooltip: "Osiągnięto limit kategorii (10)"
 - Badge czerwony gdy 10/10
@@ -302,11 +331,13 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Główny widok zarządzania zdjęciami portfolio (upload, edycja, publikacja, usuwanie).
 
 **Kluczowe informacje:**
+
 - Toolbar: Select filtr kategorii + Button "Dodaj zdjęcia" + Badge "X/200"
 - Grid kart zdjęć (responsywny: 1/2-3/4-5 kolumn)
 - Każda karta: miniaturka (dominująca), tytuł (optional), badge kategorii, switch publikacji, actions (Edit, Delete)
 
 **Kluczowe komponenty:**
+
 - `AdminLayout.astro`
 - `PhotosGrid.tsx` - grid kontener z filtrowaniem
 - `PhotoCard.tsx` - pojedyncza karta zdjęcia
@@ -317,6 +348,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - `Select` (Shadcn/ui) - filtr kategorii
 
 **UX, dostępność i bezpieczeństwo:**
+
 - **UX:**
   - Filter toolbar: Select z opcjami "Wszystkie", "Kategoria 1", ..., "Bez kategorii"
   - Badge limitu (X/200) z kolorem progresowym
@@ -347,6 +379,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
   - Sekwencyjne przetwarzanie per-file (validate → compress → upload)
 
 **Toolbar - szczegóły:**
+
 - **Select filtr kategorii:**
   - Opcje: "Wszystkie", "Kategoria 1", "Kategoria 2", ..., "Bez kategorii"
   - onChange → Filter photos array (client-side lub re-fetch API)
@@ -355,6 +388,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Badge "X/200":** Kolor green <70%, yellow 70-90%, red >90%
 
 **PhotoCard - szczegóły:**
+
 - **Layout:** Miniaturka (aspect ratio preserved, rounded-md)
 - **Overlay/Below:**
   - Tytuł: Jeśli istnieje (truncated 1 line)
@@ -363,6 +397,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
   - Actions (hover): Edit icon button, Trash icon button
 
 **PhotoUploadZone (Dialog) - szczegóły:**
+
 - **Dialog title:** "Dodaj zdjęcia"
 - **Drag & drop zone:**
   - react-dropzone integration
@@ -401,6 +436,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
   8. Auto-close Dialog (lub zostaw open dla review?)
 
 **PhotoEditDialog - szczegóły:**
+
 - **Dialog title:** "Edytuj zdjęcie"
 - **Miniaturka:** 60x60px (preview_url)
 - **Form (react-hook-form + Zod):**
@@ -411,6 +447,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Flow:** Submit → PUT /api/photos/:id → Success toast → Update card
 
 **Delete confirmation - szczegóły:**
+
 - **AlertDialog:**
   - Miniaturka: 60x60px usuwanego zdjęcia
   - Title: "Usuń zdjęcie?"
@@ -419,6 +456,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Flow:** Confirm → DELETE /api/photos/:id → Success toast → Remove from grid
 
 **Optimistic update - Switch publikacji:**
+
 1. User toggle Switch
 2. Immediate UI update (Switch state + optional visual feedback)
 3. Background: PATCH /api/photos/:id/publish
@@ -434,11 +472,13 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 **Główny cel:** Edycja danych profilowych fotografa, ustawień SEO i podgląd statystyk limitów.
 
 **Kluczowe informacje:**
+
 - **Sekcja 1:** Dane profilowe (display_name, bio, contact_email, contact_phone)
 - **Sekcja 2:** Ustawienia SEO (site_title, site_description)
 - **Sekcja 3:** Statystyki (progress bars: zdjęcia X/200, kategorie X/10)
 
 **Kluczowe komponenty:**
+
 - `AdminLayout.astro`
 - `ProfileForm.tsx` - react-hook-form + Zod
 - `SeoSettingsForm.tsx` - react-hook-form + Zod
@@ -446,6 +486,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - `StatsContext` - React Context dla limitów
 
 **UX, dostępność i bezpieczeństwo:**
+
 - **UX:**
   - Dwie osobne formy z osobnymi przyciskami "Zapisz"
   - Toast notifications po zapisaniu
@@ -469,6 +510,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
   - StatsContext refresh po mutacjach (nie auto-refresh)
 
 **Sekcja: Dane profilowe - szczegóły:**
+
 - **Card title:** "Dane profilowe"
 - **Fields:**
   - Display name: Input (required, max 100 chars)
@@ -480,6 +522,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Success toast:** "Profil zaktualizowany"
 
 **Sekcja: Ustawienia SEO - szczegóły:**
+
 - **Card title:** "Ustawienia SEO"
 - **Description:** "Te dane będą używane w meta tagach i przy udostępnianiu w social media"
 - **Fields:**
@@ -490,6 +533,7 @@ My Photo Portfolio to aplikacja webowa składająca się z dwóch głównych kon
 - **Success toast:** "Ustawienia SEO zaktualizowane"
 
 **Sekcja: Statystyki - szczegóły:**
+
 - **Card title:** "Wykorzystanie limitów"
 - **Progress bar 1:**
   - Label: "Zdjęcia"
@@ -538,11 +582,13 @@ END
 ```
 
 **Kluczowe punkty decyzyjne:**
+
 - Wybór kategorii (która najbardziej interesuje)
 - Przeglądanie zdjęć (ile czasu spędzi)
 - Decyzja o kontakcie (czy bio i prace przekonują)
 
 **Pain points i rozwiązania:**
+
 - **PP:** Długi czas ładowania → **Rozwiązanie:** Lazy loading, SSR, compression
 - **PP:** Zgubienie się w galerii → **Rozwiązanie:** Breadcrumbs (brak w MVP), wyraźna nawigacja
 - **PP:** Trudność z powrotem → **Rozwiązanie:** Logo w nav zawsze wraca do głównej
@@ -619,6 +665,7 @@ END (Portfolio gotowe do prezentacji)
 **Estymowany czas:** 30-45 minut dla ~30 zdjęć w 3 kategoriach
 
 **Kluczowe momenty sukcesu:**
+
 - Utworzenie pierwszej kategorii (zrozumienie struktury)
 - Pierwszy upload zdjęć (zobacz progress, zrozum flow)
 - Publikacja pierwszego zdjęcia (widzisz efekt publicznie)
@@ -657,6 +704,7 @@ END
 **Częstotliwość:** 1-2 razy w tygodniu po nowych sesjach
 
 **Pain points i rozwiązania:**
+
 - **PP:** Długi upload → **Rozwiązanie:** Dual progress, retry per-file
 - **PP:** Przypadkowe usunięcia → **Rozwiązanie:** AlertDialog z kontekstem
 - **PP:** Nie wie które published → **Rozwiązanie:** Switch widoczny na karcie
@@ -675,6 +723,7 @@ END
 ```
 
 **Desktop (>= 768px):**
+
 - Horizontal nav bar (fixed lub sticky top)
 - Logo/nazwa po lewej (link do `/`)
 - Nav links po prawej (Galeria, O mnie)
@@ -682,22 +731,26 @@ END
 - Hover states na linkach
 
 **Mobile (< 768px):**
+
 - Hamburger icon (prawy górny róg) → Sheet component (Shadcn/ui)
 - Sheet slide-in z navigation links (vertical stack)
 - Logo/nazwa centered lub lewy górny róg
 - Backdrop blur gdy Sheet open
 
 **Active page indicator:**
+
 - Galeria: Active gdy URL = `/` lub `/kategoria/*`
 - O mnie: Active gdy URL = `/o-mnie`
 
 **Accessibility:**
+
 - `<nav aria-label="Main navigation">`
 - `aria-current="page"` dla aktywnej strony
 - `aria-expanded` + `aria-controls` dla hamburger menu
 - Keyboard navigation (Tab, Enter)
 
 **Data source:**
+
 - Logo/nazwa: GET /api/public/profile (display_name)
 - SSR w PublicLayout.astro
 
@@ -714,6 +767,7 @@ END
 ```
 
 **Desktop (>= 768px):**
+
 - Horizontal nav bar (fixed top)
 - Logo/nazwa po lewej (link do `/admin/photos`)
 - Nav links centrum/lewo (Kategorie, Zdjęcia, Profil)
@@ -722,6 +776,7 @@ END
 - Badge z limitami (optional, może być w Profil)
 
 **Mobile (< 768px):**
+
 - Logo/nazwa lewy górny
 - Hamburger icon prawy górny → Sheet z nav links + user menu
 - Sheet vertical stack:
@@ -732,6 +787,7 @@ END
   - Wyloguj
 
 **User menu (DropdownMenu):**
+
 - **Trigger:** Avatar z inicjałami (np. "JK") + display_name
 - **Content:**
   - Profil (link do `/admin/profile`)
@@ -739,17 +795,20 @@ END
   - Wyloguj (action: AuthContext.signOut())
 
 **Active page indicator:**
+
 - Kategorie: Active gdy URL = `/admin/categories`
 - Zdjęcia: Active gdy URL = `/admin/photos`
 - Profil: Active gdy URL = `/admin/profile`
 
 **Accessibility:**
+
 - Semantic nav z aria-label
 - aria-current dla aktywnej
 - Keyboard navigation
 - Focus visible styles
 
 **Data source:**
+
 - Display_name: GET /api/profile (dla user menu)
 - SSR w AdminLayout.astro lub CSR w React component (AuthContext)
 
@@ -758,6 +817,7 @@ END
 ### 4.3 Navigation flows
 
 **Publiczna galeria:**
+
 ```
 Strona główna (/)
   ├─ Kliknięcie kafelka → /kategoria/[slug]
@@ -769,6 +829,7 @@ Strona główna (/)
 ```
 
 **Panel administracyjny:**
+
 ```
 Login (/admin/login)
   └─ Success → /admin/photos
@@ -787,6 +848,7 @@ Redirect flows:
 ```
 
 **View Transitions:**
+
 - Włączone dla wszystkich przejść w obrębie tego samego layoutu
 - PublicLayout → PublicLayout: Smooth transition
 - AdminLayout → AdminLayout: Smooth transition
@@ -799,14 +861,17 @@ Redirect flows:
 ### 5.1 Komponenty Astro (statyczne, SSR)
 
 #### SEO.astro
+
 **Opis:** Component do meta tags i Open Graph
 **Props:**
+
 - `title: string` (required)
 - `description: string` (required)
 - `image?: string` (optional, URL do og:image)
 - `type?: 'website' | 'article'` (default: 'website')
 
 **Użycie:**
+
 ```astro
 <SEO
   title={seoSettings.site_title || "My Photo Portfolio"}
@@ -816,17 +881,20 @@ Redirect flows:
 />
 ```
 
-**Output:** Meta tags w `<head>` (title, description, og:*, twitter:*)
+**Output:** Meta tags w `<head>` (title, description, og:_, twitter:_)
 
 ---
 
 #### Navigation.astro
+
 **Opis:** Nawigacja publicznej galerii
 **Props:**
+
 - `currentPath: string` (dla active indicator)
 - `photographerName: string` (z API)
 
 **Zawiera:**
+
 - Logo/nazwa (link do `/`)
 - Nav links (Galeria, O mnie)
 - Mobile hamburger → Sheet
@@ -834,8 +902,10 @@ Redirect flows:
 ---
 
 #### EmptyState.tsx (React)
+
 **Opis:** Generic empty state component
 **Props:**
+
 - `icon: React.ReactNode` (Lucide icon)
 - `title: string`
 - `description?: string`
@@ -848,13 +918,16 @@ Redirect flows:
 ### 5.2 Komponenty React (interaktywne, CSR)
 
 #### PhotoLightbox.tsx
+
 **Opis:** Fullscreen photo viewer z navigation
 **Props:**
+
 - `photos: Photo[]` (array zdjęć)
 - `initialIndex: number` (który zdjęcie otworzyć)
 - `onClose: () => void`
 
 **Features:**
+
 - React portal (createPortal do body)
 - Keyboard: Escape, Arrow Left/Right
 - Swipe: react-swipeable (mobile)
@@ -865,21 +938,26 @@ Redirect flows:
 - Responsive: fullscreen mobile, backdrop desktop
 
 **State:**
+
 - `currentIndex: number` (aktualnie wyświetlane)
 - `isPreloading: boolean` (loading indicator)
 
 **ARIA:**
+
 - role="dialog", aria-modal="true", aria-label="Podgląd zdjęcia"
 
 ---
 
 #### PhotoUploadZone.tsx
+
 **Opis:** Drag & drop upload z progress tracking
 **Props:**
+
 - `onUploadComplete: (uploadedPhotos: Photo[]) => void`
 - `maxFiles?: number` (default: 20)
 
 **Features:**
+
 - react-dropzone (drag & drop + file input)
 - FileReader preview (instant)
 - Validation: JPEG, max 10MB, limit total
@@ -891,11 +969,13 @@ Redirect flows:
 - Button "Wyczyść listę"
 
 **State:**
+
 - `files: UploadFile[]` (array z metadata + progress)
 - `selectedCategory: string | null`
 - `publishImmediately: boolean`
 
 **UploadFile type:**
+
 ```typescript
 {
   file: File,
@@ -909,13 +989,16 @@ Redirect flows:
 ---
 
 #### PhotoMasonry.tsx
+
 **Opis:** Masonry layout z infinite scroll
 **Props:**
+
 - `initialPhotos: Photo[]` (SSR first page)
 - `categorySlug: string` (dla fetch kolejnych)
 - `onPhotoClick: (index: number) => void` (open lightbox)
 
 **Features:**
+
 - react-masonry-css (masonry layout)
 - Intersection Observer (infinite scroll)
 - useInfiniteScroll custom hook
@@ -924,6 +1007,7 @@ Redirect flows:
 - "To wszystkie zdjęcia" message
 
 **State:**
+
 - `photos: Photo[]` (current array)
 - `page: number` (pagination)
 - `hasMore: boolean`
@@ -931,6 +1015,7 @@ Redirect flows:
 - `error: string | null`
 
 **Columns responsive:**
+
 - Mobile (< 768px): 1 kolumna
 - Tablet (768-1024px): 2-3 kolumny
 - Desktop (> 1024px): 3 kolumny
@@ -938,14 +1023,17 @@ Redirect flows:
 ---
 
 #### CategoryDialog.tsx
+
 **Opis:** Create/Edit kategoria modal
 **Props:**
+
 - `mode: 'create' | 'edit'`
 - `category?: Category` (tylko edit mode)
 - `onSuccess: (category: Category) => void`
 - `onClose: () => void`
 
 **Features:**
+
 - Shadcn/ui Dialog
 - react-hook-form + Zod
 - Slug preview (auto-generated)
@@ -953,6 +1041,7 @@ Redirect flows:
 - Toast notifications
 
 **Form fields:**
+
 - Nazwa (required)
 - Opis (optional, max 500)
 - Okładka (tylko edit)
@@ -960,14 +1049,17 @@ Redirect flows:
 ---
 
 #### PhotoEditDialog.tsx
+
 **Opis:** Edit photo metadata modal
 **Props:**
+
 - `photo: Photo`
 - `categories: Category[]`
 - `onSuccess: (updatedPhoto: Photo) => void`
 - `onClose: () => void`
 
 **Features:**
+
 - Shadcn/ui Dialog
 - react-hook-form + Zod
 - Miniaturka preview (60x60px)
@@ -975,6 +1067,7 @@ Redirect flows:
 - Switch publikacji
 
 **Form fields:**
+
 - Tytuł (optional)
 - Kategoria (Select)
 - Publikacja (Switch)
@@ -982,13 +1075,16 @@ Redirect flows:
 ---
 
 #### CoverPhotoSelector.tsx
+
 **Opis:** Popover z grid miniaturek do wyboru okładki
 **Props:**
+
 - `categoryId: string`
 - `currentCoverId?: string` (highlight current)
 - `onSelect: (photoId: string) => void`
 
 **Features:**
+
 - Shadcn/ui Popover
 - Grid 3-4 kolumny
 - Max height 400px + scroll
@@ -1002,6 +1098,7 @@ Redirect flows:
 ### 5.3 Shared UI Components (Shadcn/ui)
 
 **Używane komponenty:**
+
 - **Button** - CTA, actions, submits
 - **Dialog** - Modals (CategoryDialog, PhotoEditDialog, PhotoUploadZone)
 - **AlertDialog** - Delete confirmations
@@ -1028,8 +1125,10 @@ Redirect flows:
 ### 5.4 Context Providers (React)
 
 #### AuthContext
+
 **Opis:** Zarządzanie sesją użytkownika
 **Provides:**
+
 - `user: User | null`
 - `session: Session | null`
 - `signIn: (email, password) => Promise<void>`
@@ -1037,6 +1136,7 @@ Redirect flows:
 - `isLoading: boolean`
 
 **Logic:**
+
 - Supabase Auth onAuthStateChange listener
 - Auto-refresh tokens
 - Redirect do /admin/login jeśli session null
@@ -1046,8 +1146,10 @@ Redirect flows:
 ---
 
 #### StatsContext
+
 **Opis:** Tracking limitów zdjęć i kategorii
 **Provides:**
+
 - `photosCount: number`
 - `categoriesCount: number`
 - `refreshStats: () => Promise<void>`
@@ -1055,10 +1157,12 @@ Redirect flows:
 **Data source:** GET /api/stats
 
 **Refresh strategy:**
+
 - Wywołane po mutacjach: upload, delete, create category
 - NIE auto-refresh co X sekund (uproszczenie MVP)
 
 **Użycie:**
+
 - AdminLayout topbar (Badge limits - optional)
 - /admin/photos toolbar (Badge X/200)
 - /admin/categories header (Badge X/10)
@@ -1070,16 +1174,20 @@ Redirect flows:
 ### 5.5 Custom Hooks
 
 #### useInfiniteScroll.ts
+
 **Opis:** Intersection Observer dla infinite scroll
 **Params:**
+
 - `fetchNextPage: () => Promise<void>`
 - `hasMore: boolean`
 - `isLoading: boolean`
 
 **Returns:**
+
 - `sentinelRef: RefObject<HTMLDivElement>` (attach do sentinel element)
 
 **Logic:**
+
 - Intersection Observer na sentinel div
 - Debouncing 300ms (optional)
 - Trigger fetchNextPage gdy sentinel visible
@@ -1087,16 +1195,20 @@ Redirect flows:
 ---
 
 #### useOptimisticUpdate.ts
+
 **Opis:** Helper dla optimistic UI updates
 **Params:**
+
 - `updateFn: () => Promise<void>` (API call)
 - `optimisticData: T` (new state)
 - `rollbackData: T` (previous state)
 
 **Returns:**
+
 - `execute: () => Promise<void>`
 
 **Logic:**
+
 1. Update local state (optimistic)
 2. Call API
 3. Success → Toast success
@@ -1111,28 +1223,34 @@ Redirect flows:
 ### 6.1 Publiczna galeria
 
 #### Brak kategorii
+
 - **Empty state:** "Galeria w przygotowaniu" z ikoną Camera
 - **Action:** Brak (user nie może nic zrobić)
 - **Location:** Strona główna (/)
 
 #### Kategoria bez published zdjęć
+
 - **Behavior:** Nie wyświetlaj na public (hidden przez API)
 - **Backend:** GET /api/public/categories filtruje kategorie bez published photos
 
 #### Nieistniejący slug
+
 - **Response:** 404 Not Found z backendu
 - **UI:** Strona 404 z przyciskiem "Wróć do strony głównej"
 
 #### Network error w infinite scroll
+
 - **UI:** Alert component (Shadcn/ui) z ikoną AlertTriangle
 - **Message:** "Nie udało się załadować zdjęć"
 - **Action:** Button "Spróbuj ponownie" → retry fetch
 
 #### Lightbox - brak sąsiednich zdjęć
+
 - **Behavior:** Disable arrow buttons lub loop (first ↔ last)
 - **MVP decision:** Disable arrows (prostsze)
 
 #### Lightbox - fail preload sąsiedniego
+
 - **Behavior:** Ignore error, nie blokuj nawigacji
 - **Fallback:** Load on demand przy przejściu
 
@@ -1141,16 +1259,19 @@ Redirect flows:
 ### 6.2 Login
 
 #### Nieprawidłowe credentials
+
 - **Response:** 401 Unauthorized z Supabase
 - **UI:** Alert (role="alert") "Nieprawidłowy email lub hasło"
 - **Color:** Destructive (red)
 
 #### Network error
+
 - **Response:** Fetch error (timeout, no connection)
 - **UI:** Alert "Błąd połączenia. Spróbuj ponownie."
 - **Action:** User może retry manual (re-submit form)
 
 #### Session expired podczas użytkowania
+
 - **Detection:** AuthContext onAuthStateChange → session null
 - **Behavior:** Auto redirect do /admin/login
 - **Toast:** "Sesja wygasła. Zaloguj się ponownie."
@@ -1160,21 +1281,25 @@ Redirect flows:
 ### 6.3 Kategorie
 
 #### Limit 10/10 kategorii
+
 - **UI:** Button "Dodaj kategorię" disabled
 - **Tooltip:** "Osiągnięto limit kategorii (10)"
 - **Visual:** Badge "10/10" red
 
 #### Kategoria bez zdjęć - wybór okładki
+
 - **UI:** Empty state w CoverPhotoSelector Popover
 - **Message:** "Brak zdjęć w kategorii"
 - **Action:** Brak (user musi najpierw dodać zdjęcia)
 
 #### Duplicate slug (conflict)
+
 - **Response:** 400 Bad Request z API
 - **UI:** Toast error "Kategoria o tej nazwie już istnieje"
 - **Behavior:** Dialog pozostaje open, user może edytować nazwę
 
 #### Delete kategorii z zdjęciami
+
 - **UI:** AlertDialog z info
 - **Message:** "Kategoria zawiera 15 zdjęć. Zdjęcia staną się nieprzypisane."
 - **Explanation:** category_id = null, zdjęcia niewidoczne publicznie
@@ -1185,37 +1310,44 @@ Redirect flows:
 ### 6.4 Zdjęcia
 
 #### Limit 200/200 zdjęć
+
 - **UI:** Button "Dodaj zdjęcia" disabled
 - **Tooltip:** "Osiągnięto limit zdjęć (200)"
 - **Visual:** Badge "200/200" red
 
 #### Nieprawidłowy format (nie JPEG)
+
 - **Detection:** Client-side validation (File.type !== 'image/jpeg')
 - **UI:** Toast error "Dozwolony tylko format JPEG"
 - **Behavior:** File nie dodany do preview list
 
 #### Plik > 10MB
-- **Detection:** Client-side validation (File.size > 10 * 1024 * 1024)
+
+- **Detection:** Client-side validation (File.size > 10 _ 1024 _ 1024)
 - **UI:** Toast error "Maksymalny rozmiar pliku to 10 MB"
 - **Behavior:** File nie dodany do preview list
 
 #### Network error podczas uploadu
+
 - **Detection:** Fetch error w POST /api/photos/batch
 - **UI:** Per-file error state (red icon + error message)
 - **Action:** Retry button per-file
 - **Behavior:** Successful uploads nie są tracone (partial success OK)
 
 #### Kompresja fail (browser-image-compression error)
+
 - **Detection:** Try/catch w compression logic
 - **UI:** Per-file error state "Błąd przetwarzania"
 - **Action:** Retry button → retry compression + upload
 
 #### Zdjęcie bez kategorii (category_id = null)
+
 - **UI:** Badge "Bez kategorii" (gray)
 - **Public visibility:** Niewidoczne (even if is_published = true)
 - **Filter:** Option "Bez kategorii" w Select filter
 
 #### Toggle publikacji fail (PATCH error)
+
 - **UI:** Revert Switch state (rollback)
 - **Toast:** Error "Nie udało się zaktualizować statusu"
 - **Color:** Destructive (5s)
@@ -1225,16 +1357,19 @@ Redirect flows:
 ### 6.5 Profil
 
 #### Validation error (invalid email format)
+
 - **UI:** Field error z aria-describedby
 - **Message:** "Wprowadź poprawny adres email"
 - **Color:** Destructive
 - **ARIA:** aria-invalid="true"
 
 #### API error (500 Internal Server Error)
+
 - **UI:** Toast generic "Coś poszło nie tak. Spróbuj ponownie."
 - **Behavior:** Form data nie zmieniona (user może retry)
 
 #### Empty stats (0/200, 0/10)
+
 - **UI:** Progress bars na 0%
 - **Color:** Green (daleko od limitu)
 - **Message:** Brak (progress bars wystarczające)
@@ -1244,16 +1379,19 @@ Redirect flows:
 ### 6.6 Global
 
 #### Unauthorized (401) podczas używania admin
+
 - **Detection:** Middleware lub API response
 - **Behavior:** Auto redirect do /admin/login
 - **Toast:** "Sesja wygasła. Zaloguj się ponownie."
 
 #### Network timeout (fetch timeout)
+
 - **Detection:** AbortController timeout (30s dla uploads, default dla reszty)
 - **UI:** Toast error "Przekroczono limit czasu. Spróbuj ponownie."
 - **Retry:** User manual (re-submit action)
 
 #### Server error (500)
+
 - **UI:** Toast generic "Coś poszło nie tak. Spróbuj ponownie później."
 - **Logging:** console.error (brak Sentry w MVP)
 - **Behavior:** User może retry manual
@@ -1273,21 +1411,25 @@ Desktop: > 1024px   (lg, xl, 2xl)
 ### 7.2 Grid responsiveness
 
 **Strona główna - CategoryGrid:**
+
 - Mobile: 1 kolumna
 - Tablet: 2 kolumny
 - Desktop: 3 kolumny
 
 **Galeria kategorii - PhotoMasonry:**
+
 - Mobile: 1 kolumna
 - Tablet: 2-3 kolumny (zależne od szerokości zdjęć)
 - Desktop: 3 kolumny
 
 **Admin - CategoriesGrid:**
+
 - Mobile: 1 kolumna
 - Tablet: 2 kolumny
 - Desktop: 2 kolumny (max)
 
 **Admin - PhotosGrid:**
+
 - Mobile: 1 kolumna
 - Tablet: 2-3 kolumny
 - Desktop: 4-5 kolumn
@@ -1295,22 +1437,26 @@ Desktop: > 1024px   (lg, xl, 2xl)
 ### 7.3 Navigation responsiveness
 
 **PublicLayout:**
+
 - Desktop: Horizontal nav (Logo | Links)
 - Mobile: Hamburger → Sheet (slide-in)
 
 **AdminLayout:**
+
 - Desktop: Horizontal topbar (Logo | Nav | User menu)
 - Mobile: Hamburger → Sheet (Logo | Nav stack | User menu stack)
 
 ### 7.4 Lightbox responsiveness
 
 **Desktop:**
+
 - Backdrop blur
 - Max 90vw / 90vh
 - Duże arrow buttons po bokach
 - X button prawy górny
 
 **Mobile:**
+
 - Fullscreen (position: fixed; inset: 0)
 - Black backdrop (no blur)
 - Małe arrow buttons (bottom corners)
@@ -1320,6 +1466,7 @@ Desktop: > 1024px   (lg, xl, 2xl)
 ### 7.5 Typography responsiveness
 
 **Headings:**
+
 - h1: text-2xl md:text-4xl
 - h2: text-xl md:text-3xl
 - h3: text-lg md:text-2xl
@@ -1331,59 +1478,70 @@ Desktop: > 1024px   (lg, xl, 2xl)
 ### 7.6 ARIA Attributes
 
 **Navigation:**
+
 - `<nav aria-label="Main navigation">`
 - `aria-current="page"` dla aktywnej strony
 - `aria-expanded`, `aria-controls` dla hamburger menu
 
 **Forms:**
+
 - `<label>` dla wszystkich inputs
 - `aria-invalid="true"` dla błędnych pól
 - `aria-describedby` wskazujący error message
 - `role="alert"` dla error messages
 
 **Dialogs:**
+
 - `role="dialog"` + `aria-modal="true"`
 - `aria-label` lub `aria-labelledby` (title)
 - Focus trap (automatic w Shadcn/ui)
 - Escape key closes
 
 **Images:**
+
 - `alt` text dla wszystkich zdjęć (title lub generic "Zdjęcie")
 - `loading="lazy"` dla galerii
 - `loading="eager"` dla above-fold (okładki na głównej)
 
 **Buttons:**
+
 - `aria-label` dla icon-only buttons (Edit, Delete, Close)
 - `disabled` attribute z tooltip explanation
 
 **Progress bars:**
+
 - `role="progressbar"`
 - `aria-valuenow`, `aria-valuemin`, `aria-valuemax`
 - `aria-label` describing purpose
 
 **Alerts:**
+
 - `role="alert"` dla error messages (auto screen reader announcement)
 - `aria-live="polite"` dla toast notifications
 
 ### 7.7 Keyboard navigation
 
 **General:**
+
 - Tab order logical (top to bottom, left to right)
 - Focus visible (outline) na wszystkich interactive elements
 - Skip to content link (optional, nice-to-have)
 
 **Lightbox:**
+
 - Escape: Close
 - Arrow Left: Previous photo
 - Arrow Right: Next photo
 - Tab: Cycle przez controls (arrows, close)
 
 **Dialogs:**
+
 - Escape: Close (anuluj)
 - Enter: Submit form (jeśli focus na input)
 - Tab: Cycle przez fields i buttons
 
 **Dropdowns/Selects:**
+
 - Arrow Down/Up: Navigate options
 - Enter: Select option
 - Escape: Close dropdown
@@ -1582,6 +1740,7 @@ interface AuthContextValue {
 ```
 
 **Usage:**
+
 - AdminLayout (check auth, display user)
 - Middleware (redirect jeśli brak session)
 - Protected pages (conditional rendering)
@@ -1604,6 +1763,7 @@ interface StatsContextValue {
 ```
 
 **Usage:**
+
 - AdminLayout topbar (optional badge)
 - /admin/photos toolbar (Badge "X/200")
 - /admin/categories header (Badge "X/10")
@@ -1613,6 +1773,7 @@ interface StatsContextValue {
 **Data source:** GET /api/stats
 
 **Refresh strategy:**
+
 - Manual call po mutacjach:
   - Upload zdjęć → refreshStats()
   - Delete zdjęcia → refreshStats()
@@ -1650,6 +1811,7 @@ const [isPreloading, setIsPreloading] = useState(false);
 ### 10.4 Form state (react-hook-form)
 
 **Wszystkie formularze używają react-hook-form + Zod:**
+
 - LoginForm
 - CategoryDialog (create/edit)
 - PhotoEditDialog
@@ -1661,7 +1823,7 @@ const [isPreloading, setIsPreloading] = useState(false);
 ```typescript
 const form = useForm<CategoryFormData>({
   resolver: zodResolver(categorySchema),
-  defaultValues: category || { name: '', description: '' }
+  defaultValues: category || { name: "", description: "" },
 });
 
 const onSubmit = async (data: CategoryFormData) => {
@@ -1699,23 +1861,19 @@ Error:
 ```typescript
 const togglePublish = async (photoId: string, currentStatus: boolean) => {
   // 1. Optimistic update
-  setPhotos(photos.map(p =>
-    p.id === photoId ? {...p, is_published: !currentStatus} : p
-  ));
+  setPhotos(photos.map((p) => (p.id === photoId ? { ...p, is_published: !currentStatus } : p)));
 
   // 2. API call
   try {
     await fetch(`/api/photos/${photoId}/publish`, {
-      method: 'PATCH',
-      body: JSON.stringify({ is_published: !currentStatus })
+      method: "PATCH",
+      body: JSON.stringify({ is_published: !currentStatus }),
     });
-    toast.success('Status publikacji zaktualizowany');
+    toast.success("Status publikacji zaktualizowany");
   } catch (error) {
     // 3. Revert
-    setPhotos(photos.map(p =>
-      p.id === photoId ? {...p, is_published: currentStatus} : p
-    ));
-    toast.error('Nie udało się zaktualizować');
+    setPhotos(photos.map((p) => (p.id === photoId ? { ...p, is_published: currentStatus } : p)));
+    toast.error("Nie udało się zaktualizować");
   }
 };
 ```
@@ -1724,35 +1882,35 @@ const togglePublish = async (photoId: string, currentStatus: boolean) => {
 
 ## 11. Mapowanie User Stories do UI
 
-| US # | User Story | Główny widok | Kluczowe komponenty | Status |
-|------|-----------|--------------|---------------------|--------|
-| US-001 | Logowanie | `/admin/login` | LoginForm, AuthContext | ✓ |
-| US-002 | Wylogowanie | AdminLayout user menu | DropdownMenu, AuthContext.signOut() | ✓ |
-| US-003 | Ochrona panelu | Middleware | AuthContext, redirect logic | ✓ |
-| US-004 | Tworzenie kategorii | `/admin/categories` | CategoryDialog (create mode) | ✓ |
-| US-005 | Edycja kategorii | `/admin/categories` | CategoryDialog (edit mode) | ✓ |
-| US-006 | Wybór okładki | CategoryDialog | CoverPhotoSelector (Popover) | ✓ |
-| US-007 | Usuwanie kategorii | `/admin/categories` | AlertDialog (delete confirmation) | ✓ |
-| US-008 | Upload pojedynczego | `/admin/photos` | PhotoUploadZone (single file) | ✓ |
-| US-009 | Batch upload | `/admin/photos` | PhotoUploadZone (multiple files) | ✓ |
-| US-010 | Walidacja pliku | PhotoUploadZone | Validation logic + toasts | ✓ |
-| US-011 | Edycja zdjęcia | `/admin/photos` | PhotoEditDialog | ✓ |
-| US-012 | Toggle publikacji | `/admin/photos` | Switch (optimistic update) | ✓ |
-| US-013 | Usuwanie zdjęcia | `/admin/photos` | AlertDialog (delete confirmation) | ✓ |
-| US-014 | Edycja profilu | `/admin/profile` | ProfileForm, SeoSettingsForm | ✓ |
-| US-015 | Przeglądanie kategorii | `/` (główna) | CategoryGrid, CategoryCard | ✓ |
-| US-016 | Galeria w kategorii | `/kategoria/[slug]` | PhotoMasonry (infinite scroll) | ✓ |
-| US-017 | Podgląd lightbox | PhotoLightbox | Dialog z image, controls | ✓ |
-| US-018 | Nawigacja lightbox | PhotoLightbox | Arrow buttons, keyboard, swipe | ✓ |
-| US-019 | Blokada pobierania | PhotoLightbox, images | onContextMenu/onDragStart preventDefault | ✓ |
-| US-020 | O mnie (odwiedzający) | `/o-mnie` | Centered card, contact icons | ✓ |
-| US-021 | Nawigacja | PublicLayout | Navigation component, hamburger | ✓ |
-| US-022 | Strona 404 | `404.astro` | Minimalistyczny layout + button | ✓ |
-| US-023 | SEO i udostępnianie | SEO component | Meta tags, Open Graph | ✓ |
-| US-024 | Responsywność mobile | Wszystkie widoki | Responsive grids, Sheet, swipe | ✓ |
-| US-025 | Filtrowanie admin | `/admin/photos` | Select dropdown (kategorie) | ✓ |
-| US-026 | Limity info | `/admin/photos`, `/admin/profile` | Badge, Progress bars, StatsContext | ✓ |
-| US-027 | Błędy sieciowe upload | PhotoUploadZone | Per-file error state + retry | ✓ |
+| US #   | User Story             | Główny widok                      | Kluczowe komponenty                      | Status |
+| ------ | ---------------------- | --------------------------------- | ---------------------------------------- | ------ |
+| US-001 | Logowanie              | `/admin/login`                    | LoginForm, AuthContext                   | ✓      |
+| US-002 | Wylogowanie            | AdminLayout user menu             | DropdownMenu, AuthContext.signOut()      | ✓      |
+| US-003 | Ochrona panelu         | Middleware                        | AuthContext, redirect logic              | ✓      |
+| US-004 | Tworzenie kategorii    | `/admin/categories`               | CategoryDialog (create mode)             | ✓      |
+| US-005 | Edycja kategorii       | `/admin/categories`               | CategoryDialog (edit mode)               | ✓      |
+| US-006 | Wybór okładki          | CategoryDialog                    | CoverPhotoSelector (Popover)             | ✓      |
+| US-007 | Usuwanie kategorii     | `/admin/categories`               | AlertDialog (delete confirmation)        | ✓      |
+| US-008 | Upload pojedynczego    | `/admin/photos`                   | PhotoUploadZone (single file)            | ✓      |
+| US-009 | Batch upload           | `/admin/photos`                   | PhotoUploadZone (multiple files)         | ✓      |
+| US-010 | Walidacja pliku        | PhotoUploadZone                   | Validation logic + toasts                | ✓      |
+| US-011 | Edycja zdjęcia         | `/admin/photos`                   | PhotoEditDialog                          | ✓      |
+| US-012 | Toggle publikacji      | `/admin/photos`                   | Switch (optimistic update)               | ✓      |
+| US-013 | Usuwanie zdjęcia       | `/admin/photos`                   | AlertDialog (delete confirmation)        | ✓      |
+| US-014 | Edycja profilu         | `/admin/profile`                  | ProfileForm, SeoSettingsForm             | ✓      |
+| US-015 | Przeglądanie kategorii | `/` (główna)                      | CategoryGrid, CategoryCard               | ✓      |
+| US-016 | Galeria w kategorii    | `/kategoria/[slug]`               | PhotoMasonry (infinite scroll)           | ✓      |
+| US-017 | Podgląd lightbox       | PhotoLightbox                     | Dialog z image, controls                 | ✓      |
+| US-018 | Nawigacja lightbox     | PhotoLightbox                     | Arrow buttons, keyboard, swipe           | ✓      |
+| US-019 | Blokada pobierania     | PhotoLightbox, images             | onContextMenu/onDragStart preventDefault | ✓      |
+| US-020 | O mnie (odwiedzający)  | `/o-mnie`                         | Centered card, contact icons             | ✓      |
+| US-021 | Nawigacja              | PublicLayout                      | Navigation component, hamburger          | ✓      |
+| US-022 | Strona 404             | `404.astro`                       | Minimalistyczny layout + button          | ✓      |
+| US-023 | SEO i udostępnianie    | SEO component                     | Meta tags, Open Graph                    | ✓      |
+| US-024 | Responsywność mobile   | Wszystkie widoki                  | Responsive grids, Sheet, swipe           | ✓      |
+| US-025 | Filtrowanie admin      | `/admin/photos`                   | Select dropdown (kategorie)              | ✓      |
+| US-026 | Limity info            | `/admin/photos`, `/admin/profile` | Badge, Progress bars, StatsContext       | ✓      |
+| US-027 | Błędy sieciowe upload  | PhotoUploadZone                   | Per-file error state + retry             | ✓      |
 
 **Wszystkie 27 User Stories pokryte przez architekturę UI.** ✓
 
@@ -1774,6 +1932,7 @@ const togglePublish = async (photoId: string, currentStatus: boolean) => {
 ### 12.2 Trade-offs w MVP
 
 **Pominięte features (post-MVP):**
+
 - Dashboard z overview (redirect do /admin/photos wystarczy)
 - Dark mode (tylko light mode)
 - Drag & drop reordering kategorii (static order wystarczy)
@@ -1783,6 +1942,7 @@ const togglePublish = async (photoId: string, currentStatus: boolean) => {
 - Advanced accessibility (screen reader announcements dla wszystkich akcji)
 
 **Uzasadnienie:**
+
 - Szybsze delivery MVP
 - Mniejszy tech debt
 - Validation core functionality
@@ -1791,6 +1951,7 @@ const togglePublish = async (photoId: string, currentStatus: boolean) => {
 ### 12.3 Następne kroki implementacji
 
 **Faza 1: Setup i infrastruktura**
+
 1. Astro project setup (config, dependencies)
 2. Supabase integration (Auth, Storage, Database)
 3. Tailwind CSS 4 + Shadcn/ui installation
@@ -1798,6 +1959,7 @@ const togglePublish = async (photoId: string, currentStatus: boolean) => {
 5. Middleware dla auth guards
 
 **Faza 2: Publiczna galeria**
+
 1. Strona główna (CategoryGrid, SSR)
 2. Galeria kategorii (PhotoMasonry, infinite scroll, SSR+CSR)
 3. PhotoLightbox (fullscreen viewer)
@@ -1806,17 +1968,20 @@ const togglePublish = async (photoId: string, currentStatus: boolean) => {
 6. SEO component (meta tags)
 
 **Faza 3: Panel administracyjny - Auth**
+
 1. Login page + LoginForm
 2. AuthContext (Supabase Auth integration)
 3. Wylogowanie (user menu)
 
 **Faza 4: Panel administracyjny - Kategorie**
+
 1. Lista kategorii (CategoriesGrid)
 2. CategoryDialog (create/edit)
 3. CoverPhotoSelector (Popover)
 4. Delete confirmation (AlertDialog)
 
 **Faza 5: Panel administracyjny - Zdjęcia**
+
 1. Lista zdjęć (PhotosGrid, filter)
 2. PhotoUploadZone (drag & drop, progress, compression)
 3. PhotoEditDialog
@@ -1824,12 +1989,14 @@ const togglePublish = async (photoId: string, currentStatus: boolean) => {
 5. Delete confirmation
 
 **Faza 6: Panel administracyjny - Profil**
+
 1. ProfileForm (dane profilowe)
 2. SeoSettingsForm
 3. StatsCard (progress bars)
 4. StatsContext
 
 **Faza 7: Polish & Testing**
+
 1. Toast notifications (Sonner setup)
 2. Loading states (Skeleton components)
 3. Error handling (wszystkie edge cases)
@@ -1839,6 +2006,7 @@ const togglePublish = async (photoId: string, currentStatus: boolean) => {
 7. Security review (auth, validation, download protection)
 
 **Faza 8: Deployment**
+
 1. Docker setup
 2. Environment variables
 3. DigitalOcean deployment

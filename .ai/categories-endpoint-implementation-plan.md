@@ -94,16 +94,16 @@ Zod schemas w `src/lib/schemas/category.schema.ts`:
 
 ## 7. Scenariusze błędów
 
-| Scenariusz                     | Kod | Komunikat                          |
-| ------------------------------ | --- | ---------------------------------- |
-| Brak tokenu/nieprawidłowy      | 401 | Unauthorized                       |
-| Kategoria nie znaleziona       | 404 | Category not found                 |
-| Nieprawidłowe dane wejściowe   | 400 | Validation error + szczegóły       |
-| Duplikat slug                  | 400 | Category with this name exists     |
-| Limit kategorii osiągnięty     | 409 | Category limit reached (max 10)    |
-| cover_photo_id nie istnieje    | 400 | Photo not found                    |
-| Nieprawidłowy JSON             | 400 | Invalid JSON body                  |
-| Błąd serwera                   | 500 | An unexpected error occurred       |
+| Scenariusz                   | Kod | Komunikat                       |
+| ---------------------------- | --- | ------------------------------- |
+| Brak tokenu/nieprawidłowy    | 401 | Unauthorized                    |
+| Kategoria nie znaleziona     | 404 | Category not found              |
+| Nieprawidłowe dane wejściowe | 400 | Validation error + szczegóły    |
+| Duplikat slug                | 400 | Category with this name exists  |
+| Limit kategorii osiągnięty   | 409 | Category limit reached (max 10) |
+| cover_photo_id nie istnieje  | 400 | Photo not found                 |
+| Nieprawidłowy JSON           | 400 | Invalid JSON body               |
+| Błąd serwera                 | 500 | An unexpected error occurred    |
 
 </analysis>
 
@@ -177,9 +177,7 @@ Kluczowe funkcjonalności:
 
 ```json
 {
-  "order": [
-    { "id": "uuid", "display_order": "number" }
-  ]
+  "order": [{ "id": "uuid", "display_order": "number" }]
 }
 ```
 
@@ -512,16 +510,16 @@ Request → Middleware (auth) → API Route
 
 ### Mapowanie błędów
 
-| Błąd źródłowy | Kod HTTP | Kod błędu | Komunikat |
-|---------------|----------|-----------|-----------|
-| Brak/nieprawidłowy token | 401 | UNAUTHORIZED | Authentication required |
-| Zod validation failed | 400 | VALIDATION_ERROR | [szczegóły z Zod] |
-| Invalid JSON | 400 | VALIDATION_ERROR | Invalid JSON body |
-| PGRST116 (not found) | 404 | NOT_FOUND | Category not found |
-| 23505 (unique violation) | 400 | DUPLICATE_SLUG | Category with this name already exists |
-| Category count >= 10 | 409 | LIMIT_REACHED | Category limit reached (max 10) |
-| Photo not found | 400 | INVALID_PHOTO | Photo not found |
-| Unexpected error | 500 | INTERNAL_ERROR | An unexpected error occurred |
+| Błąd źródłowy            | Kod HTTP | Kod błędu        | Komunikat                              |
+| ------------------------ | -------- | ---------------- | -------------------------------------- |
+| Brak/nieprawidłowy token | 401      | UNAUTHORIZED     | Authentication required                |
+| Zod validation failed    | 400      | VALIDATION_ERROR | [szczegóły z Zod]                      |
+| Invalid JSON             | 400      | VALIDATION_ERROR | Invalid JSON body                      |
+| PGRST116 (not found)     | 404      | NOT_FOUND        | Category not found                     |
+| 23505 (unique violation) | 400      | DUPLICATE_SLUG   | Category with this name already exists |
+| Category count >= 10     | 409      | LIMIT_REACHED    | Category limit reached (max 10)        |
+| Photo not found          | 400      | INVALID_PHOTO    | Photo not found                        |
+| Unexpected error         | 500      | INTERNAL_ERROR   | An unexpected error occurred           |
 
 ## 8. Rozważania dotyczące wydajności
 
@@ -566,18 +564,12 @@ Plik: `src/lib/schemas/category.schema.ts`
 import { z } from "zod";
 
 export const createCategorySchema = z.object({
-  name: z
-    .string()
-    .min(1, "Name is required")
-    .max(100, "Name must be at most 100 characters"),
+  name: z.string().min(1, "Name is required").max(100, "Name must be at most 100 characters"),
   description: z.string().max(500).nullish(),
 });
 
 export const updateCategorySchema = z.object({
-  name: z
-    .string()
-    .min(1, "Name is required")
-    .max(100, "Name must be at most 100 characters"),
+  name: z.string().min(1, "Name is required").max(100, "Name must be at most 100 characters"),
   description: z.string().max(500).nullish(),
   cover_photo_id: z.string().uuid("Invalid photo ID").nullish(),
 });
@@ -652,9 +644,9 @@ export function generateSlug(name: string): string {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-    .replace(/[^a-z0-9]+/g, "-")     // Replace non-alphanumeric with dash
-    .replace(/^-+|-+$/g, "")         // Remove leading/trailing dashes
-    .substring(0, 100);              // Limit length
+    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with dash
+    .replace(/^-+|-+$/g, "") // Remove leading/trailing dashes
+    .substring(0, 100); // Limit length
 }
 ```
 

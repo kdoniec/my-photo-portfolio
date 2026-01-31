@@ -1,0 +1,56 @@
+---
+import PublicLayout from "../../layouts/PublicLayout.astro";
+import PhotoMasonry from "../../components/gallery/PhotoMasonry";
+import { PublicService } from "../../lib/services/public.service";
+
+// Get slug from params
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect("/404", 302);
+}
+
+// Fetch data on server side
+const publicService = new PublicService(Astro.locals.supabase);
+
+const [settings, category, photosResponse] = await Promise.all([
+  publicService.getPublicSettings(),
+  publicService.getPublicCategoryBySlug(slug),
+  publicService.getPublicPhotosByCategory(slug, { page: 1, limit: 20 }),
+]);
+
+// Redirect to 404 if category not found or has no published photos
+if (!category || !photosResponse) {
+  return Astro.redirect("/404", 302);
+}
+
+// Fallbacks
+const siteName = settings?.site_title || "Portfolio";
+const pageTitle = `${category.name} - ${siteName}`;
+const pageDescription = category.description || `Galeria zdjęć z kategorii ${category.name}`;
+---
+
+<PublicLayout
+  title={pageTitle}
+  siteName={siteName}
+  description={pageDescription}
+  ogImage={category.cover_photo_url || undefined}
+>
+  <div class="container mx-auto px-4 py-8">
+    <!-- Category Header -->
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold text-foreground mb-3">
+        {category.name}
+      </h1>
+      {category.description && <p class="text-lg text-muted-foreground max-w-3xl">{category.description}</p>}
+    </header>
+
+    <!-- Photo Gallery -->
+    <PhotoMasonry
+      categorySlug={slug}
+      initialPhotos={photosResponse.data}
+      initialPagination={photosResponse.pagination}
+      client:load
+    />
+  </div>
+</PublicLayout>

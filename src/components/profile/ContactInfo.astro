@@ -1,0 +1,48 @@
+---
+import { Mail, Phone } from "lucide-react";
+
+interface Props {
+  email: string | null;
+  phone: string | null;
+}
+
+const { email, phone } = Astro.props;
+
+// Don't render if no contact info
+if (!email && !phone) {
+  return null;
+}
+---
+
+<address class="not-italic">
+  <div class="flex flex-col gap-3">
+    {
+      email && (
+        <a
+          href={`mailto:${email}`}
+          class="inline-flex items-center gap-2 text-foreground hover:text-foreground/80 transition-colors group"
+        >
+          <Mail
+            class="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors"
+            aria-hidden="true"
+          />
+          <span class="text-base">{email}</span>
+        </a>
+      )
+    }
+    {
+      phone && (
+        <a
+          href={`tel:${phone}`}
+          class="inline-flex items-center gap-2 text-foreground hover:text-foreground/80 transition-colors group"
+        >
+          <Phone
+            class="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors"
+            aria-hidden="true"
+          />
+          <span class="text-base">{phone}</span>
+        </a>
+      )
+    }
+  </div>
+</address>

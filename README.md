@@ -143,15 +143,15 @@ The project uses [Bruno](https://www.usebruno.com/) for API testing. Bruno is a 
 
 ### Available Collections
 
-| Collection | Description                                    |
-| ---------- | ---------------------------------------------- |
-| `auth`     | Authentication endpoints (login)               |
-| `profile`  | User profile management                        |
-| `settings` | Site settings management                       |
-| `categories` | Category CRUD operations                     |
-| `photos`   | Photo CRUD and batch upload                    |
-| `public`   | Public endpoints (no auth required)            |
-| `stats`    | Usage statistics                               |
+| Collection   | Description                         |
+| ------------ | ----------------------------------- |
+| `auth`       | Authentication endpoints (login)    |
+| `profile`    | User profile management             |
+| `settings`   | Site settings management            |
+| `categories` | Category CRUD operations            |
+| `photos`     | Photo CRUD and batch upload         |
+| `public`     | Public endpoints (no auth required) |
+| `stats`      | Usage statistics                    |
 
 ## Project Scope
 

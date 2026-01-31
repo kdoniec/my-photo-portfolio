@@ -1,8 +1,27 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+import PublicLayout from "../layouts/PublicLayout.astro";
+import CategoryGrid from "../components/category/CategoryGrid";
+import { PublicService } from "../lib/services/public.service";
+
+// Fetch data on server side
+const publicService = new PublicService(Astro.locals.supabase);
+
+const [settings, categories] = await Promise.all([
+  publicService.getPublicSettings(),
+  publicService.getPublicCategories(),
+]);
+
+// Fallbacks for missing data
+const siteName = settings?.site_title || "Portfolio";
+const siteDescription = settings?.site_description || "Profesjonalne portfolio fotograficzne";
 ---
 
-<Layout>
-  <Welcome />
-</Layout>
+<PublicLayout title={siteName} siteName={siteName} description={siteDescription}>
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8 text-center">
+      <h1 class="text-4xl font-bold text-foreground mb-3">Galeria</h1>
+      {siteDescription && <p class="text-lg text-muted-foreground max-w-2xl mx-auto">{siteDescription}</p>}
+    </div>
+    <CategoryGrid categories={categories} client:load />
+  </div>
+</PublicLayout>

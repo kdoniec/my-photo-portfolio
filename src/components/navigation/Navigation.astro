@@ -1,0 +1,54 @@
+---
+import MobileMenu from "./MobileMenu";
+
+interface Props {
+  siteName: string;
+  currentPath: string;
+}
+
+const { siteName, currentPath } = Astro.props;
+
+const navLinks = [
+  { label: "Galeria", href: "/" },
+  { label: "O mnie", href: "/o-mnie" },
+];
+---
+
+<header role="banner" class="border-b border-border bg-background">
+  <div class="container mx-auto px-4">
+    <nav aria-label="Main navigation" class="flex items-center justify-between py-4">
+      <!-- Logo/Site Name -->
+      <a href="/" class="text-xl font-semibold text-foreground hover:text-foreground/80 transition-colors">
+        {siteName}
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <ul class="hidden md:flex items-center gap-8">
+        {
+          navLinks.map((link) => {
+            const isActive = currentPath === link.href;
+            return (
+              <li>
+                <a
+                  href={link.href}
+                  class:list={[
+                    "text-sm font-medium transition-colors hover:text-foreground",
+                    isActive ? "text-foreground" : "text-muted-foreground",
+                  ]}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {link.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+
+      <!-- Mobile Menu -->
+      <div class="md:hidden">
+        <MobileMenu siteName={siteName} currentPath={currentPath} client:load />
+      </div>
+    </nav>
+  </div>
+</header>

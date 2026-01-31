@@ -5,6 +5,7 @@
 Ten plan obejmuje implementację 6 endpointów API:
 
 ### Public Endpoints (bez autoryzacji)
+
 - **GET /api/public/profile** - Publiczny profil fotografa
 - **GET /api/public/settings** - Ustawienia SEO dla meta tagów
 - **GET /api/public/categories** - Lista kategorii z opublikowanymi zdjęciami
@@ -12,6 +13,7 @@ Ten plan obejmuje implementację 6 endpointów API:
 - **GET /api/public/categories/:slug/photos** - Lista opublikowanych zdjęć w kategorii
 
 ### Authenticated Endpoint
+
 - **GET /api/stats** - Statystyki użycia i limity (wymaga autoryzacji)
 
 ---
@@ -20,63 +22,63 @@ Ten plan obejmuje implementację 6 endpointów API:
 
 ### 2.1 GET /api/public/profile
 
-| Właściwość | Wartość |
-|------------|---------|
-| Metoda HTTP | GET |
-| URL | `/api/public/profile` |
-| Autoryzacja | Nie wymagana |
-| Parametry | Brak |
-| Request Body | Brak |
+| Właściwość   | Wartość               |
+| ------------ | --------------------- |
+| Metoda HTTP  | GET                   |
+| URL          | `/api/public/profile` |
+| Autoryzacja  | Nie wymagana          |
+| Parametry    | Brak                  |
+| Request Body | Brak                  |
 
 ### 2.2 GET /api/public/settings
 
-| Właściwość | Wartość |
-|------------|---------|
-| Metoda HTTP | GET |
-| URL | `/api/public/settings` |
-| Autoryzacja | Nie wymagana |
-| Parametry | Brak |
-| Request Body | Brak |
+| Właściwość   | Wartość                |
+| ------------ | ---------------------- |
+| Metoda HTTP  | GET                    |
+| URL          | `/api/public/settings` |
+| Autoryzacja  | Nie wymagana           |
+| Parametry    | Brak                   |
+| Request Body | Brak                   |
 
 ### 2.3 GET /api/public/categories
 
-| Właściwość | Wartość |
-|------------|---------|
-| Metoda HTTP | GET |
-| URL | `/api/public/categories` |
-| Autoryzacja | Nie wymagana |
-| Parametry | Brak |
-| Request Body | Brak |
+| Właściwość   | Wartość                  |
+| ------------ | ------------------------ |
+| Metoda HTTP  | GET                      |
+| URL          | `/api/public/categories` |
+| Autoryzacja  | Nie wymagana             |
+| Parametry    | Brak                     |
+| Request Body | Brak                     |
 
 ### 2.4 GET /api/public/categories/:slug
 
-| Właściwość | Wartość |
-|------------|---------|
-| Metoda HTTP | GET |
-| URL | `/api/public/categories/:slug` |
-| Autoryzacja | Nie wymagana |
-| Parametry | `slug` (path parameter) - slug kategorii |
-| Request Body | Brak |
+| Właściwość   | Wartość                                  |
+| ------------ | ---------------------------------------- |
+| Metoda HTTP  | GET                                      |
+| URL          | `/api/public/categories/:slug`           |
+| Autoryzacja  | Nie wymagana                             |
+| Parametry    | `slug` (path parameter) - slug kategorii |
+| Request Body | Brak                                     |
 
 ### 2.5 GET /api/public/categories/:slug/photos
 
-| Właściwość | Wartość |
-|------------|---------|
-| Metoda HTTP | GET |
-| URL | `/api/public/categories/:slug/photos` |
-| Autoryzacja | Nie wymagana |
+| Właściwość      | Wartość                                                                     |
+| --------------- | --------------------------------------------------------------------------- |
+| Metoda HTTP     | GET                                                                         |
+| URL             | `/api/public/categories/:slug/photos`                                       |
+| Autoryzacja     | Nie wymagana                                                                |
 | Parametry Query | `page` (opcjonalny, default: 1), `limit` (opcjonalny, default: 20, max: 50) |
-| Request Body | Brak |
+| Request Body    | Brak                                                                        |
 
 ### 2.6 GET /api/stats
 
-| Właściwość | Wartość |
-|------------|---------|
-| Metoda HTTP | GET |
-| URL | `/api/stats` |
-| Autoryzacja | Bearer token wymagany |
-| Parametry | Brak |
-| Request Body | Brak |
+| Właściwość   | Wartość               |
+| ------------ | --------------------- |
+| Metoda HTTP  | GET                   |
+| URL          | `/api/stats`          |
+| Autoryzacja  | Bearer token wymagany |
+| Parametry    | Brak                  |
+| Request Body | Brak                  |
 
 ---
 
@@ -170,6 +172,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ### 4.1 GET /api/public/profile
 
 **Success (200):**
+
 ```json
 {
   "display_name": "string",
@@ -182,6 +185,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ### 4.2 GET /api/public/settings
 
 **Success (200):**
+
 ```json
 {
   "site_title": "string | null",
@@ -192,6 +196,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ### 4.3 GET /api/public/categories
 
 **Success (200):**
+
 ```json
 {
   "data": [
@@ -211,6 +216,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ### 4.4 GET /api/public/categories/:slug
 
 **Success (200):**
+
 ```json
 {
   "id": "uuid",
@@ -222,6 +228,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ```
 
 **Error (404):**
+
 ```json
 {
   "error": {
@@ -234,6 +241,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ### 4.5 GET /api/public/categories/:slug/photos
 
 **Success (200):**
+
 ```json
 {
   "data": [
@@ -256,6 +264,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ```
 
 **Error (404):**
+
 ```json
 {
   "error": {
@@ -268,6 +277,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ### 4.6 GET /api/stats
 
 **Success (200):**
+
 ```json
 {
   "photos": {
@@ -283,6 +293,7 @@ export const categorySlugSchema = z.string().min(1).max(100);
 ```
 
 **Error (401):**
+
 ```json
 {
   "error": {
@@ -329,6 +340,7 @@ Request → API Route → Supabase (anon) → categories table (RLS: anon select
 ```
 
 **Zapytanie SQL (realizowane przez RLS + query):**
+
 ```sql
 SELECT c.*,
        COUNT(p.id) as photos_count,
@@ -391,12 +403,12 @@ Request → Verify Bearer token → If invalid → 401
 
 Wszystkie publiczne endpointy wykorzystują RLS skonfigurowane w bazie danych:
 
-| Tabela | Rola | Operacja | Warunek |
-|--------|------|----------|---------|
-| profiles | anon | SELECT | `true` (wszystkie profile) |
-| photographer_settings | anon | SELECT | `true` (wszystkie ustawienia) |
-| categories | anon | SELECT | EXISTS (published photos in category) |
-| photos | anon | SELECT | `is_published = true AND category_id IS NOT NULL` |
+| Tabela                | Rola | Operacja | Warunek                                           |
+| --------------------- | ---- | -------- | ------------------------------------------------- |
+| profiles              | anon | SELECT   | `true` (wszystkie profile)                        |
+| photographer_settings | anon | SELECT   | `true` (wszystkie ustawienia)                     |
+| categories            | anon | SELECT   | EXISTS (published photos in category)             |
+| photos                | anon | SELECT   | `is_published = true AND category_id IS NOT NULL` |
 
 ### 6.2 Autoryzacja
 
@@ -416,6 +428,7 @@ Rozważyć implementację rate limiting dla publicznych endpointów (opcjonalnie
 ### 6.5 Sensitive Data
 
 Publiczne endpointy nie ujawniają:
+
 - `photographer_id`
 - `created_at`, `updated_at` (poza endpoint profile)
 - Ścieżek storage (`thumbnail_path`, `preview_path`) - transformowane na pełne URLs
@@ -426,15 +439,15 @@ Publiczne endpointy nie ujawniają:
 
 ### 7.1 Tabela błędów
 
-| Endpoint | Kod błędu | HTTP Status | Warunek |
-|----------|-----------|-------------|---------|
-| /api/public/profile | PROFILE_NOT_FOUND | 404 | Brak profilu w bazie |
-| /api/public/settings | SETTINGS_NOT_FOUND | 404 | Brak ustawień w bazie |
-| /api/public/categories/:slug | CATEGORY_NOT_FOUND | 404 | Kategoria nie istnieje lub bez published photos |
-| /api/public/categories/:slug/photos | CATEGORY_NOT_FOUND | 404 | Kategoria nie istnieje |
-| /api/public/categories/:slug/photos | INVALID_QUERY_PARAMS | 400 | Nieprawidłowe page/limit |
-| /api/stats | UNAUTHORIZED | 401 | Brak lub nieprawidłowy token |
-| Wszystkie | INTERNAL_ERROR | 500 | Błąd bazy danych lub serwera |
+| Endpoint                            | Kod błędu            | HTTP Status | Warunek                                         |
+| ----------------------------------- | -------------------- | ----------- | ----------------------------------------------- |
+| /api/public/profile                 | PROFILE_NOT_FOUND    | 404         | Brak profilu w bazie                            |
+| /api/public/settings                | SETTINGS_NOT_FOUND   | 404         | Brak ustawień w bazie                           |
+| /api/public/categories/:slug        | CATEGORY_NOT_FOUND   | 404         | Kategoria nie istnieje lub bez published photos |
+| /api/public/categories/:slug/photos | CATEGORY_NOT_FOUND   | 404         | Kategoria nie istnieje                          |
+| /api/public/categories/:slug/photos | INVALID_QUERY_PARAMS | 400         | Nieprawidłowe page/limit                        |
+| /api/stats                          | UNAUTHORIZED         | 401         | Brak lub nieprawidłowy token                    |
+| Wszystkie                           | INTERNAL_ERROR       | 500         | Błąd bazy danych lub serwera                    |
 
 ### 7.2 Format odpowiedzi błędu
 
@@ -451,6 +464,7 @@ interface ErrorResponseDTO {
 ### 7.3 Logowanie błędów
 
 Wszystkie błędy 500 powinny być logowane z:
+
 - Timestamp
 - Endpoint
 - Error message
@@ -492,6 +506,7 @@ ON categories (photographer_id, display_order);
 ### 8.3 Caching (opcjonalnie)
 
 Rozważyć HTTP cache headers dla publicznych endpointów:
+
 - `Cache-Control: public, max-age=300` (5 minut) dla kategorii
 - `Cache-Control: public, max-age=60` (1 minuta) dla zdjęć
 
@@ -530,6 +545,7 @@ export type PublicPhotoListQueryInput = z.input<typeof publicPhotoListQuerySchem
 **Plik:** `src/lib/services/public.service.ts`
 
 Metody:
+
 - `getPublicProfile(supabase: SupabaseClient): Promise<PublicProfileDTO | null>`
 - `getPublicSettings(supabase: SupabaseClient): Promise<PublicSettingsDTO | null>`
 - `getPublicCategories(supabase: SupabaseClient): Promise<PublicCategoryDTO[]>`
@@ -541,6 +557,7 @@ Metody:
 **Plik:** `src/lib/services/stats.service.ts`
 
 Metody:
+
 - `getStats(supabase: SupabaseClient, userId: string): Promise<StatsDTO>`
 
 ### Krok 4: Implementacja endpointów API
@@ -561,9 +578,12 @@ export const GET: APIRoute = async ({ locals }) => {
   const profile = await PublicService.getPublicProfile(supabase);
 
   if (!profile) {
-    return new Response(JSON.stringify({
-      error: { code: "PROFILE_NOT_FOUND", message: "Profile not found" }
-    }), { status: 404 });
+    return new Response(
+      JSON.stringify({
+        error: { code: "PROFILE_NOT_FOUND", message: "Profile not found" },
+      }),
+      { status: 404 }
+    );
   }
 
   return new Response(JSON.stringify(profile), { status: 200 });
