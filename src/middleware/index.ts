@@ -36,5 +36,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
     context.locals.user = user;
   }
 
+  // Protect /admin/* routes (except /admin/login)
+  const url = new URL(context.request.url);
+  const isAdminRoute = url.pathname.startsWith("/admin");
+  const isLoginPage = url.pathname === "/admin/login";
+
+  if (isAdminRoute && !isLoginPage && !context.locals.user) {
+    return context.redirect("/admin/login");
+  }
+
+  // Redirect to /admin/photos if user is already logged in and tries to access /admin/login
+  if (isLoginPage && context.locals.user) {
+    return context.redirect("/admin/photos");
+  }
+
   return next();
 });

@@ -1,0 +1,44 @@
+---
+import { AdminHeader } from "@/components/admin/shared/AdminHeader";
+import { AuthProvider } from "@/components/admin/context/AuthContext";
+import { Toaster } from "@/components/ui/sonner";
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  activeNav?: "categories" | "photos" | "profile";
+}
+
+const { title, activeNav } = Astro.props;
+const user = Astro.locals.user;
+
+// This layout is protected by middleware
+// If we're here, user is authenticated
+if (!user) {
+  return Astro.redirect("/admin/login");
+}
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-background">
+    <AuthProvider initialUser={user} client:load>
+      <header
+        class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      >
+        <AdminHeader activeNav={activeNav} user={user} client:load />
+      </header>
+
+      <main class="container mx-auto px-4 py-6">
+        <slot />
+      </main>
+
+      <Toaster client:load />
+    </AuthProvider>
+  </body>
+</html>

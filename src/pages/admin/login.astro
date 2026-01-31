@@ -1,0 +1,36 @@
+---
+import { DirectLoginForm } from "@/components/admin/auth/DirectLoginForm";
+import { EnvDebug } from "@/components/admin/auth/EnvDebug";
+import "@/styles/global.css";
+
+const user = Astro.locals.user;
+
+// Redirect if already logged in (middleware handles this, but double-check)
+if (user) {
+  return Astro.redirect("/admin/photos");
+}
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logowanie - Panel Administracyjny</title>
+  </head>
+  <body class="min-h-screen bg-background">
+    <div class="flex min-h-screen items-center justify-center px-4">
+      <div class="w-full max-w-md space-y-6">
+        <div class="space-y-2 text-center">
+          <h1 class="text-3xl font-bold">Panel Administracyjny</h1>
+          <p class="text-muted-foreground">Zaloguj się, aby zarządzać portfolio</p>
+        </div>
+
+        <div class="rounded-lg border bg-card p-6 shadow-sm">
+          <EnvDebug client:only="react" />
+          <DirectLoginForm client:only="react" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

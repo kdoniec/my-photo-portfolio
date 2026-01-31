@@ -1,0 +1,86 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { CategoriesManager } from "@/components/admin/categories/CategoriesManager";
+import { StatsProvider } from "@/components/admin/context/StatsContext";
+import type { CategoryListResponseDTO, StatsDTO } from "@/types";
+
+const supabase = Astro.locals.supabase;
+
+// Fetch categories
+let categories: CategoryListResponseDTO["data"] = [];
+let categoriesError: string | null = null;
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/categories`, {
+    headers: {
+      Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać kategorii");
+  }
+
+  const data: CategoryListResponseDTO = await response.json();
+  categories = data.data;
+} catch (err) {
+  categoriesError = err instanceof Error ? err.message : "Nieznany błąd";
+  console.error("Błąd podczas pobierania kategorii:", err);
+}
+
+// Fetch stats
+let stats: StatsDTO | null = null;
+let statsError: string | null = null;
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/stats`, {
+    headers: {
+      Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać statystyk");
+  }
+
+  stats = await response.json();
+} catch (err) {
+  statsError = err instanceof Error ? err.message : "Nieznany błąd";
+  console.error("Błąd podczas pobierania statystyk:", err);
+}
+---
+
+<AdminLayout title="Kategorie - Panel Administracyjny" activeNav="categories">
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-3xl font-bold">Kategorie</h1>
+      <p class="text-muted-foreground">Zarządzaj kategoriami zdjęć w swoim portfolio</p>
+    </div>
+
+    {
+      categoriesError && (
+        <div class="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <p class="font-medium">Błąd podczas ładowania kategorii</p>
+          <p class="text-sm">{categoriesError}</p>
+        </div>
+      )
+    }
+
+    {
+      statsError && (
+        <div class="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <p class="font-medium">Błąd podczas ładowania statystyk</p>
+          <p class="text-sm">{statsError}</p>
+        </div>
+      )
+    }
+
+    {
+      !categoriesError && !statsError && stats && (
+        <StatsProvider initialStats={stats} client:load>
+          <CategoriesManager initialCategories={categories} stats={stats} client:load />
+        </StatsProvider>
+      )
+    }
+  </div>
+</AdminLayout>

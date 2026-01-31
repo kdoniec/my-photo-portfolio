@@ -1,0 +1,117 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { PhotosManager } from "@/components/admin/photos/PhotosManager";
+import { StatsProvider } from "@/components/admin/context/StatsContext";
+import type { PhotoListResponseDTO, CategoryListResponseDTO, StatsDTO } from "@/types";
+
+const supabase = Astro.locals.supabase;
+const accessToken = (await supabase.auth.getSession()).data.session?.access_token;
+
+// Fetch photos
+let photos: PhotoListResponseDTO | null = null;
+let photosError: string | null = null;
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/photos?page=1&limit=20`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać zdjęć");
+  }
+
+  photos = await response.json();
+} catch (err) {
+  photosError = err instanceof Error ? err.message : "Nieznany błąd";
+  console.error("Błąd podczas pobierania zdjęć:", err);
+}
+
+// Fetch categories for filter dropdown
+let categories: CategoryListResponseDTO["data"] = [];
+let categoriesError: string | null = null;
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/categories`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać kategorii");
+  }
+
+  const data: CategoryListResponseDTO = await response.json();
+  categories = data.data;
+} catch (err) {
+  categoriesError = err instanceof Error ? err.message : "Nieznany błąd";
+  console.error("Błąd podczas pobierania kategorii:", err);
+}
+
+// Fetch stats
+let stats: StatsDTO | null = null;
+let statsError: string | null = null;
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/stats`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać statystyk");
+  }
+
+  stats = await response.json();
+} catch (err) {
+  statsError = err instanceof Error ? err.message : "Nieznany błąd";
+  console.error("Błąd podczas pobierania statystyk:", err);
+}
+---
+
+<AdminLayout title="Zdjęcia - Panel Administracyjny" activeNav="photos">
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-3xl font-bold">Zdjęcia</h1>
+      <p class="text-muted-foreground">Zarządzaj swoimi zdjęciami i publikacjami</p>
+    </div>
+
+    {
+      photosError && (
+        <div class="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <p class="font-medium">Błąd podczas ładowania zdjęć</p>
+          <p class="text-sm">{photosError}</p>
+        </div>
+      )
+    }
+
+    {
+      categoriesError && (
+        <div class="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <p class="font-medium">Błąd podczas ładowania kategorii</p>
+          <p class="text-sm">{categoriesError}</p>
+        </div>
+      )
+    }
+
+    {
+      statsError && (
+        <div class="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <p class="font-medium">Błąd podczas ładowania statystyk</p>
+          <p class="text-sm">{statsError}</p>
+        </div>
+      )
+    }
+
+    {
+      !photosError && !categoriesError && !statsError && photos && stats && (
+        <StatsProvider initialStats={stats} client:load>
+          <PhotosManager initialPhotos={photos} categories={categories} stats={stats} client:load />
+        </StatsProvider>
+      )
+    }
+  </div>
+</AdminLayout>

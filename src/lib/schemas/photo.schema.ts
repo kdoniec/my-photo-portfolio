@@ -81,3 +81,12 @@ export type CreatePhotoMetadataInput = z.infer<typeof createPhotoMetadataSchema>
 export type PhotoFileDimensionsInput = z.infer<typeof photoFileDimensionsSchema>;
 export type UpdatePhotoInput = z.infer<typeof updatePhotoSchema>;
 export type PublishPhotoInput = z.infer<typeof publishPhotoSchema>;
+
+// Frontend form schema (Polish messages)
+export const photoFormSchema = z.object({
+  title: z.string().max(200, "Tytuł może mieć maksymalnie 200 znaków").nullish().or(z.literal("")),
+  category_id: z.string().uuid().nullish(),
+  is_published: z.boolean(),
+});
+
+export type PhotoFormData = z.infer<typeof photoFormSchema>;

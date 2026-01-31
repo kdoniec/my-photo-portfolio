@@ -33,3 +33,12 @@ export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 export type ReorderCategoryInput = z.infer<typeof reorderCategorySchema>;
 export type CategoryListQueryInput = z.infer<typeof categoryListQuerySchema>;
+
+// Frontend form schema (Polish messages)
+export const categoryFormSchema = z.object({
+  name: z.string().min(1, "Nazwa jest wymagana").max(100, "Nazwa może mieć maksymalnie 100 znaków"),
+  description: z.string().max(500, "Opis może mieć maksymalnie 500 znaków").nullish().or(z.literal("")),
+  cover_photo_id: z.string().uuid().nullish(),
+});
+
+export type CategoryFormData = z.infer<typeof categoryFormSchema>;

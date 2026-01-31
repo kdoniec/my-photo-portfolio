@@ -1,0 +1,116 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { StatsProvider } from "@/components/admin/context/StatsContext";
+import { ProfileManager } from "@/components/admin/profile/ProfileManager";
+import type { ProfileDTO, SettingsDTO, StatsDTO } from "@/types";
+
+const supabase = Astro.locals.supabase;
+const accessToken = (await supabase.auth.getSession()).data.session?.access_token;
+
+// Fetch profile
+let profile: ProfileDTO | null = null;
+let profileError: string | null = null;
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/profile`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać profilu");
+  }
+
+  profile = await response.json();
+} catch (err) {
+  profileError = err instanceof Error ? err.message : "Nieznany błąd";
+  console.error("Błąd podczas pobierania profilu:", err);
+}
+
+// Fetch settings
+let settings: SettingsDTO | null = null;
+let settingsError: string | null = null;
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/settings`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać ustawień");
+  }
+
+  settings = await response.json();
+} catch (err) {
+  settingsError = err instanceof Error ? err.message : "Nieznany błąd";
+  console.error("Błąd podczas pobierania ustawień:", err);
+}
+
+// Fetch stats
+let stats: StatsDTO | null = null;
+let statsError: string | null = null;
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/stats`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać statystyk");
+  }
+
+  stats = await response.json();
+} catch (err) {
+  statsError = err instanceof Error ? err.message : "Nieznany błąd";
+  console.error("Błąd podczas pobierania statystyk:", err);
+}
+---
+
+<AdminLayout title="Profil - Panel Administracyjny" activeNav="profile">
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-3xl font-bold">Profil</h1>
+      <p class="text-muted-foreground">Zarządzaj swoim profilem i ustawieniami strony</p>
+    </div>
+
+    {
+      profileError && (
+        <div class="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <p class="font-medium">Błąd podczas ładowania profilu</p>
+          <p class="text-sm">{profileError}</p>
+        </div>
+      )
+    }
+
+    {
+      settingsError && (
+        <div class="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <p class="font-medium">Błąd podczas ładowania ustawień</p>
+          <p class="text-sm">{settingsError}</p>
+        </div>
+      )
+    }
+
+    {
+      statsError && (
+        <div class="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <p class="font-medium">Błąd podczas ładowania statystyk</p>
+          <p class="text-sm">{statsError}</p>
+        </div>
+      )
+    }
+
+    {
+      !profileError && !settingsError && !statsError && profile && settings && stats && (
+        <StatsProvider initialStats={stats} client:load>
+          <ProfileManager profile={profile} settings={settings} stats={stats} client:load />
+        </StatsProvider>
+      )
+    }
+  </div>
+</AdminLayout>
