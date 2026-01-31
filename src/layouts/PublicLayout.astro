@@ -1,18 +1,32 @@
 ---
 import "../styles/global.css";
 import SEOHead from "../components/seo/SEOHead.astro";
-import Navigation from "../components/navigation/Navigation.astro";
+import PublicNavbar from "../components/navigation/PublicNavbar";
+import type { PublicProfileDTO } from "@/types";
 
 interface Props {
-  title: string;
-  siteName: string;
+  title?: string;
   description?: string;
   ogImage?: string;
-  canonicalUrl?: string;
 }
 
-const { title, siteName, description, ogImage, canonicalUrl } = Astro.props;
+const { title, description, ogImage } = Astro.props;
 const currentPath = Astro.url.pathname;
+
+// Fetch photographer name from API
+let photographerName = "Portfolio";
+try {
+  const response = await fetch(`${Astro.url.origin}/api/public/profile`);
+  if (response.ok) {
+    const profile: PublicProfileDTO = await response.json();
+    photographerName = profile.display_name || "Portfolio";
+  }
+} catch (error) {
+  console.error("Failed to fetch photographer profile:", error);
+}
+
+// Build full page title
+const pageTitle = title ? `${title} | ${photographerName}` : photographerName;
 ---
 
 <!doctype html>
@@ -21,10 +35,14 @@ const currentPath = Astro.url.pathname;
     <meta charset="UTF-8" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <SEOHead title={title} description={description} ogImage={ogImage} canonicalUrl={canonicalUrl} />
+    <SEOHead title={pageTitle} description={description} ogImage={ogImage} />
   </head>
   <body class="min-h-screen flex flex-col">
-    <Navigation siteName={siteName} currentPath={currentPath} />
+    <PublicNavbar
+      client:load
+      photographerName={photographerName}
+      currentPath={currentPath}
+    />
     <main class="flex-1">
       <slot />
     </main>
@@ -32,7 +50,7 @@ const currentPath = Astro.url.pathname;
       <div class="container mx-auto px-4">
         <p class="text-center text-sm text-muted-foreground">
           &copy; {new Date().getFullYear()}
-          {siteName}. Wszystkie prawa zastrzeżone.
+          {photographerName}. Wszystkie prawa zastrzeżone.
         </p>
       </div>
     </footer>

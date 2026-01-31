@@ -1,20 +1,50 @@
 ---
-import { AdminLayoutClient } from "@/components/admin/layout/AdminLayoutClient";
 import "@/styles/global.css";
+import AdminNavbar from "@/components/navigation/AdminNavbar";
+import { Toaster } from "@/components/ui/sonner";
+import type { NavUser } from "@/components/navigation/types";
+import type { ProfileDTO } from "@/types";
 
 interface Props {
-  title: string;
-  activeNav?: "categories" | "photos" | "profile";
+  title?: string;
 }
 
-const { title, activeNav } = Astro.props;
+const { title } = Astro.props;
 const user = Astro.locals.user;
+const currentPath = Astro.url.pathname;
 
 // This layout is protected by middleware
 // If we're here, user is authenticated
 if (!user) {
   return Astro.redirect("/admin/login");
 }
+
+// Fetch profile data for display name
+let navUser: NavUser = {
+  displayName: user.email || "Admin",
+  email: user.email || ""
+};
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/profile`, {
+    headers: {
+      Cookie: Astro.request.headers.get("Cookie") || ""
+    }
+  });
+
+  if (response.ok) {
+    const profile: ProfileDTO = await response.json();
+    navUser = {
+      displayName: profile.display_name,
+      email: profile.contact_email || user.email || ""
+    };
+  }
+} catch (error) {
+  console.error("Failed to fetch profile:", error);
+}
+
+// Build page title
+const pageTitle = title ? `${title} | Admin Panel` : "Admin Panel";
 ---
 
 <!doctype html>
@@ -22,11 +52,20 @@ if (!user) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>{pageTitle}</title>
   </head>
   <body class="min-h-screen bg-background">
-    <AdminLayoutClient user={user} activeNav={activeNav} client:load>
+    <AdminNavbar
+      client:load
+      user={navUser}
+      currentPath={currentPath}
+    />
+    <main class="container mx-auto px-4 py-6">
       <slot />
-    </AdminLayoutClient>
+    </main>
+    <Toaster client:load />
   </body>
 </html>

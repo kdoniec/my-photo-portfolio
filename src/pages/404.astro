@@ -1,21 +1,15 @@
 ---
-import "../styles/global.css";
-import { Button } from "../components/ui/button";
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import { Button } from "@/components/ui/button";
 ---
 
-<!doctype html>
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <title>404 - Strona nie znaleziona</title>
-    <meta name="robots" content="noindex, nofollow" />
-  </head>
-  <body class="min-h-screen flex items-center justify-center bg-background">
-    <div class="text-center px-4">
+<PublicLayout title="404 - Strona nie znaleziona">
+  <div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+    <div class="text-center">
       <h1 class="text-9xl font-bold text-foreground mb-4">404</h1>
-      <h2 class="text-2xl font-semibold text-foreground mb-3">Strona nie została znaleziona</h2>
+      <h2 class="text-2xl font-semibold text-foreground mb-3">
+        Strona nie została znaleziona
+      </h2>
       <p class="text-muted-foreground mb-8 max-w-md mx-auto">
         Przepraszamy, ale strona której szukasz nie istnieje lub została przeniesiona.
       </p>
@@ -23,5 +17,5 @@ import { Button } from "../components/ui/button";
         <a href="/">Wróć do strony głównej</a>
       </Button>
     </div>
-  </body>
-</html>
+  </div>
+</PublicLayout>
