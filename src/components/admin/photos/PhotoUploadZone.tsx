@@ -119,7 +119,7 @@ export function PhotoUploadZone({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-hidden">
         <DialogHeader>
           <DialogTitle>Dodaj zdjęcia</DialogTitle>
           <DialogDescription>
@@ -127,7 +127,7 @@ export function PhotoUploadZone({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="max-h-[60vh] space-y-4 overflow-y-auto pr-2">
           {/* Dropzone */}
           <div
             {...getRootProps()}
