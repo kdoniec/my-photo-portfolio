@@ -45,7 +45,7 @@ export function PhotosManager({ initialPhotos, categories, stats }: PhotosManage
           loadMore();
         }
       },
-      { rootMargin: "400px" }
+      { rootMargin: "800px" }
     );
 
     observer.observe(sentinel);

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ProfileDTO } from "@/types";
@@ -18,6 +19,7 @@ export function ProfileForm({ profile, onSuccess }: ProfileFormProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileFormSchema),
@@ -28,6 +30,16 @@ export function ProfileForm({ profile, onSuccess }: ProfileFormProps) {
       contact_phone: profile.contact_phone || "",
     },
   });
+
+  // Sync form with profile prop changes
+  useEffect(() => {
+    reset({
+      display_name: profile.display_name || "",
+      bio: profile.bio || "",
+      contact_email: profile.contact_email || "",
+      contact_phone: profile.contact_phone || "",
+    });
+  }, [profile, reset]);
 
   const onSubmit = async (data: ProfileFormData) => {
     try {

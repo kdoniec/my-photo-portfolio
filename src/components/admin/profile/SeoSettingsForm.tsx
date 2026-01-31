@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { SettingsDTO } from "@/types";
@@ -18,6 +19,7 @@ export function SeoSettingsForm({ settings, onSuccess }: SeoSettingsFormProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<SettingsFormData>({
     resolver: zodResolver(settingsFormSchema),
@@ -26,6 +28,14 @@ export function SeoSettingsForm({ settings, onSuccess }: SeoSettingsFormProps) {
       site_description: settings.site_description || "",
     },
   });
+
+  // Sync form with settings prop changes
+  useEffect(() => {
+    reset({
+      site_title: settings.site_title || "",
+      site_description: settings.site_description || "",
+    });
+  }, [settings, reset]);
 
   const onSubmit = async (data: SettingsFormData) => {
     try {

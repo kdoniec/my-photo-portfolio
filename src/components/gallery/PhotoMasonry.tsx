@@ -58,7 +58,7 @@ export default function PhotoMasonry({ categorySlug, initialPhotos, initialPagin
     hasMore,
     isLoading,
     onLoadMore: loadMorePhotos,
-    threshold: 200,
+    threshold: 800,
   });
 
   // Masonry breakpoints
