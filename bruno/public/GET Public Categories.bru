@@ -1,0 +1,42 @@
+meta {
+  name: GET Public Categories
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/public/categories
+  body: none
+  auth: none
+}
+
+docs {
+  # GET /api/public/categories
+
+  Pobiera listę kategorii z opublikowanymi zdjęciami.
+  Kategorie bez opublikowanych zdjęć nie są zwracane.
+
+  ## Wymagania
+  - Brak autoryzacji (endpoint publiczny)
+
+  ## Odpowiedzi
+  - 200: Lista kategorii
+  - 500: Błąd serwera
+
+  ## Przykład odpowiedzi
+  ```json
+  {
+    "data": [
+      {
+        "id": "uuid",
+        "name": "Śluby",
+        "slug": "sluby",
+        "description": "Fotografia ślubna",
+        "cover_photo_url": "https://...",
+        "display_order": 1,
+        "photos_count": 25
+      }
+    ]
+  }
+  ```
+}

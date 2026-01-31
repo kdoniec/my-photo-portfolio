@@ -1,0 +1,40 @@
+meta {
+  name: GET Public Category by Slug
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/public/categories/wesela
+  body: none
+  auth: none
+}
+
+docs {
+  # GET /api/public/categories/:slug
+  
+  Pobiera szczegóły kategorii po slug.
+  Zwraca 404 jeśli kategoria nie istnieje lub nie ma opublikowanych zdjęć.
+  
+  ## Wymagania
+  - Brak autoryzacji (endpoint publiczny)
+  
+  ## Parametry ścieżki
+  - `slug` - slug kategorii (np. "sluby", "portrety")
+  
+  ## Odpowiedzi
+  - 200: Szczegóły kategorii
+  - 404: Kategoria nie znaleziona lub bez opublikowanych zdjęć
+  - 500: Błąd serwera
+  
+  ## Przykład odpowiedzi
+  ```json
+  {
+    "id": "uuid",
+    "name": "Śluby",
+    "slug": "sluby",
+    "description": "Fotografia ślubna",
+    "cover_photo_url": "https://..."
+  }
+  ```
+}

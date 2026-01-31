@@ -1,0 +1,35 @@
+meta {
+  name: GET Public Profile
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/public/profile
+  body: none
+  auth: none
+}
+
+docs {
+  # GET /api/public/profile
+
+  Pobiera publiczny profil fotografa.
+
+  ## Wymagania
+  - Brak autoryzacji (endpoint publiczny)
+
+  ## Odpowiedzi
+  - 200: Publiczny profil fotografa
+  - 404: Profil nie istnieje
+  - 500: Błąd serwera
+
+  ## Przykład odpowiedzi
+  ```json
+  {
+    "display_name": "Jan Kowalski",
+    "bio": "Fotograf ślubny z Krakowa",
+    "contact_email": "jan@example.com",
+    "contact_phone": "+48 123 456 789"
+  }
+  ```
+}

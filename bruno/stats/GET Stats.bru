@@ -1,0 +1,44 @@
+meta {
+  name: GET Stats
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/stats
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+docs {
+  # GET /api/stats
+
+  Pobiera statystyki użycia dla zalogowanego użytkownika.
+
+  ## Wymagania
+  - Bearer token w nagłówku Authorization
+
+  ## Odpowiedzi
+  - 200: Statystyki użycia
+  - 401: Brak autoryzacji
+  - 500: Błąd serwera
+
+  ## Przykład odpowiedzi
+  ```json
+  {
+    "photos": {
+      "count": 150,
+      "limit": 200
+    },
+    "categories": {
+      "count": 8,
+      "limit": 10
+    },
+    "storage_used_bytes": 524288000
+  }
+  ```
+}

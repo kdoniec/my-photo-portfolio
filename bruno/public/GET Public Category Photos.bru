@@ -1,0 +1,60 @@
+meta {
+  name: GET Public Category Photos
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/public/categories/wesela/photos?page=1&limit=20
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 1
+  limit: 20
+}
+
+docs {
+  # GET /api/public/categories/:slug/photos
+  
+  Pobiera paginowaną listę opublikowanych zdjęć w kategorii.
+  
+  ## Wymagania
+  - Brak autoryzacji (endpoint publiczny)
+  
+  ## Parametry ścieżki
+  - `slug` - slug kategorii
+  
+  ## Parametry query
+  - `page` - numer strony (domyślnie: 1)
+  - `limit` - liczba wyników na stronę (domyślnie: 20, max: 50)
+  
+  ## Odpowiedzi
+  - 200: Lista zdjęć z paginacją
+  - 400: Nieprawidłowe parametry query
+  - 404: Kategoria nie znaleziona
+  - 500: Błąd serwera
+  
+  ## Przykład odpowiedzi
+  ```json
+  {
+    "data": [
+      {
+        "id": "uuid",
+        "title": "Ślub Ani i Tomka",
+        "thumbnail_url": "https://...",
+        "preview_url": "https://...",
+        "original_width": 1920,
+        "original_height": 1080
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 45,
+      "total_pages": 3
+    }
+  }
+  ```
+}

@@ -1,0 +1,33 @@
+meta {
+  name: GET Public Settings
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/public/settings
+  body: none
+  auth: none
+}
+
+docs {
+  # GET /api/public/settings
+
+  Pobiera publiczne ustawienia SEO dla meta tagów.
+
+  ## Wymagania
+  - Brak autoryzacji (endpoint publiczny)
+
+  ## Odpowiedzi
+  - 200: Ustawienia SEO
+  - 404: Ustawienia nie istnieją
+  - 500: Błąd serwera
+
+  ## Przykład odpowiedzi
+  ```json
+  {
+    "site_title": "Jan Kowalski Photography",
+    "site_description": "Profesjonalna fotografia ślubna i portretowa"
+  }
+  ```
+}
