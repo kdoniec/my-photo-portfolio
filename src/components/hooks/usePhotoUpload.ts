@@ -1,8 +1,11 @@
 import { useState } from "react";
-import imageCompression from "browser-image-compression";
 import type { BatchPhotoUploadResponseDTO } from "@/types";
 import type { PhotoUploadFile, PhotoUploadSettings } from "@/components/admin/types";
 import { useStats } from "@/components/admin/context/StatsContext";
+import {
+  createThumbnail as picaCreateThumbnail,
+  createPreview as picaCreatePreview,
+} from "@/lib/imageResize";
 
 const MAX_FILES_PER_BATCH = 100; // Increased from 20 for bulk uploads
 const MAX_FILE_SIZE_MB = 50; // Increased from 10MB - we compress anyway
@@ -62,16 +65,8 @@ export function usePhotoUpload(currentCount: number, limit: number) {
   };
 
   const createThumbnail = async (file: File): Promise<File> => {
-    const options = {
-      maxSizeMB: 0.5,
-      maxWidthOrHeight: 400,
-      useWebWorker: true,
-      fileType: "image/jpeg",
-    };
-
     try {
-      const thumbnail = await imageCompression(file, options);
-      return thumbnail;
+      return await picaCreateThumbnail(file);
     } catch (err) {
       console.error("Thumbnail creation error:", err);
       throw new Error("Nie udało się utworzyć miniatury");
@@ -79,16 +74,8 @@ export function usePhotoUpload(currentCount: number, limit: number) {
   };
 
   const createPreview = async (file: File): Promise<File> => {
-    const options = {
-      maxSizeMB: 2,
-      maxWidthOrHeight: 1200,
-      useWebWorker: true,
-      fileType: "image/jpeg",
-    };
-
     try {
-      const preview = await imageCompression(file, options);
-      return preview;
+      return await picaCreatePreview(file);
     } catch (err) {
       console.error("Preview creation error:", err);
       throw new Error("Nie udało się utworzyć podglądu");
