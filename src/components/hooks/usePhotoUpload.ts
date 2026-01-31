@@ -57,21 +57,50 @@ export function usePhotoUpload(currentCount: number, limit: number) {
     setFiles((prev) => prev.map((f) => (f.id === id ? { ...f, ...updates } : f)));
   };
 
-  const compressImage = async (file: File): Promise<File> => {
+  const createThumbnail = async (file: File): Promise<File> => {
     const options = {
-      maxSizeMB: 5,
-      maxWidthOrHeight: 4000,
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: 400,
       useWebWorker: true,
       fileType: "image/jpeg",
     };
 
     try {
-      const compressedFile = await imageCompression(file, options);
-      return compressedFile;
+      const thumbnail = await imageCompression(file, options);
+      return thumbnail;
     } catch (err) {
-      console.error("Compression error:", err);
-      throw new Error("Nie udało się skompresować zdjęcia");
+      console.error("Thumbnail creation error:", err);
+      throw new Error("Nie udało się utworzyć miniatury");
     }
+  };
+
+  const createPreview = async (file: File): Promise<File> => {
+    const options = {
+      maxSizeMB: 2,
+      maxWidthOrHeight: 1200,
+      useWebWorker: true,
+      fileType: "image/jpeg",
+    };
+
+    try {
+      const preview = await imageCompression(file, options);
+      return preview;
+    } catch (err) {
+      console.error("Preview creation error:", err);
+      throw new Error("Nie udało się utworzyć podglądu");
+    }
+  };
+
+  const getImageDimensions = async (file: File): Promise<{ width: number; height: number }> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        resolve({ width: img.width, height: img.height });
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
   };
 
   const uploadSinglePhoto = async (uploadFile: PhotoUploadFile): Promise<void> => {
@@ -79,14 +108,31 @@ export function usePhotoUpload(currentCount: number, limit: number) {
       // Validation
       updateFileStatus(uploadFile.id, { status: "validating", progress: 5 });
 
-      // Compression (0-50% progress)
+      // Get original dimensions
+      const dimensions = await getImageDimensions(uploadFile.file);
+
+      // Create thumbnail and preview (10-60% progress)
       updateFileStatus(uploadFile.id, { status: "compressing", progress: 10 });
-      const compressedFile = await compressImage(uploadFile.file);
-      updateFileStatus(uploadFile.id, { progress: 50 });
+
+      const [thumbnail, preview] = await Promise.all([
+        createThumbnail(uploadFile.file),
+        createPreview(uploadFile.file),
+      ]);
+
+      updateFileStatus(uploadFile.id, { progress: 60 });
 
       // Prepare form data
       const formData = new FormData();
-      formData.append("photo", compressedFile);
+      formData.append("thumbnail", thumbnail);
+      formData.append("preview", preview);
+      formData.append("original_width", dimensions.width.toString());
+      formData.append("original_height", dimensions.height.toString());
+      formData.append("file_size_bytes", uploadFile.file.size.toString());
+
+      // Generate title from filename (remove extension)
+      const title = uploadFile.file.name.replace(/\.[^/.]+$/, "");
+      formData.append("title", title);
+
       if (settings.category_id) {
         formData.append("category_id", settings.category_id);
       }
