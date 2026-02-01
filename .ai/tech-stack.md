@@ -74,17 +74,9 @@
 - Budowanie obrazu Docker
 - Deployment na DigitalOcean
 
-### DigitalOcean
+### Cloudflare Pages
 
-- Hosting aplikacji via Docker
-- Pełna kontrola nad infrastrukturą
-- Stały, przewidywalny koszt
-
-### Docker
-
-- Konteneryzacja aplikacji
-- Spójne środowisko dev/prod
-- Łatwy deployment i skalowanie
+- Hosting aplikacji Astro
 
 ## Uwagi dotyczące wyboru
 
