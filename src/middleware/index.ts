@@ -7,9 +7,20 @@ const PUBLIC_ADMIN_ROUTES = ["/admin/login", "/admin/signup", "/admin/reset-pass
 
 export const onRequest = defineMiddleware(async (context, next) => {
   // Get environment variables from Cloudflare runtime or fallback to import.meta.env
-  const runtime = context.locals.runtime;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const runtime = (context.locals as any).runtime;
   const supabaseUrl = runtime?.env?.SUPABASE_URL || import.meta.env.SUPABASE_URL;
   const supabaseKey = runtime?.env?.SUPABASE_KEY || import.meta.env.SUPABASE_KEY;
+
+  // Validate that we have the required environment variables
+  if (!supabaseUrl || !supabaseKey) {
+    console.error("Missing Supabase environment variables", {
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseKey,
+      hasRuntime: !!runtime,
+    });
+    return new Response("Configuration error: Missing environment variables", { status: 500 });
+  }
 
   const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
     cookies: {

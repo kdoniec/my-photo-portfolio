@@ -4,18 +4,19 @@ import type { User } from "@supabase/supabase-js";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./db/database.types";
 
-type Runtime = import("@astrojs/cloudflare").Runtime<Env>;
-
-interface Env {
+interface CloudflareEnv {
   SUPABASE_URL: string;
   SUPABASE_KEY: string;
 }
 
 declare global {
   namespace App {
-    interface Locals extends Runtime {
+    interface Locals {
       supabase: SupabaseClient<Database>;
       user: User | null;
+      runtime?: {
+        env: CloudflareEnv;
+      };
     }
   }
 }
