@@ -74,12 +74,15 @@ FR-006: SEO i Open Graph
 
 FR-007: Autentykacja
 
-- Strona logowania pod adresem /admin
+- Strona logowania pod adresem /admin/login
 - Logowanie przez email i hasło (Supabase Auth)
-- Walidacja poprawności danych
-- Komunikat błędu przy niepoprawnych danych
+- Walidacja poprawności danych (format email, minimalna długość hasła)
+- Komunikat błędu przy niepoprawnych danych (bez ujawniania szczegółów)
 - Przekierowanie do panelu po poprawnym logowaniu
 - Ochrona wszystkich ścieżek /admin/\* przed nieautoryzowanym dostępem
+- Możliwość resetowania hasła przez email
+- Automatyczne wylogowanie po wygaśnięciu sesji
+- Nie korzystamy z zewnętrznych serwisów logowania (np. Google, GitHub)
 
 FR-008: Zarządzanie kategoriami
 
@@ -141,6 +144,9 @@ FR-014: Struktura URL
 - /kategoria/[slug] - galeria zdjęć w kategorii
 - /o-mnie - bio i dane kontaktowe
 - /admin - panel administracyjny (chroniony)
+- /admin/login - strona logowania
+- /admin/reset-password - formularz resetowania hasła
+- /admin/set-password - ustawienie nowego hasła (z tokenem)
 
 FR-015: Responsywność
 
@@ -194,13 +200,16 @@ Jako fotograf chcę zalogować się do panelu administracyjnego, aby zarządzać
 
 Kryteria akceptacji:
 
-- Strona logowania jest dostępna pod adresem /admin
+- Strona logowania jest dostępna pod adresem /admin/login
 - Formularz zawiera pola: email, hasło
 - Przycisk "Zaloguj" jest aktywny tylko gdy oba pola są wypełnione
 - Po wprowadzeniu poprawnych danych użytkownik jest przekierowany do panelu admina
 - Po wprowadzeniu niepoprawnych danych wyświetla się komunikat błędu
 - Hasło jest maskowane (gwiazdki/kropki)
 - Formularz obsługuje wysyłanie przez Enter
+- Link "Nie pamiętam hasła" jest widoczny pod formularzem
+- Po 5 nieudanych próbach logowania wyświetla się ostrzeżenie o czasowej blokadzie
+- Formularz zabezpieczony przed atakami CSRF
 
 ### US-002: Wylogowanie z panelu
 
@@ -532,6 +541,35 @@ Kryteria akceptacji:
 - Progress bar pokazuje stan "błąd" dla nieudanych plików
 - Jest przycisk "Ponów" dla nieudanych uploadów
 
+### US-028: Odzyskiwanie hasła
+
+Jako fotograf chcę móc zresetować hasło, gdy je zapomnę, aby odzyskać dostęp do panelu.
+
+Kryteria akceptacji:
+
+- Na stronie logowania jest link "Nie pamiętam hasła"
+- Kliknięcie linku przenosi do formularza resetowania hasła
+- Formularz wymaga podania adresu email
+- Po wysłaniu formularza wyświetla się komunikat o wysłaniu emaila
+- Email zawiera link do ustawienia nowego hasła
+- Link resetujący jest ważny przez 24 godziny
+- Strona ustawienia nowego hasła wymaga podania hasła i potwierdzenia
+- Hasło musi mieć minimum 8 znaków
+- Po ustawieniu nowego hasła użytkownik jest przekierowany do logowania
+- Komunikat błędu gdy email nie istnieje w systemie (bez ujawniania czy konto istnieje)
+
+### US-029: Obsługa wygaśnięcia sesji
+
+Jako fotograf chcę być poinformowany gdy moja sesja wygaśnie, aby móc się ponownie zalogować.
+
+Kryteria akceptacji:
+
+- Sesja wygasa po 24 godzinach nieaktywności
+- Przy próbie akcji z wygasłą sesją wyświetla się komunikat
+- Użytkownik jest przekierowany na stronę logowania
+- Niezapisane zmiany nie są tracone (ostrzeżenie przed przekierowaniem)
+- Po ponownym zalogowaniu użytkownik wraca do poprzedniej strony
+
 ## 6. Metryki sukcesu
 
 ### 6.1 Metryki funkcjonalne
@@ -575,4 +613,4 @@ MVP zostanie uznane za sukces, gdy:
 2. Aplikacja ładuje i wyświetla zdjęcia szybko (< 3s dla strony głównej)
 3. Portfolio jest wykorzystywane jako główna wizytówka fotografa
 4. Brak krytycznych błędów blokujących użytkowanie w pierwszym miesiącu po wdrożeniu
-5. Wszystkie 27 historyjek użytkownika zostało zaimplementowanych i przetestowanych
+5. Wszystkie 29 historyjek użytkownika zostało zaimplementowanych i przetestowanych

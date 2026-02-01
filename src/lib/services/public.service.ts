@@ -210,15 +210,24 @@ export class PublicService {
       throw photosError;
     }
 
-    // Map to DTOs with URLs
-    const photoDTOs: PublicPhotoDTO[] = (photos || []).map((photo) => ({
-      id: photo.id,
-      title: photo.title,
-      thumbnail_url: this.getPhotoUrl(photo.thumbnail_path),
-      preview_url: this.getPhotoUrl(photo.preview_path),
-      original_width: photo.original_width,
-      original_height: photo.original_height,
-    }));
+    // Map to DTOs with signed URLs
+    const photoDTOs: PublicPhotoDTO[] = await Promise.all(
+      (photos || []).map(async (photo) => {
+        const [thumbnailUrl, previewUrl] = await Promise.all([
+          this.getPhotoUrl(photo.thumbnail_path),
+          this.getPhotoUrl(photo.preview_path),
+        ]);
+
+        return {
+          id: photo.id,
+          title: photo.title,
+          thumbnail_url: thumbnailUrl,
+          preview_url: previewUrl,
+          original_width: photo.original_width,
+          original_height: photo.original_height,
+        };
+      })
+    );
 
     return {
       data: photoDTOs,
@@ -262,14 +271,20 @@ export class PublicService {
       return null;
     }
 
-    return this.getPhotoUrl(photo.thumbnail_path);
+    return await this.getPhotoUrl(photo.thumbnail_path);
   }
 
   /**
-   * Generate public URL for a storage path
+   * Generate signed URL for a storage path (valid for 1 hour)
    */
-  private getPhotoUrl(path: string): string {
-    const { data } = this.supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-    return data.publicUrl;
+  private async getPhotoUrl(path: string): Promise<string> {
+    const { data, error } = await this.supabase.storage.from(STORAGE_BUCKET).createSignedUrl(path, 3600);
+
+    if (error || !data?.signedUrl) {
+      console.error("Failed to create signed URL for:", path, error);
+      return `${STORAGE_BUCKET}/${path}`;
+    }
+
+    return data.signedUrl;
   }
 }

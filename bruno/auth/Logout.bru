@@ -1,0 +1,45 @@
+meta {
+  name: Logout
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/auth/logout
+  body: none
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+assert {
+  res.status: eq 200
+  res.body.success: eq true
+}
+
+docs {
+  # Logout
+
+  Wylogowuje użytkownika przez Astro API endpoint.
+  Endpoint czyści cookies sesji po stronie serwera.
+
+  ## Wymagane zmienne środowiskowe
+  - baseUrl
+
+  ## Wymagane cookies
+  - Uruchom najpierw "Login (API)" - Bruno automatycznie zapisze cookies sesji
+  - Cookies są wysyłane automatycznie w kolejnych requestach
+
+  ## Odpowiedź sukces (200)
+  ```json
+  {
+    "success": true
+  }
+  ```
+
+  ## Uwagi
+  - Endpoint zawsze zwraca sukces, nawet jeśli użytkownik nie był zalogowany
+  - Sesja użytkownika jest identyfikowana przez cookies (sb-access-token, sb-refresh-token)
+}

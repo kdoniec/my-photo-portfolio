@@ -3,6 +3,12 @@ import AdminLayout from "@/layouts/AdminLayout.astro";
 import { ProfilePage } from "@/components/admin/profile/ProfilePage";
 import type { ProfileDTO, SettingsDTO, StatsDTO } from "@/types";
 
+// Defense in depth: Page-level auth guard (middleware provides primary protection)
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect("/admin/login");
+}
+
 const supabase = Astro.locals.supabase;
 const accessToken = (await supabase.auth.getSession()).data.session?.access_token;
 

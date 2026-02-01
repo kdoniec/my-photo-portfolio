@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { LogOut } from "lucide-react";
-import { createBrowserClient } from "@supabase/ssr";
 import Logo from "./Logo";
 import NavLink from "./NavLink";
 import MobileSheet from "./MobileSheet";
@@ -21,12 +20,16 @@ export default function AdminNavbar({ user, currentPath }: AdminNavbarProps) {
   const { isActive } = useNavigation(currentPath);
 
   const handleSignOut = async () => {
-    const supabase = createBrowserClient(
-      import.meta.env.PUBLIC_SUPABASE_URL,
-      import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-    );
-
-    await supabase.auth.signOut();
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch {
+      // Ignore errors, redirect anyway
+    }
     window.location.href = "/admin/login";
   };
 
@@ -42,28 +45,16 @@ export default function AdminNavbar({ user, currentPath }: AdminNavbarProps) {
             <ul className="flex items-center gap-8">
               {ADMIN_NAV_ITEMS.map((item) => (
                 <li key={item.href}>
-                  <NavLink
-                    href={item.href}
-                    label={item.label}
-                    isActive={isActive(item.href)}
-                  />
+                  <NavLink href={item.href} label={item.label} isActive={isActive(item.href)} />
                 </li>
               ))}
             </ul>
-            <UserMenu
-              displayName={user.displayName}
-              email={user.email}
-              onSignOut={handleSignOut}
-            />
+            <UserMenu displayName={user.displayName} email={user.email} onSignOut={handleSignOut} />
           </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden">
-            <MobileSheet
-              isOpen={isMobileOpen}
-              onOpenChange={setIsMobileOpen}
-              side="right"
-            >
+            <MobileSheet isOpen={isMobileOpen} onOpenChange={setIsMobileOpen} side="right">
               {/* User info */}
               <div className="mb-4 pb-4 border-b border-border">
                 <p className="text-sm font-medium">{user.displayName}</p>

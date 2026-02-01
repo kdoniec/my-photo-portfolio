@@ -38,11 +38,7 @@ const pageTitle = title ? `${title} | ${photographerName}` : photographerName;
     <SEOHead title={pageTitle} description={description} ogImage={ogImage} />
   </head>
   <body class="min-h-screen flex flex-col">
-    <PublicNavbar
-      client:load
-      photographerName={photographerName}
-      currentPath={currentPath}
-    />
+    <PublicNavbar client:load photographerName={photographerName} currentPath={currentPath} />
     <main class="flex-1">
       <slot />
     </main>

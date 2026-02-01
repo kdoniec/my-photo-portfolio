@@ -1,5 +1,10 @@
 ---
-// Middleware already handles authentication
-// This page just redirects to the main admin view
+// Defense in depth: Page-level auth guard (middleware provides primary protection)
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect("/admin/login");
+}
+
+// Redirect authenticated users to the main admin view
 return Astro.redirect("/admin/photos");
 ---

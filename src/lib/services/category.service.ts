@@ -343,8 +343,15 @@ export class CategoryService {
       return null;
     }
 
-    const { data: urlData } = this.supabase.storage.from("photos").getPublicUrl(photo.thumbnail_path);
+    const { data: urlData, error: urlError } = await this.supabase.storage
+      .from("photos")
+      .createSignedUrl(photo.thumbnail_path, 3600);
 
-    return urlData.publicUrl;
+    if (urlError || !urlData?.signedUrl) {
+      console.error("Failed to create signed URL for cover photo:", photoId, urlError);
+      return null;
+    }
+
+    return urlData.signedUrl;
   }
 }

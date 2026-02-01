@@ -2,10 +2,7 @@ import { useState } from "react";
 import type { BatchPhotoUploadResponseDTO } from "@/types";
 import type { PhotoUploadFile, PhotoUploadSettings } from "@/components/admin/types";
 import { useStats } from "@/components/admin/context/StatsContext";
-import {
-  createThumbnail as picaCreateThumbnail,
-  createPreview as picaCreatePreview,
-} from "@/lib/imageResize";
+import { createThumbnail as picaCreateThumbnail, createPreview as picaCreatePreview } from "@/lib/imageResize";
 
 const MAX_FILES_PER_BATCH = 100; // Increased from 20 for bulk uploads
 const MAX_FILE_SIZE_MB = 50; // Increased from 10MB - we compress anyway
