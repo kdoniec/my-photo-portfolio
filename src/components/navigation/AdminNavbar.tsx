@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { LogOut } from "lucide-react";
-import { createBrowserClient } from "@supabase/ssr";
 import Logo from "./Logo";
 import NavLink from "./NavLink";
 import MobileSheet from "./MobileSheet";
@@ -21,9 +20,16 @@ export default function AdminNavbar({ user, currentPath }: AdminNavbarProps) {
   const { isActive } = useNavigation(currentPath);
 
   const handleSignOut = async () => {
-    const supabase = createBrowserClient(import.meta.env.PUBLIC_SUPABASE_URL, import.meta.env.PUBLIC_SUPABASE_ANON_KEY);
-
-    await supabase.auth.signOut();
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch {
+      // Ignore errors, redirect anyway
+    }
     window.location.href = "/admin/login";
   };
 

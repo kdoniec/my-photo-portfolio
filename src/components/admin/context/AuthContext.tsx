@@ -49,7 +49,17 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     setIsLoading(true);
 
     try {
-      await supabaseClient.auth.signOut();
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
       setUser(null);
       window.location.href = "/admin/login";
     } catch (err) {

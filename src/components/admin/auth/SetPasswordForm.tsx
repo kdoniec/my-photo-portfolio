@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, CheckCircle } from "lucide-react";
+import { Lock, AlertCircle } from "lucide-react";
 import { setPasswordSchema, type SetPasswordFormData } from "@/lib/schemas/reset-password.schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 export function SetPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isValidating, setIsValidating] = useState(true);
+  const [tokenError, setTokenError] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   const {
     register,
@@ -21,36 +23,93 @@ export function SetPasswordForm() {
     resolver: zodResolver(setPasswordSchema),
   });
 
+  // Extract access token from URL hash on mount
+  useEffect(() => {
+    const extractTokenFromHash = () => {
+      try {
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const token = params.get("access_token");
+        const type = params.get("type");
+
+        if (token && type === "recovery") {
+          setAccessToken(token);
+          // Clear the hash from URL for security
+          window.history.replaceState(null, "", window.location.pathname);
+        } else {
+          setTokenError("Link resetujący wygasł lub jest nieprawidłowy. Wygeneruj nowy link.");
+        }
+      } catch {
+        setTokenError("Wystąpił błąd podczas weryfikacji linku.");
+      } finally {
+        setIsValidating(false);
+      }
+    };
+
+    extractTokenFromHash();
+  }, []);
+
   const onSubmit = async (data: SetPasswordFormData) => {
+    if (!accessToken) {
+      setError("Brak tokenu autoryzacji. Wygeneruj nowy link resetujący.");
+      return;
+    }
+
     setError(null);
     setIsLoading(true);
 
     try {
-      // TODO: Implement backend call to authService.updatePassword(data.password)
-      // For now, simulate success state for UI demonstration
-      void data;
-      setIsSuccess(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Wystąpił nieoczekiwany błąd");
+      const response = await fetch("/api/auth/set-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: data.password,
+          accessToken,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Wystąpił nieoczekiwany błąd");
+        return;
+      }
+
+      // Redirect to login with success message
+      window.location.href = "/admin/login?password_reset=true";
+    } catch {
+      setError("Wystąpił nieoczekiwany błąd");
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (isSuccess) {
+  // Show loading state while validating
+  if (isValidating) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-muted-foreground">Weryfikacja linku...</div>
+      </div>
+    );
+  }
+
+  // Show error if token is invalid
+  if (tokenError) {
     return (
       <div className="space-y-4">
-        <Alert className="border-green-500 bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-200">
-          <CheckCircle className="size-4" />
-          <AlertDescription>Hasło zostało zmienione. Możesz się teraz zalogować.</AlertDescription>
+        <Alert variant="destructive">
+          <AlertCircle className="size-4" />
+          <AlertDescription>{tokenError}</AlertDescription>
         </Alert>
 
         <div className="text-center">
           <a
-            href="/admin/login"
+            href="/admin/reset-password"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            Przejdź do logowania
+            Wygeneruj nowy link
           </a>
         </div>
       </div>

@@ -27,12 +27,26 @@ export function ForgotPasswordForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Implement backend call to authService.sendPasswordResetEmail(data.email)
-      // For now, simulate success state for UI demonstration
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: data.email }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Wystąpił nieoczekiwany błąd");
+        return;
+      }
+
+      // Always show success for security (don't reveal if email exists)
       setSubmittedEmail(data.email);
       setIsSuccess(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Wystąpił nieoczekiwany błąd");
+    } catch {
+      setError("Wystąpił nieoczekiwany błąd");
     } finally {
       setIsLoading(false);
     }
