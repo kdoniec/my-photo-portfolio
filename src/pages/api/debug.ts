@@ -9,13 +9,13 @@ export const GET: APIRoute = async ({ locals, request }) => {
 
   const debug = {
     timestamp: new Date().toISOString(),
+    mode: import.meta.env.MODE,
     runtime: typeof globalThis.caches !== "undefined" ? "cloudflare-workers" : "node",
     env: {
-      "import.meta.env.SUPABASE_URL": import.meta.env.SUPABASE_URL ? "✓ set" : "✗ missing",
-      "import.meta.env.SUPABASE_KEY": import.meta.env.SUPABASE_KEY ? "✓ set" : "✗ missing",
-      "runtime.env.SUPABASE_URL": runtime?.env?.SUPABASE_URL ? "✓ set" : "✗ missing",
-      "runtime.env.SUPABASE_KEY": runtime?.env?.SUPABASE_KEY ? "✓ set" : "✗ missing",
-      "resolved.url": url ? "✓ set" : "✗ missing",
+      "process.env.SUPABASE_URL": process.env.SUPABASE_URL ? `✓ ${process.env.SUPABASE_URL.substring(0, 25)}...` : "✗ missing",
+      "import.meta.env.SUPABASE_URL": import.meta.env.SUPABASE_URL ? `✓ ${String(import.meta.env.SUPABASE_URL).substring(0, 25)}...` : "✗ missing",
+      "runtime.env.SUPABASE_URL": runtime?.env?.SUPABASE_URL ? `✓ ${runtime.env.SUPABASE_URL.substring(0, 25)}...` : "✗ missing",
+      "resolved.url": url ? `✓ ${url.substring(0, 25)}...` : "✗ missing",
       "resolved.key": key ? "✓ set" : "✗ missing",
     },
     supabase: {
