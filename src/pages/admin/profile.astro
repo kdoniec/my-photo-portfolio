@@ -2,6 +2,9 @@
 import AdminLayout from "@/layouts/AdminLayout.astro";
 import { ProfilePage } from "@/components/admin/profile/ProfilePage";
 import type { ProfileDTO, SettingsDTO, StatsDTO } from "@/types";
+import { ProfileService } from "@/lib/services/profile.service";
+import { SettingsService } from "@/lib/services/settings.service";
+import { StatsService } from "@/lib/services/stats.service";
 
 // Defense in depth: Page-level auth guard (middleware provides primary protection)
 const user = Astro.locals.user;
@@ -10,66 +13,38 @@ if (!user) {
 }
 
 const supabase = Astro.locals.supabase;
-const accessToken = (await supabase.auth.getSession()).data.session?.access_token;
 
-// Fetch profile
+// Fetch profile directly from service (avoid self-fetch on Cloudflare)
 let profile: ProfileDTO | null = null;
 let profileError: string | null = null;
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/profile`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Nie udało się pobrać profilu");
-  }
-
-  profile = await response.json();
+  const profileService = new ProfileService(supabase);
+  profile = await profileService.getProfile(user.id);
 } catch (err) {
   profileError = err instanceof Error ? err.message : "Nieznany błąd";
   console.error("Błąd podczas pobierania profilu:", err);
 }
 
-// Fetch settings
+// Fetch settings directly from service (avoid self-fetch on Cloudflare)
 let settings: SettingsDTO | null = null;
 let settingsError: string | null = null;
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/settings`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Nie udało się pobrać ustawień");
-  }
-
-  settings = await response.json();
+  const settingsService = new SettingsService(supabase);
+  settings = await settingsService.getSettings(user.id);
 } catch (err) {
   settingsError = err instanceof Error ? err.message : "Nieznany błąd";
   console.error("Błąd podczas pobierania ustawień:", err);
 }
 
-// Fetch stats
+// Fetch stats directly from service (avoid self-fetch on Cloudflare)
 let stats: StatsDTO | null = null;
 let statsError: string | null = null;
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/stats`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Nie udało się pobrać statystyk");
-  }
-
-  stats = await response.json();
+  const statsService = new StatsService(supabase);
+  stats = await statsService.getStats(user.id);
 } catch (err) {
   statsError = err instanceof Error ? err.message : "Nieznany błąd";
   console.error("Błąd podczas pobierania statystyk:", err);
