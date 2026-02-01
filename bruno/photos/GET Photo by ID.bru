@@ -14,14 +14,18 @@ headers {
   Authorization: Bearer {{accessToken}}
 }
 
+vars:pre-request {
+  photoId: 947984ec-e7ed-4325-bdb6-2988be77b994
+}
+
 docs {
   # GET /api/photos/:id
-
+  
   Pobiera pojedyncze zdjęcie po ID.
-
+  
   ## Wymagania
   - Bearer token w nagłówku Authorization
-
+  
   ## Odpowiedzi
   - 200: Zdjęcie (PhotoDTO)
   - 400: Nieprawidłowe UUID

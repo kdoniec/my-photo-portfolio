@@ -17,21 +17,25 @@ headers {
 
 body:json {
   {
-    "is_published": true
+    "is_published": false
   }
+}
+
+vars:pre-request {
+  photoId: 947984ec-e7ed-4325-bdb6-2988be77b994
 }
 
 docs {
   # PATCH /api/photos/:id/publish
-
+  
   Przełącza status publikacji zdjęcia.
-
+  
   ## Wymagania
   - Bearer token w nagłówku Authorization
-
+  
   ## Body
   - is_published: true/false (wymagane)
-
+  
   ## Odpowiedzi
   - 200: { id, is_published, updated_at }
   - 400: Błąd walidacji
