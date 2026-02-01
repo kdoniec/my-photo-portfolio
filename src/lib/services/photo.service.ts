@@ -87,29 +87,36 @@ export class PhotoService {
     const total = count || 0;
     const totalPages = Math.ceil(total / limit);
 
-    // Map to DTOs
-    const photoDTOs: PhotoDTO[] = (photos || []).map((photo) => {
-      const categoryName =
-        photo.categories && typeof photo.categories === "object" && "name" in photo.categories
-          ? (photo.categories.name as string)
-          : null;
+    // Map to DTOs with signed URLs
+    const photoDTOs: PhotoDTO[] = await Promise.all(
+      (photos || []).map(async (photo) => {
+        const categoryName =
+          photo.categories && typeof photo.categories === "object" && "name" in photo.categories
+            ? (photo.categories.name as string)
+            : null;
 
-      return {
-        id: photo.id,
-        title: photo.title,
-        category_id: photo.category_id,
-        category_name: categoryName,
-        thumbnail_url: this.getPhotoUrl(photo.thumbnail_path),
-        preview_url: this.getPhotoUrl(photo.preview_path),
-        original_width: photo.original_width,
-        original_height: photo.original_height,
-        file_size_bytes: photo.file_size_bytes,
-        mime_type: photo.mime_type,
-        is_published: photo.is_published,
-        created_at: photo.created_at,
-        updated_at: photo.updated_at,
-      };
-    });
+        const [thumbnailUrl, previewUrl] = await Promise.all([
+          this.getPhotoUrl(photo.thumbnail_path),
+          this.getPhotoUrl(photo.preview_path),
+        ]);
+
+        return {
+          id: photo.id,
+          title: photo.title,
+          category_id: photo.category_id,
+          category_name: categoryName,
+          thumbnail_url: thumbnailUrl,
+          preview_url: previewUrl,
+          original_width: photo.original_width,
+          original_height: photo.original_height,
+          file_size_bytes: photo.file_size_bytes,
+          mime_type: photo.mime_type,
+          is_published: photo.is_published,
+          created_at: photo.created_at,
+          updated_at: photo.updated_at,
+        };
+      })
+    );
 
     return {
       data: photoDTOs,
@@ -161,13 +168,18 @@ export class PhotoService {
         ? (photo.categories.name as string)
         : null;
 
+    const [thumbnailUrl, previewUrl] = await Promise.all([
+      this.getPhotoUrl(photo.thumbnail_path),
+      this.getPhotoUrl(photo.preview_path),
+    ]);
+
     return {
       id: photo.id,
       title: photo.title,
       category_id: photo.category_id,
       category_name: categoryName,
-      thumbnail_url: this.getPhotoUrl(photo.thumbnail_path),
-      preview_url: this.getPhotoUrl(photo.preview_path),
+      thumbnail_url: thumbnailUrl,
+      preview_url: previewUrl,
       original_width: photo.original_width,
       original_height: photo.original_height,
       file_size_bytes: photo.file_size_bytes,
@@ -267,13 +279,18 @@ export class PhotoService {
       categoryName = await this.getCategoryName(input.category_id);
     }
 
+    const [thumbnailUrl, previewUrl] = await Promise.all([
+      this.getPhotoUrl(newPhoto.thumbnail_path),
+      this.getPhotoUrl(newPhoto.preview_path),
+    ]);
+
     return {
       id: newPhoto.id,
       title: newPhoto.title,
       category_id: newPhoto.category_id,
       category_name: categoryName,
-      thumbnail_url: this.getPhotoUrl(newPhoto.thumbnail_path),
-      preview_url: this.getPhotoUrl(newPhoto.preview_path),
+      thumbnail_url: thumbnailUrl,
+      preview_url: previewUrl,
       original_width: newPhoto.original_width,
       original_height: newPhoto.original_height,
       file_size_bytes: newPhoto.file_size_bytes,
@@ -350,13 +367,18 @@ export class PhotoService {
         ? (updatedPhoto.categories.name as string)
         : null;
 
+    const [thumbnailUrl, previewUrl] = await Promise.all([
+      this.getPhotoUrl(updatedPhoto.thumbnail_path),
+      this.getPhotoUrl(updatedPhoto.preview_path),
+    ]);
+
     return {
       id: updatedPhoto.id,
       title: updatedPhoto.title,
       category_id: updatedPhoto.category_id,
       category_name: categoryName,
-      thumbnail_url: this.getPhotoUrl(updatedPhoto.thumbnail_path),
-      preview_url: this.getPhotoUrl(updatedPhoto.preview_path),
+      thumbnail_url: thumbnailUrl,
+      preview_url: previewUrl,
       original_width: updatedPhoto.original_width,
       original_height: updatedPhoto.original_height,
       file_size_bytes: updatedPhoto.file_size_bytes,
@@ -601,19 +623,31 @@ export class PhotoService {
       throw new Error("Failed to save photo metadata");
     }
 
+    const [thumbnailUrl, previewUrl] = await Promise.all([
+      this.getPhotoUrl(thumbnailPath),
+      this.getPhotoUrl(previewPath),
+    ]);
+
     return {
       id: photoId,
-      thumbnail_url: this.getPhotoUrl(thumbnailPath),
-      preview_url: this.getPhotoUrl(previewPath),
+      thumbnail_url: thumbnailUrl,
+      preview_url: previewUrl,
     };
   }
 
   /**
-   * Generate public URL for a storage path
+   * Generate signed URL for a storage path (valid for 1 hour)
    */
-  private getPhotoUrl(path: string): string {
-    const { data } = this.supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-    return data.publicUrl;
+  private async getPhotoUrl(path: string): Promise<string> {
+    const { data, error } = await this.supabase.storage.from(STORAGE_BUCKET).createSignedUrl(path, 3600);
+
+    if (error || !data?.signedUrl) {
+      // Fallback to constructing URL manually (will fail but provides debugging info)
+      console.error("Failed to create signed URL for:", path, error);
+      return `${STORAGE_BUCKET}/${path}`;
+    }
+
+    return data.signedUrl;
   }
 
   /**

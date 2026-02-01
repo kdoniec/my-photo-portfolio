@@ -399,16 +399,31 @@ values ('photos', 'photos', true);
 ### 6.2 Polityki Storage RLS
 
 ```sql
--- Publiczny odczyt wszystkich plików
+-- SELECT: anon może odczytać tylko pliki dla opublikowanych zdjęć
 create policy "photos_bucket_select_anon"
 on storage.objects for select to anon
-using (bucket_id = 'photos');
+using (
+  bucket_id = 'photos'
+  and exists (
+    select 1 from public.photos
+    where photos.is_published = true
+    and photos.category_id is not null
+    and (
+      photos.thumbnail_path = name
+      or photos.preview_path = name
+    )
+  )
+);
 
+-- SELECT: authenticated może odczytać tylko pliki ze swojego folderu
 create policy "photos_bucket_select_authenticated"
 on storage.objects for select to authenticated
-using (bucket_id = 'photos');
+using (
+  bucket_id = 'photos'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
 
--- Upload tylko do własnego folderu
+-- INSERT: authenticated może uploadować tylko do swojego folderu
 create policy "photos_bucket_insert_own"
 on storage.objects for insert to authenticated
 with check (
@@ -416,7 +431,19 @@ with check (
   and (storage.foldername(name))[1] = auth.uid()::text
 );
 
--- Usuwanie tylko z własnego folderu
+-- UPDATE: authenticated może aktualizować tylko pliki w swoim folderze
+create policy "photos_bucket_update_own"
+on storage.objects for update to authenticated
+using (
+  bucket_id = 'photos'
+  and (storage.foldername(name))[1] = auth.uid()::text
+)
+with check (
+  bucket_id = 'photos'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- DELETE: authenticated może usuwać tylko pliki ze swojego folderu
 create policy "photos_bucket_delete_own"
 on storage.objects for delete to authenticated
 using (
@@ -489,4 +516,4 @@ Kaskadowe usuwanie plików z Storage przy usunięciu zdjęcia lub fotografa jest
 
 ### 7.8 Niepublikowane zdjęcia
 
-Niepublikowane zdjęcia są dostępne przez bezpośredni URL Storage (bucket jest publiczny). Dla MVP jest to akceptowalne - pełna ochrona wymagałaby signed URLs lub Edge Functions.
+Niepublikowane zdjęcia są chronione przez RLS polityki na `storage.objects`. Polityka `photos_bucket_select_anon` sprawdza czy zdjęcie jest opublikowane (`is_published = true`) i ma przypisaną kategorię (`category_id is not null`) poprzez join z tabelą `photos`. Tylko zalogowany właściciel może zobaczyć swoje niepublikowane zdjęcia.
