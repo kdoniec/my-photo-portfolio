@@ -19,7 +19,7 @@ describe("rate-limit", () => {
         mockSessionStorage[key] = value;
       }),
       removeItem: vi.fn((key: string) => {
-        delete mockSessionStorage[key];
+        mockSessionStorage[key] = undefined as unknown as string;
       }),
       clear: vi.fn(() => {
         mockSessionStorage = {};
@@ -119,10 +119,7 @@ describe("rate-limit", () => {
     it("should persist state to sessionStorage", () => {
       recordFailedAttempt();
 
-      expect(sessionStorage.setItem).toHaveBeenCalledWith(
-        "auth_rate_limit",
-        expect.any(String)
-      );
+      expect(sessionStorage.setItem).toHaveBeenCalledWith("auth_rate_limit", expect.any(String));
     });
 
     it("should return default state when window is undefined (SSR)", () => {

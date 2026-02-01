@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { server } from "../../../../tests/mocks/server";
@@ -144,10 +144,7 @@ describe("useCategories", () => {
     it("should throw on error", async () => {
       server.use(
         http.post(`${BASE_URL}/api/categories`, () => {
-          return HttpResponse.json(
-            { error: { message: "Category limit reached" } },
-            { status: 400 }
-          );
+          return HttpResponse.json({ error: { message: "Category limit reached" } }, { status: 400 });
         })
       );
 
@@ -186,10 +183,7 @@ describe("useCategories", () => {
     it("should throw on error", async () => {
       server.use(
         http.put(`${BASE_URL}/api/categories/:id`, () => {
-          return HttpResponse.json(
-            { error: { message: "Category not found" } },
-            { status: 404 }
-          );
+          return HttpResponse.json({ error: { message: "Category not found" } }, { status: 404 });
         })
       );
 
@@ -223,10 +217,7 @@ describe("useCategories", () => {
     it("should throw on error", async () => {
       server.use(
         http.delete(`${BASE_URL}/api/categories/:id`, () => {
-          return HttpResponse.json(
-            { error: { message: "Cannot delete category with photos" } },
-            { status: 400 }
-          );
+          return HttpResponse.json({ error: { message: "Cannot delete category with photos" } }, { status: 400 });
         })
       );
 

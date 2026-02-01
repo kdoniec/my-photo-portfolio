@@ -3,7 +3,6 @@ import { renderHook } from "@testing-library/react";
 import { useInfiniteScroll } from "../useInfiniteScroll";
 
 describe("useInfiniteScroll", () => {
-  let observerCallback: IntersectionObserverCallback | null = null;
   let observeMock: ReturnType<typeof vi.fn>;
   let disconnectMock: ReturnType<typeof vi.fn>;
   let originalIntersectionObserver: typeof IntersectionObserver;
@@ -11,12 +10,10 @@ describe("useInfiniteScroll", () => {
   beforeEach(() => {
     observeMock = vi.fn();
     disconnectMock = vi.fn();
-    observerCallback = null;
 
     originalIntersectionObserver = global.IntersectionObserver;
 
-    global.IntersectionObserver = vi.fn((callback) => {
-      observerCallback = callback;
+    global.IntersectionObserver = vi.fn(() => {
       return {
         observe: observeMock,
         disconnect: disconnectMock,

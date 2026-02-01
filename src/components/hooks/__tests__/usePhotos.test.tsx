@@ -332,9 +332,7 @@ describe("usePhotos", () => {
       }
 
       // Should revert to original value
-      expect(result.current.photos.find((p) => p.id === "photo-1")?.is_published).toBe(
-        originalValue
-      );
+      expect(result.current.photos.find((p) => p.id === "photo-1")?.is_published).toBe(originalValue);
     });
   });
 

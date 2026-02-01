@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { http, HttpResponse } from "msw";
 import { server } from "../../../../tests/mocks/server";
 import { authService } from "../auth.service";
@@ -166,10 +166,7 @@ describe("authService", () => {
     it("should return mapped error for weak password", async () => {
       server.use(
         http.post(`${BASE_URL}/api/auth/set-password`, () => {
-          return HttpResponse.json(
-            { error: "Password should be at least 6 characters" },
-            { status: 400 }
-          );
+          return HttpResponse.json({ error: "Password should be at least 6 characters" }, { status: 400 });
         })
       );
 
@@ -227,10 +224,7 @@ describe("authService", () => {
     it("should fallback to generic error for unknown messages", async () => {
       server.use(
         http.post(`${BASE_URL}/api/auth/login`, () => {
-          return HttpResponse.json(
-            { error: "Completely unknown error that is not mapped" },
-            { status: 400 }
-          );
+          return HttpResponse.json({ error: "Completely unknown error that is not mapped" }, { status: 400 });
         })
       );
 
@@ -254,10 +248,7 @@ describe("authService", () => {
     it("should handle invalid email format error", async () => {
       server.use(
         http.post(`${BASE_URL}/api/auth/reset-password`, () => {
-          return HttpResponse.json(
-            { error: "Unable to validate email address: invalid format" },
-            { status: 400 }
-          );
+          return HttpResponse.json({ error: "Unable to validate email address: invalid format" }, { status: 400 });
         })
       );
 

@@ -55,7 +55,9 @@ export function useStats() {
         stats: null,
         isLoading: false,
         error: null,
-        refreshStats: async () => {},
+        refreshStats: async () => {
+          /* noop for SSR */
+        },
       };
     }
     throw new Error("useStats must be used within StatsProvider");

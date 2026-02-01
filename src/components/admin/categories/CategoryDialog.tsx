@@ -103,7 +103,7 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px]" data-test-id="category-dialog">
         <DialogHeader>
           <DialogTitle>{mode === "create" ? "Dodaj kategorię" : "Edytuj kategorię"}</DialogTitle>
           <DialogDescription>
@@ -113,7 +113,7 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4" data-test-id="category-form">
           {/* Name field */}
           <div className="space-y-2">
             <Label htmlFor="category-name">Nazwa</Label>
@@ -122,10 +122,11 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
               type="text"
               placeholder="np. Portrety, Krajobrazy, Architektura"
               aria-invalid={!!errors.name}
+              data-test-id="category-name-input"
               {...register("name")}
             />
             {errors.name && (
-              <p className="text-sm text-destructive" role="alert">
+              <p className="text-sm text-destructive" role="alert" data-test-id="category-name-error">
                 {errors.name.message}
               </p>
             )}
@@ -142,6 +143,7 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
               disabled
               className="bg-muted"
               placeholder="slug-generowany-automatycznie"
+              data-test-id="category-slug-input"
             />
             <p className="text-xs text-muted-foreground">Slug jest generowany automatycznie na podstawie nazwy</p>
           </div>
@@ -154,10 +156,11 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
               placeholder="Opisz tę kategorię..."
               rows={3}
               aria-invalid={!!errors.description}
+              data-test-id="category-description-input"
               {...register("description")}
             />
             {errors.description && (
-              <p className="text-sm text-destructive" role="alert">
+              <p className="text-sm text-destructive" role="alert" data-test-id="category-description-error">
                 {errors.description.message}
               </p>
             )}
@@ -176,10 +179,16 @@ export function CategoryDialog({ isOpen, onOpenChange, mode, category, onSubmit 
           )}
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isSubmitting}
+              data-test-id="category-dialog-cancel"
+            >
               Anuluj
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} data-test-id="category-dialog-submit">
               {isSubmitting ? "Zapisywanie..." : "Zapisz"}
             </Button>
           </DialogFooter>

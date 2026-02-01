@@ -12,6 +12,6 @@ test.describe("Authentication", () => {
   test("should show error for invalid credentials", async ({ loginPage }) => {
     await loginPage.goto();
     await loginPage.login("invalid@example.com", "wrongpassword");
-    await expect(loginPage.errorMessage).toBeVisible();
+    await expect(loginPage.errorAlert).toBeVisible();
   });
 });

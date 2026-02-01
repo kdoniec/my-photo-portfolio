@@ -116,21 +116,24 @@ export function CategoriesManager({ initialCategories, stats }: CategoriesManage
   const isLimitReached = stats.categories.count >= stats.categories.limit;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-test-id="categories-manager">
       {/* Header section */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" data-test-id="categories-header">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold">Zarządzanie kategoriami</h2>
           <LimitBadge current={stats.categories.count} limit={stats.categories.limit} />
         </div>
-        <Button onClick={handleAddCategory} disabled={isLimitReached || isLoading}>
+        <Button onClick={handleAddCategory} disabled={isLimitReached || isLoading} data-test-id="add-category-button">
           <Plus className="mr-2 h-4 w-4" />
           Dodaj kategorię
         </Button>
       </div>
 
       {isLimitReached && (
-        <div className="rounded-lg border border-yellow-500 bg-yellow-500/10 p-4 text-yellow-800 dark:text-yellow-200">
+        <div
+          className="rounded-lg border border-yellow-500 bg-yellow-500/10 p-4 text-yellow-800 dark:text-yellow-200"
+          data-test-id="categories-limit-alert"
+        >
           <p className="text-sm font-medium">Osiągnięto limit kategorii ({stats.categories.limit})</p>
           <p className="text-sm">Usuń istniejącą kategorię, aby dodać nową.</p>
         </div>
@@ -153,7 +156,7 @@ export function CategoriesManager({ initialCategories, stats }: CategoriesManage
         open={deleteConfirmation.isOpen}
         onOpenChange={(open) => !open && setDeleteConfirmation({ isOpen: false, category: null })}
       >
-        <AlertDialogContent>
+        <AlertDialogContent data-test-id="delete-category-dialog">
           <AlertDialogHeader>
             <AlertDialogTitle>Czy na pewno chcesz usunąć tę kategorię?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -171,10 +174,11 @@ export function CategoriesManager({ initialCategories, stats }: CategoriesManage
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Anuluj</AlertDialogCancel>
+            <AlertDialogCancel data-test-id="delete-category-cancel">Anuluj</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              data-test-id="delete-category-confirm"
             >
               Usuń kategorię
             </AlertDialogAction>

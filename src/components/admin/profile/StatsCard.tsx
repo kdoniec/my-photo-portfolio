@@ -11,12 +11,6 @@ export function StatsCard({ stats }: StatsCardProps) {
     return Math.round((current / limit) * 100);
   };
 
-  const getProgressColor = (percentage: number): string => {
-    if (percentage >= 90) return "bg-destructive";
-    if (percentage >= 70) return "bg-yellow-500";
-    return "bg-primary";
-  };
-
   const photosPercentage = calculatePercentage(stats.photos.count, stats.photos.limit);
   const categoriesPercentage = calculatePercentage(stats.categories.count, stats.categories.limit);
 

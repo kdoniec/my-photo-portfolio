@@ -168,14 +168,14 @@ ui/*, gallery/PhotoCard.tsx, admin/shared/*
 
 ## Podsumowanie priorytetów
 
-| Priorytet | Element            | Uzasadnienie                           |
-| --------- | ------------------ | -------------------------------------- |
-| ⭐⭐⭐    | Services           | Logika biznesowa, transformacje danych |
-| ⭐⭐⭐    | Schemas            | Walidacja, bezpieczeństwo, kontrakt API |
-| ⭐⭐⭐    | Utilities          | Czyste funkcje, wysoki ROI             |
-| ⭐⭐      | Hooks z logiką     | Stan współdzielony, złożona logika     |
-| ⭐⭐      | Contexts           | Globalny stan, bezpieczeństwo          |
-| ⭐        | Komponenty z logiką | Tylko te ze złożoną logiką            |
+| Priorytet | Element             | Uzasadnienie                            |
+| --------- | ------------------- | --------------------------------------- |
+| ⭐⭐⭐    | Services            | Logika biznesowa, transformacje danych  |
+| ⭐⭐⭐    | Schemas             | Walidacja, bezpieczeństwo, kontrakt API |
+| ⭐⭐⭐    | Utilities           | Czyste funkcje, wysoki ROI              |
+| ⭐⭐      | Hooks z logiką      | Stan współdzielony, złożona logika      |
+| ⭐⭐      | Contexts            | Globalny stan, bezpieczeństwo           |
+| ⭐        | Komponenty z logiką | Tylko te ze złożoną logiką              |
 
 ---
 

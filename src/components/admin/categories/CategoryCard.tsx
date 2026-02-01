@@ -12,7 +12,7 @@ interface CategoryCardProps {
 
 export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) {
   return (
-    <Card className="group relative overflow-hidden transition-shadow hover:shadow-md">
+    <Card className="group relative overflow-hidden transition-shadow hover:shadow-md" data-test-id="category-card">
       <CardHeader className="pb-3">
         <div className="flex items-start gap-4">
           {/* Cover photo thumbnail */}
@@ -49,6 +49,7 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
             onClick={onEdit}
             className="flex-1"
             aria-label={`Edytuj kategorię ${category.name}`}
+            data-test-id="edit-category-button"
           >
             <Pencil className="mr-2 h-4 w-4" />
             Edytuj
@@ -59,6 +60,7 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
             onClick={onDelete}
             className="flex-1 border-destructive/50 text-destructive hover:border-destructive hover:bg-destructive hover:text-white"
             aria-label={`Usuń kategorię ${category.name}`}
+            data-test-id="delete-category-button"
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Usuń

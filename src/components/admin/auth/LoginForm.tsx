@@ -137,9 +137,9 @@ export function LoginForm({ returnTo }: LoginFormProps) {
   const isFormDisabled = isLoading || blockTimeRemaining > 0;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" data-test-id="login-form">
       {blockTimeRemaining > 0 && (
-        <Alert variant="destructive" role="alert">
+        <Alert variant="destructive" role="alert" data-test-id="login-blocked-alert">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Zbyt wiele nieudanych prób. Spróbuj ponownie za {formatTimeRemaining(blockTimeRemaining)}.
@@ -148,7 +148,7 @@ export function LoginForm({ returnTo }: LoginFormProps) {
       )}
 
       {error && blockTimeRemaining === 0 && (
-        <Alert variant="destructive" role="alert">
+        <Alert variant="destructive" role="alert" data-test-id="login-error-alert">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -162,6 +162,7 @@ export function LoginForm({ returnTo }: LoginFormProps) {
           autoComplete="email"
           aria-invalid={!!errors.email}
           disabled={isFormDisabled}
+          data-test-id="login-email-input"
           {...register("email")}
         />
         {errors.email && (
@@ -179,6 +180,7 @@ export function LoginForm({ returnTo }: LoginFormProps) {
           autoComplete="current-password"
           aria-invalid={!!errors.password}
           disabled={isFormDisabled}
+          data-test-id="login-password-input"
           {...register("password")}
         />
         {errors.password && (
@@ -188,7 +190,7 @@ export function LoginForm({ returnTo }: LoginFormProps) {
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={isFormDisabled}>
+      <Button type="submit" className="w-full" disabled={isFormDisabled} data-test-id="login-submit-button">
         {isLoading ? "Logowanie..." : blockTimeRemaining > 0 ? "Zablokowano" : "Zaloguj"}
       </Button>
     </form>
