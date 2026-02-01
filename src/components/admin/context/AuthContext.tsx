@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
-import { supabaseClient } from "@/db/supabase.client";
 
 interface AuthContextValue {
   user: User | null;
@@ -24,13 +23,16 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
-        return { error: error.message };
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { error: data.error || "Wystąpił błąd podczas logowania" };
       }
 
       if (data.user) {
@@ -81,8 +83,8 @@ export function useAuth() {
       return {
         user: null,
         isLoading: false,
-        signIn: async () => {},
-        signOut: async () => {},
+        signIn: async () => ({}),
+        signOut: async () => undefined,
       };
     }
     throw new Error("useAuth must be used within AuthProvider");

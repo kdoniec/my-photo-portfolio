@@ -1,4 +1,3 @@
-import { supabaseClient } from "@/db/supabase.client";
 import type { User } from "@supabase/supabase-js";
 
 export interface AuthResult {
@@ -23,12 +22,10 @@ const ERROR_MAP: Record<string, string> = {
 };
 
 function mapErrorMessage(message: string): string {
-  // Check for exact match first
   if (ERROR_MAP[message]) {
     return ERROR_MAP[message];
   }
 
-  // Check for partial matches
   for (const [key, value] of Object.entries(ERROR_MAP)) {
     if (message.toLowerCase().includes(key.toLowerCase())) {
       return value;
@@ -41,33 +38,23 @@ function mapErrorMessage(message: string): string {
 class ClientAuthService {
   async signIn(email: string, password: string): Promise<AuthResult> {
     try {
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
+      const data = await response.json();
+
+      if (!response.ok) {
         return {
           success: false,
-          error: mapErrorMessage(error.message),
+          error: mapErrorMessage(data.error || "Wystąpił błąd"),
         };
       }
 
-      return { success: true, user: data.user ?? undefined };
-    } catch (err) {
-      // Handle initialization errors (e.g., missing env variables)
-      if (err instanceof Error) {
-        if (err.message.includes("Missing Supabase environment")) {
-          return {
-            success: false,
-            error: "Błąd konfiguracji aplikacji. Skontaktuj się z administratorem.",
-          };
-        }
-        return {
-          success: false,
-          error: mapErrorMessage(err.message),
-        };
-      }
+      return { success: true, user: data.user };
+    } catch {
       return {
         success: false,
         error: "Wystąpił nieoczekiwany błąd",
@@ -76,50 +63,23 @@ class ClientAuthService {
   }
 
   async signOut(): Promise<void> {
-    await supabaseClient.auth.signOut();
+    await fetch("/api/auth/logout", { method: "POST" });
   }
 
   async sendPasswordResetEmail(email: string): Promise<AuthResult> {
     try {
-      const redirectTo =
-        typeof window !== "undefined" ? `${window.location.origin}/admin/set-password` : "/admin/set-password";
-
-      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo,
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
-      if (error) {
-        // For security, don't reveal if email exists or not
-        // But still return error for rate limiting messages
-        if (error.message.includes("60 seconds")) {
-          return {
-            success: false,
-            error: mapErrorMessage(error.message),
-          };
-        }
-        // For other errors, pretend success (security best practice)
-        return { success: true };
-      }
+      const data = await response.json();
 
-      return { success: true };
-    } catch {
-      return {
-        success: false,
-        error: "Wystąpił nieoczekiwany błąd",
-      };
-    }
-  }
-
-  async updatePassword(newPassword: string): Promise<AuthResult> {
-    try {
-      const { error } = await supabaseClient.auth.updateUser({
-        password: newPassword,
-      });
-
-      if (error) {
+      if (!response.ok) {
         return {
           success: false,
-          error: mapErrorMessage(error.message),
+          error: mapErrorMessage(data.error || "Wystąpił błąd"),
         };
       }
 
@@ -132,18 +92,30 @@ class ClientAuthService {
     }
   }
 
-  async getCurrentUser(): Promise<User | null> {
-    const {
-      data: { user },
-    } = await supabaseClient.auth.getUser();
-    return user;
-  }
+  async updatePassword(newPassword: string, accessToken: string): Promise<AuthResult> {
+    try {
+      const response = await fetch("/api/auth/set-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: newPassword, accessToken }),
+      });
 
-  async isSessionValid(): Promise<boolean> {
-    const {
-      data: { session },
-    } = await supabaseClient.auth.getSession();
-    return session !== null;
+      const data = await response.json();
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: mapErrorMessage(data.error || "Wystąpił błąd"),
+        };
+      }
+
+      return { success: true };
+    } catch {
+      return {
+        success: false,
+        error: "Wystąpił nieoczekiwany błąd",
+      };
+    }
   }
 }
 

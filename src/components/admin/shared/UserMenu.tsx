@@ -1,6 +1,5 @@
 import type { User } from "@supabase/supabase-js";
 import { LogOut, User as UserIcon } from "lucide-react";
-import { supabaseClient } from "@/db/supabase.client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +25,7 @@ export function UserMenu({ user }: UserMenuProps) {
   };
 
   const handleSignOut = async () => {
-    await supabaseClient.auth.signOut();
+    await fetch("/api/auth/logout", { method: "POST" });
     window.location.href = "/admin/login";
   };
 
