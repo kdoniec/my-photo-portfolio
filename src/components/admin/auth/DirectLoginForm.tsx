@@ -8,7 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
 
-export function DirectLoginForm() {
+interface DirectLoginFormProps {
+  returnTo?: string;
+  showExpiredMessage?: boolean;
+}
+
+export function DirectLoginForm({ returnTo }: DirectLoginFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,8 +41,8 @@ export function DirectLoginForm() {
       }
 
       if (authData.user) {
-        // Success! Redirect to admin panel
-        window.location.href = "/admin/photos";
+        // Success! Redirect to returnTo URL or default admin panel
+        window.location.href = returnTo || "/admin/photos";
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Wystąpił nieoczekiwany błąd");
