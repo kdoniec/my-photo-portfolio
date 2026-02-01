@@ -74,11 +74,11 @@ The application consists of two main parts:
 
 ### Testing
 
-| Technology     | Purpose                              |
-| -------------- | ------------------------------------ |
-| **Vitest**     | Unit and integration tests           |
-| **Playwright** | End-to-end tests                     |
-| **MSW**        | API mocking for tests                |
+| Technology     | Purpose                    |
+| -------------- | -------------------------- |
+| **Vitest**     | Unit and integration tests |
+| **Playwright** | End-to-end tests           |
+| **MSW**        | API mocking for tests      |
 
 ## Getting Started Locally
 

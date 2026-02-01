@@ -23,10 +23,7 @@ export abstract class BasePage {
     return this.page.getByTestId(testId);
   }
 
-  protected getByRole(
-    role: Parameters<Page["getByRole"]>[0],
-    options?: Parameters<Page["getByRole"]>[1]
-  ): Locator {
+  protected getByRole(role: Parameters<Page["getByRole"]>[0], options?: Parameters<Page["getByRole"]>[1]): Locator {
     return this.page.getByRole(role, options);
   }
 
