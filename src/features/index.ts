@@ -1,20 +1,9 @@
+import { ENV_NAME } from "astro:env/server";
 import { featureConfig } from "./config";
-import { ENVIRONMENTS, type Environment, type FeatureName } from "./types";
+import type { Environment, FeatureName } from "./types";
 
 function getEnvironment(): Environment {
-  const envName = import.meta.env.ENV_NAME;
-
-  if (!envName) {
-    console.warn("[Feature Flag] ENV_NAME not set, defaulting to 'local'");
-    return "local";
-  }
-
-  if (!ENVIRONMENTS.includes(envName as Environment)) {
-    console.warn(`[Feature Flag] Invalid ENV_NAME '${envName}', defaulting to 'local'`);
-    return "local";
-  }
-
-  return envName as Environment;
+  return ENV_NAME;
 }
 
 export function isFeatureEnabled(featureName: FeatureName): boolean {

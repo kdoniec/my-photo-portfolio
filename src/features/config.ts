@@ -2,15 +2,12 @@ import type { EnvironmentConfig } from "./types";
 
 export const featureConfig: EnvironmentConfig = {
   local: {
-    auth: true,
-    collections: true,
+    registration: true,
   },
   integration: {
-    auth: true,
-    collections: true,
+    registration: true,
   },
   production: {
-    auth: false,
-    collections: false,
+    registration: false,
   },
 };
