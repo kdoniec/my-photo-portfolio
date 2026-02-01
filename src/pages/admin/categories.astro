@@ -3,6 +3,12 @@ import AdminLayout from "@/layouts/AdminLayout.astro";
 import { CategoriesPage } from "@/components/admin/categories/CategoriesPage";
 import type { CategoryListResponseDTO, StatsDTO } from "@/types";
 
+// Defense in depth: Page-level auth guard (middleware provides primary protection)
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect("/admin/login");
+}
+
 const supabase = Astro.locals.supabase;
 
 // Fetch categories
