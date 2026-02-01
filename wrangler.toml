@@ -1,6 +1,0 @@
-name = "my-photo-portfolio"
-compatibility_date = "2025-09-14"
-compatibility_flags = ["nodejs_compat"]
-
-[observability]
-enabled = true
