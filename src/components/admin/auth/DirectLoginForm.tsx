@@ -12,7 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 // Error message mapping - Supabase errors to Polish user-friendly messages
 const ERROR_MAP: Record<string, string> = {
@@ -139,13 +140,17 @@ export function DirectLoginForm({ returnTo }: DirectLoginFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {blockTimeRemaining > 0 && (
         <Alert variant="destructive" role="alert">
-          Zbyt wiele nieudanych prób. Spróbuj ponownie za {formatTimeRemaining(blockTimeRemaining)}.
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Zbyt wiele nieudanych prób. Spróbuj ponownie za {formatTimeRemaining(blockTimeRemaining)}.
+          </AlertDescription>
         </Alert>
       )}
 
       {error && blockTimeRemaining === 0 && (
         <Alert variant="destructive" role="alert">
-          {error}
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
