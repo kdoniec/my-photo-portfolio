@@ -1,5 +1,5 @@
 ---
-import { DirectLoginForm } from "@/components/admin/auth/DirectLoginForm";
+import { LoginForm } from "@/components/admin/auth/LoginForm";
 import { SessionExpiredBanner } from "@/components/admin/auth/SessionExpiredBanner";
 import "@/styles/global.css";
 
@@ -42,7 +42,7 @@ const passwordReset = Astro.url.searchParams.get("password_reset") === "true";
         }
 
         <div class="rounded-lg border bg-card p-6 shadow-sm">
-          <DirectLoginForm client:only="react" returnTo={returnTo} showExpiredMessage={expired} />
+          <LoginForm client:only="react" returnTo={returnTo} showExpiredMessage={expired} />
         </div>
 
         <div class="text-center">
