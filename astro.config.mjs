@@ -1,4 +1,5 @@
 // @ts-check
+/* global process */
 import { defineConfig } from "astro/config";
 import { loadEnv } from "vite";
 

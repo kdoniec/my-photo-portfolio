@@ -12,9 +12,15 @@ export const GET: APIRoute = async ({ locals, request }) => {
     mode: import.meta.env.MODE,
     runtime: typeof globalThis.caches !== "undefined" ? "cloudflare-workers" : "node",
     env: {
-      "process.env.SUPABASE_URL": process.env.SUPABASE_URL ? `✓ ${process.env.SUPABASE_URL.substring(0, 25)}...` : "✗ missing",
-      "import.meta.env.SUPABASE_URL": import.meta.env.SUPABASE_URL ? `✓ ${String(import.meta.env.SUPABASE_URL).substring(0, 25)}...` : "✗ missing",
-      "runtime.env.SUPABASE_URL": runtime?.env?.SUPABASE_URL ? `✓ ${runtime.env.SUPABASE_URL.substring(0, 25)}...` : "✗ missing",
+      "process.env.SUPABASE_URL": process.env.SUPABASE_URL
+        ? `✓ ${process.env.SUPABASE_URL.substring(0, 25)}...`
+        : "✗ missing",
+      "import.meta.env.SUPABASE_URL": import.meta.env.SUPABASE_URL
+        ? `✓ ${String(import.meta.env.SUPABASE_URL).substring(0, 25)}...`
+        : "✗ missing",
+      "runtime.env.SUPABASE_URL": runtime?.env?.SUPABASE_URL
+        ? `✓ ${runtime.env.SUPABASE_URL.substring(0, 25)}...`
+        : "✗ missing",
       "resolved.url": url ? `✓ ${url.substring(0, 25)}...` : "✗ missing",
       "resolved.key": key ? "✓ set" : "✗ missing",
     },
