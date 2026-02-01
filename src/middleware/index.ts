@@ -37,6 +37,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const { data, error } = await supabase.auth.getUser(token);
     context.locals.user = data.user;
     authError = error;
+
+    // Set session on Supabase client so storage operations are authenticated
+    if (!error && data.user) {
+      await supabase.auth.setSession({
+        access_token: token,
+        refresh_token: token, // Use same token as refresh (not ideal but works for API calls)
+      });
+    }
   } else {
     const { data, error } = await supabase.auth.getUser();
     context.locals.user = data.user;
