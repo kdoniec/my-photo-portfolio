@@ -72,6 +72,14 @@ The application consists of two main parts:
 | ----------------------------- | ------------------------------------------ |
 | **browser-image-compression** | Client-side image compression and resizing |
 
+### Testing
+
+| Technology     | Purpose                              |
+| -------------- | ------------------------------------ |
+| **Vitest**     | Unit and integration tests           |
+| **Playwright** | End-to-end tests                     |
+| **MSW**        | API mocking for tests                |
+
 ## Getting Started Locally
 
 ### Prerequisites

@@ -46,6 +46,26 @@
 - Generowanie dwóch wersji: miniaturka (400px), podgląd (1200px)
 - Brak potrzeby server-side processing
 
+## Testowanie
+
+### Vitest
+
+- Framework do testów jednostkowych i integracyjnych
+- Szybkie wykonywanie testów z hot reload
+- Natywne wsparcie dla TypeScript i ESM
+
+### Playwright
+
+- Framework do testów end-to-end
+- Symulacja realnych scenariuszy użytkownika
+- Wsparcie dla wielu przeglądarek
+
+### MSW (Mock Service Worker)
+
+- Mockowanie API w testach
+- Przechwytywanie requestów sieciowych
+- Testowanie bez rzeczywistego backendu
+
 ## CI/CD i Hosting
 
 ### GitHub Actions
