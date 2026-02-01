@@ -6,12 +6,7 @@ import type { Database } from "../db/database.types";
 const PUBLIC_ADMIN_ROUTES = ["/admin/login", "/admin/signup", "/admin/reset-password", "/admin/set-password"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  // Get environment variables from Cloudflare runtime or fallback to import.meta.env
-  const runtime = context.locals.runtime;
-  const supabaseUrl = runtime?.env?.SUPABASE_URL || import.meta.env.SUPABASE_URL;
-  const supabaseKey = runtime?.env?.SUPABASE_KEY || import.meta.env.SUPABASE_KEY;
-
-  const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
+  const supabase = createServerClient<Database>(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY, {
     cookies: {
       getAll() {
         return parseCookieHeader(context.request.headers.get("Cookie") ?? "").map((cookie) => ({
