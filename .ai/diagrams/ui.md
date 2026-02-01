@@ -156,46 +156,46 @@ flowchart TD
 
 ### Strony Astro
 
-| Strona | Status | Opis |
-|--------|--------|------|
-| `login.astro` | Modyfikacja | Dodanie linku do resetu hasla, obsluga query params (returnTo, expired) |
-| `reset-password.astro` | Nowa | Formularz zadania resetu hasla |
-| `set-password.astro` | Nowa | Formularz ustawienia nowego hasla |
-| `photos.astro` | Istniejaca | Zarzadzanie zdjeciami |
-| `categories.astro` | Istniejaca | Zarzadzanie kategoriami |
-| `profile.astro` | Istniejaca | Edycja profilu |
+| Strona                 | Status      | Opis                                                                    |
+| ---------------------- | ----------- | ----------------------------------------------------------------------- |
+| `login.astro`          | Modyfikacja | Dodanie linku do resetu hasla, obsluga query params (returnTo, expired) |
+| `reset-password.astro` | Nowa        | Formularz zadania resetu hasla                                          |
+| `set-password.astro`   | Nowa        | Formularz ustawienia nowego hasla                                       |
+| `photos.astro`         | Istniejaca  | Zarzadzanie zdjeciami                                                   |
+| `categories.astro`     | Istniejaca  | Zarzadzanie kategoriami                                                 |
+| `profile.astro`        | Istniejaca  | Edycja profilu                                                          |
 
 ### Komponenty React
 
-| Komponent | Status | Opis |
-|-----------|--------|------|
-| `DirectLoginForm.tsx` | Modyfikacja | Dodanie rate limiting, returnTo, komunikat wygasniecia |
-| `ForgotPasswordForm.tsx` | Nowy | Formularz z polem email do resetu hasla |
-| `SetPasswordForm.tsx` | Nowy | Formularz nowego hasla z potwierdzeniem |
-| `SessionExpiredBanner.tsx` | Nowy | Alert o wygasnieciu sesji |
-| `UnsavedChangesGuard.tsx` | Nowy | Ochrona przed utrata niezapisanych zmian |
-| `UserMenu.tsx` | Istniejacy | Menu uzytkownika z wylogowaniem |
-| `AuthContext.tsx` | Istniejacy | Kontekst zarzadzania stanem autentykacji |
+| Komponent                  | Status      | Opis                                                   |
+| -------------------------- | ----------- | ------------------------------------------------------ |
+| `DirectLoginForm.tsx`      | Modyfikacja | Dodanie rate limiting, returnTo, komunikat wygasniecia |
+| `ForgotPasswordForm.tsx`   | Nowy        | Formularz z polem email do resetu hasla                |
+| `SetPasswordForm.tsx`      | Nowy        | Formularz nowego hasla z potwierdzeniem                |
+| `SessionExpiredBanner.tsx` | Nowy        | Alert o wygasnieciu sesji                              |
+| `UnsavedChangesGuard.tsx`  | Nowy        | Ochrona przed utrata niezapisanych zmian               |
+| `UserMenu.tsx`             | Istniejacy  | Menu uzytkownika z wylogowaniem                        |
+| `AuthContext.tsx`          | Istniejacy  | Kontekst zarzadzania stanem autentykacji               |
 
 ### Middleware
 
-| Plik | Status | Opis |
-|------|--------|------|
+| Plik                  | Status      | Opis                                                      |
+| --------------------- | ----------- | --------------------------------------------------------- |
 | `middleware/index.ts` | Modyfikacja | Rozszerzenie o returnTo URL, wykrywanie wygasnietej sesji |
 
 ### Schematy walidacji
 
-| Schemat | Status | Opis |
-|---------|--------|------|
-| `login.schema.ts` | Istniejacy | Walidacja formularza logowania |
-| `reset-password.schema.ts` | Nowy | Walidacja resetu i ustawiania hasla |
+| Schemat                    | Status     | Opis                                |
+| -------------------------- | ---------- | ----------------------------------- |
+| `login.schema.ts`          | Istniejacy | Walidacja formularza logowania      |
+| `reset-password.schema.ts` | Nowy       | Walidacja resetu i ustawiania hasla |
 
 ### Serwisy i Utility
 
-| Plik | Status | Opis |
-|------|--------|------|
-| `auth.service.ts` | Nowy | Abstrakcja nad Supabase Auth |
-| `rate-limit.ts` | Nowy | Rate limiting prob logowania |
+| Plik              | Status | Opis                         |
+| ----------------- | ------ | ---------------------------- |
+| `auth.service.ts` | Nowy   | Abstrakcja nad Supabase Auth |
+| `rate-limit.ts`   | Nowy   | Rate limiting prob logowania |
 
 ---
 

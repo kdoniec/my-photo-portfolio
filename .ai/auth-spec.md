@@ -27,29 +27,29 @@ Niniejsza specyfikacja opisuje architekturę modułu autentykacji dla aplikacji 
 
 Aplikacja posiada już podstawową infrastrukturę autentykacji:
 
-| Element | Stan | Lokalizacja |
-|---------|------|-------------|
-| Strona logowania | Istnieje (wymaga rozszerzenia) | `src/pages/admin/login.astro` |
-| Formularz logowania | Istnieje (wymaga rozszerzenia) | `src/components/admin/auth/DirectLoginForm.tsx` |
-| Middleware ochrony tras | Istnieje (wymaga rozszerzenia) | `src/middleware/index.ts` |
-| Kontekst autentykacji | Istnieje | `src/components/admin/context/AuthContext.tsx` |
-| Menu użytkownika z wylogowaniem | Istnieje | `src/components/admin/shared/UserMenu.tsx` |
-| Schemat walidacji logowania | Istnieje (wymaga rozszerzenia) | `src/lib/schemas/login.schema.ts` |
+| Element                         | Stan                           | Lokalizacja                                     |
+| ------------------------------- | ------------------------------ | ----------------------------------------------- |
+| Strona logowania                | Istnieje (wymaga rozszerzenia) | `src/pages/admin/login.astro`                   |
+| Formularz logowania             | Istnieje (wymaga rozszerzenia) | `src/components/admin/auth/DirectLoginForm.tsx` |
+| Middleware ochrony tras         | Istnieje (wymaga rozszerzenia) | `src/middleware/index.ts`                       |
+| Kontekst autentykacji           | Istnieje                       | `src/components/admin/context/AuthContext.tsx`  |
+| Menu użytkownika z wylogowaniem | Istnieje                       | `src/components/admin/shared/UserMenu.tsx`      |
+| Schemat walidacji logowania     | Istnieje (wymaga rozszerzenia) | `src/lib/schemas/login.schema.ts`               |
 
 ### 1.3 Elementy do implementacji
 
-| Element | Typ | Priorytet |
-|---------|-----|-----------|
-| Strona resetowania hasła | Nowy | Wysoki |
-| Strona ustawienia nowego hasła | Nowy | Wysoki |
-| Formularz resetowania hasła | Nowy | Wysoki |
-| Formularz ustawienia hasła | Nowy | Wysoki |
-| Rate limiting logowania | Rozszerzenie | Wysoki |
-| Link "Nie pamiętam hasła" | Rozszerzenie | Wysoki |
-| Obsługa returnTo URL | Rozszerzenie | Średni |
-| Powiadomienie o wygaśnięciu sesji | Nowy | Średni |
-| Ochrona przed utratą niezapisanych zmian (US-029) | Nowy | Średni |
-| Serwis autentykacji | Nowy | Wysoki |
+| Element                                           | Typ          | Priorytet |
+| ------------------------------------------------- | ------------ | --------- |
+| Strona resetowania hasła                          | Nowy         | Wysoki    |
+| Strona ustawienia nowego hasła                    | Nowy         | Wysoki    |
+| Formularz resetowania hasła                       | Nowy         | Wysoki    |
+| Formularz ustawienia hasła                        | Nowy         | Wysoki    |
+| Rate limiting logowania                           | Rozszerzenie | Wysoki    |
+| Link "Nie pamiętam hasła"                         | Rozszerzenie | Wysoki    |
+| Obsługa returnTo URL                              | Rozszerzenie | Średni    |
+| Powiadomienie o wygaśnięciu sesji                 | Nowy         | Średni    |
+| Ochrona przed utratą niezapisanych zmian (US-029) | Nowy         | Średni    |
+| Serwis autentykacji                               | Nowy         | Wysoki    |
 
 ---
 
@@ -62,15 +62,18 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 **Lokalizacja:** `src/pages/admin/login.astro`
 
 **Zmiany:**
+
 - Dodanie linku "Nie pamiętam hasła" pod formularzem
 - Przekazanie parametru `returnTo` z query string do komponentu formularza
 - Dodanie obsługi komunikatu o wygaśnięciu sesji (query param `?expired=true`)
 
 **Parametry URL:**
+
 - `?returnTo=/admin/categories` - URL do przekierowania po udanym logowaniu
 - `?expired=true` - flaga informująca o wygaśnięciu sesji
 
 **Struktura:**
+
 ```
 /admin/login
 ├── Layout (minimalistyczny, bez nawigacji admin)
@@ -85,11 +88,13 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 **Lokalizacja:** `src/pages/admin/reset-password.astro`
 
 **Odpowiedzialność:**
+
 - Wyświetlenie formularza do wprowadzenia adresu email
 - Obsługa stanu sukcesu (komunikat o wysłaniu emaila)
 - Przekierowanie zalogowanych użytkowników do panelu
 
 **Struktura:**
+
 ```
 /admin/reset-password
 ├── Layout (minimalistyczny)
@@ -99,6 +104,7 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 ```
 
 **Parametry URL:**
+
 - Brak parametrów wejściowych
 - Nie wymaga autentykacji
 
@@ -107,12 +113,14 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 **Lokalizacja:** `src/pages/admin/set-password.astro`
 
 **Odpowiedzialność:**
+
 - Walidacja obecności tokena w URL
 - Wyświetlenie formularza do ustawienia nowego hasła
 - Obsługa błędów (nieprawidłowy/wygasły token)
 - Przekierowanie do logowania po sukcesie
 
 **Struktura:**
+
 ```
 /admin/set-password
 ├── Layout (minimalistyczny)
@@ -124,6 +132,7 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 ```
 
 **Parametry URL:**
+
 - Token dostarczany przez Supabase w hash fragmentu URL
 - Supabase Auth automatycznie przetwarza token z emaila
 
@@ -134,37 +143,42 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 **Lokalizacja:** `src/components/admin/auth/DirectLoginForm.tsx`
 
 **Nowe właściwości (props):**
+
 ```typescript
 interface DirectLoginFormProps {
-  returnTo?: string;        // URL do przekierowania po logowaniu
+  returnTo?: string; // URL do przekierowania po logowaniu
   showExpiredMessage?: boolean; // Flaga wyświetlenia komunikatu o wygaśnięciu
 }
 ```
 
 **Nowe elementy:**
+
 - Rate limiting: licznik nieudanych prób w `sessionStorage`
 - Ostrzeżenie po 5 nieudanych próbach
 - Przekierowanie do `returnTo` zamiast stałego `/admin/photos`
 - Komunikat o wygaśnięciu sesji (warunkowo wyświetlany)
 
 **Stan wewnętrzny:**
+
 ```typescript
 interface FormState {
   error: string | null;
   isLoading: boolean;
-  failedAttempts: number;    // Nowe: licznik nieudanych prób
-  isBlocked: boolean;        // Nowe: flaga blokady po 5 próbach
+  failedAttempts: number; // Nowe: licznik nieudanych prób
+  isBlocked: boolean; // Nowe: flaga blokady po 5 próbach
   blockTimeRemaining: number; // Nowe: czas do odblokowania (sekundy)
 }
 ```
 
 **Wymagania UX (zgodnie z US-001):**
+
 - Przycisk "Zaloguj" jest nieaktywny (`disabled`) gdy pola email lub hasło są puste
 - Formularz obsługuje wysyłanie przez klawisz Enter
 - Pole hasła używa `type="password"` (maskowanie gwiazdkami)
 - Po udanym logowaniu przekierowanie do `returnTo` lub domyślnie `/admin/photos`
 
 **Logika rate limiting:**
+
 - Przechowywanie licznika prób w `sessionStorage` z kluczem `auth_failed_attempts`
 - Przechowywanie czasu ostatniej próby w `sessionStorage` z kluczem `auth_last_attempt`
 - Po 5 nieudanych próbach: blokada na 5 minut
@@ -176,11 +190,13 @@ interface FormState {
 **Lokalizacja:** `src/components/admin/auth/ForgotPasswordForm.tsx`
 
 **Odpowiedzialność:**
+
 - Formularz z polem email
 - Wywołanie Supabase Auth `resetPasswordForEmail()`
 - Obsługa stanu sukcesu i błędu
 
 **Właściwości:**
+
 ```typescript
 interface ForgotPasswordFormProps {
   // Brak właściwości - komponent samodzielny
@@ -188,19 +204,22 @@ interface ForgotPasswordFormProps {
 ```
 
 **Stan wewnętrzny:**
+
 ```typescript
 interface FormState {
   error: string | null;
   isLoading: boolean;
-  isSuccess: boolean;  // Przełączenie na widok sukcesu
-  email: string;       // Zachowany email do wyświetlenia w komunikacie
+  isSuccess: boolean; // Przełączenie na widok sukcesu
+  email: string; // Zachowany email do wyświetlenia w komunikacie
 }
 ```
 
 **Walidacja:**
+
 - Email: wymagany, poprawny format
 
 **Widoki:**
+
 1. **Formularz** - pole email + przycisk "Wyślij link resetujący"
 2. **Sukces** - komunikat "Sprawdź swoją skrzynkę email" + adres email + link powrotu
 
@@ -209,11 +228,13 @@ interface FormState {
 **Lokalizacja:** `src/components/admin/auth/SetPasswordForm.tsx`
 
 **Odpowiedzialność:**
+
 - Formularz z polami: nowe hasło, potwierdzenie hasła
 - Wywołanie Supabase Auth `updateUser({ password })`
 - Przekierowanie do logowania po sukcesie
 
 **Właściwości:**
+
 ```typescript
 interface SetPasswordFormProps {
   // Brak właściwości - komponent samodzielny
@@ -222,6 +243,7 @@ interface SetPasswordFormProps {
 ```
 
 **Stan wewnętrzny:**
+
 ```typescript
 interface FormState {
   error: string | null;
@@ -231,10 +253,12 @@ interface FormState {
 ```
 
 **Walidacja:**
+
 - Hasło: minimum 8 znaków
 - Potwierdzenie: musi być identyczne z hasłem
 
 **Przepływ:**
+
 1. Supabase Auth automatycznie przetwarza token z URL hash
 2. Po załadowaniu strony sesja jest aktywna (tymczasowo)
 3. Użytkownik wprowadza nowe hasło
@@ -246,10 +270,12 @@ interface FormState {
 **Lokalizacja:** `src/components/admin/auth/SessionExpiredBanner.tsx`
 
 **Odpowiedzialność:**
+
 - Komponent alertu wyświetlany na stronie logowania
 - Informacja o wygaśnięciu sesji
 
 **Właściwości:**
+
 ```typescript
 interface SessionExpiredBannerProps {
   show: boolean;
@@ -257,6 +283,7 @@ interface SessionExpiredBannerProps {
 ```
 
 **Wygląd:**
+
 - Alert typu "warning"
 - Ikona zegara
 - Tekst: "Twoja sesja wygasła. Zaloguj się ponownie, aby kontynuować."
@@ -266,11 +293,13 @@ interface SessionExpiredBannerProps {
 **Lokalizacja:** `src/components/admin/auth/UnsavedChangesGuard.tsx`
 
 **Odpowiedzialność (zgodnie z US-029):**
+
 - Wykrywanie niezapisanych zmian w formularzach panelu admina
 - Wyświetlanie ostrzeżenia przed przekierowaniem przy wygaśnięciu sesji
 - Ochrona przed utratą danych użytkownika
 
 **Właściwości:**
+
 ```typescript
 interface UnsavedChangesGuardProps {
   hasUnsavedChanges: boolean;
@@ -279,12 +308,14 @@ interface UnsavedChangesGuardProps {
 ```
 
 **Mechanizm działania:**
+
 1. Komponent nasłuchuje na zdarzenie `beforeunload` przeglądarki
 2. Przy wykryciu wygaśnięcia sesji (przez AuthContext) sprawdza flagę `hasUnsavedChanges`
 3. Jeśli są niezapisane zmiany, wyświetla modal ostrzegawczy przed przekierowaniem
 4. Użytkownik może wybrać: "Zapisz i wyloguj" lub "Porzuć zmiany"
 
 **Stan wewnętrzny:**
+
 ```typescript
 interface GuardState {
   showWarningModal: boolean;
@@ -293,6 +324,7 @@ interface GuardState {
 ```
 
 **Integracja:**
+
 - Używany jako wrapper w formularzach edycji (zdjęcia, kategorie, profil)
 - Formularze przekazują `hasUnsavedChanges` na podstawie dirty state (react-hook-form lub własna logika)
 
@@ -301,6 +333,7 @@ interface GuardState {
 Po pomyślnym logowaniu użytkownik jest przekierowany do `/admin/photos` (zarządzanie zdjęciami), ponieważ jest to główna funkcjonalność panelu administracyjnego. Ścieżka `/admin` sama w sobie nie jest stroną - stanowi jedynie prefiks dla chronionych tras.
 
 **Uzasadnienie:**
+
 - Zarządzanie zdjęciami (FR-009, FR-010) to najczęściej używana funkcja
 - Upraszcza nawigację - użytkownik od razu widzi listę zdjęć
 - Spójne z istniejącą implementacją w UserMenu
@@ -332,6 +365,7 @@ Po pomyślnym logowaniu użytkownik jest przekierowany do `/admin/photos` (zarz�
    - `/admin/set-password` - dostępna bez autentykacji (token w URL)
 
 **Pseudokod logiki:**
+
 ```
 1. Utworzenie klienta Supabase SSR
 2. Pobranie użytkownika z tokena lub sesji
@@ -347,6 +381,7 @@ Po pomyślnym logowaniu użytkownik jest przekierowany do `/admin/photos` (zarz�
 ```
 
 **Trasy wyłączone z ochrony:**
+
 - `/admin/login`
 - `/admin/reset-password`
 - `/admin/set-password`
@@ -358,18 +393,14 @@ Po pomyślnym logowaniu użytkownik jest przekierowany do `/admin/photos` (zarz�
 **Lokalizacja:** `src/lib/schemas/login.schema.ts`
 
 **Zmiany:**
+
 - Dodanie walidacji minimalnej długości hasła (8 znaków) dla lepszego UX
 
 ```typescript
 // Schemat logowania (rozszerzony)
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email jest wymagany")
-    .email("Nieprawidłowy format email"),
-  password: z
-    .string()
-    .min(1, "Hasło jest wymagane"),
+  email: z.string().min(1, "Email jest wymagany").email("Nieprawidłowy format email"),
+  password: z.string().min(1, "Hasło jest wymagane"),
 });
 ```
 
@@ -380,24 +411,19 @@ export const loginSchema = z.object({
 ```typescript
 // Schemat resetowania hasła
 export const resetPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email jest wymagany")
-    .email("Nieprawidłowy format email"),
+  email: z.string().min(1, "Email jest wymagany").email("Nieprawidłowy format email"),
 });
 
 // Schemat ustawienia nowego hasła
-export const setPasswordSchema = z.object({
-  password: z
-    .string()
-    .min(8, "Hasło musi mieć minimum 8 znaków"),
-  confirmPassword: z
-    .string()
-    .min(1, "Potwierdzenie hasła jest wymagane"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Hasła muszą być identyczne",
-  path: ["confirmPassword"],
-});
+export const setPasswordSchema = z
+  .object({
+    password: z.string().min(8, "Hasło musi mieć minimum 8 znaków"),
+    confirmPassword: z.string().min(1, "Potwierdzenie hasła jest wymagane"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Hasła muszą być identyczne",
+    path: ["confirmPassword"],
+  });
 ```
 
 ### 2.6 Layouty
@@ -405,6 +431,7 @@ export const setPasswordSchema = z.object({
 Moduł autentykacji wykorzystuje minimalistyczny layout bez nawigacji administracyjnej. Strony logowania, resetowania hasła i ustawienia hasła używają prostego layoutu z wycentrowaną zawartością.
 
 **Wspólne elementy layoutu auth:**
+
 - Tło: `bg-background`
 - Wycentrowany kontener: `max-w-md`
 - Karta z formularzem: `rounded-lg border bg-card p-6 shadow-sm`
@@ -419,6 +446,7 @@ Moduł autentykacji wykorzystuje minimalistyczny layout bez nawigacji administra
 Moduł autentykacji **nie wymaga** nowych endpointów API po stronie serwera Astro, ponieważ cała logika autentykacji jest obsługiwana bezpośrednio przez Supabase Auth SDK po stronie klienta.
 
 **Uzasadnienie:**
+
 - Supabase Auth SDK zapewnia pełną funkcjonalność autentykacji
 - Komunikacja odbywa się bezpośrednio między przeglądarką a Supabase
 - Middleware Astro waliduje sesję przy każdym request server-side
@@ -432,15 +460,11 @@ Moduł autentykacji **nie wymaga** nowych endpointów API po stronie serwera Ast
 
 ```typescript
 // Trasy publiczne w sekcji admin
-const PUBLIC_ADMIN_ROUTES = [
-  '/admin/login',
-  '/admin/reset-password',
-  '/admin/set-password',
-];
+const PUBLIC_ADMIN_ROUTES = ["/admin/login", "/admin/reset-password", "/admin/set-password"];
 
 // Sprawdzenie czy trasa jest publiczna
 const isPublicAdminRoute = PUBLIC_ADMIN_ROUTES.some(
-  route => url.pathname === route || url.pathname.startsWith(route + '?')
+  (route) => url.pathname === route || url.pathname.startsWith(route + "?")
 );
 ```
 
@@ -458,9 +482,12 @@ if (isAdminRoute && !isPublicAdminRoute && !user) {
 
 ```typescript
 // Sprawdzenie błędu sesji
-const { data: { user }, error } = await supabase.auth.getUser();
+const {
+  data: { user },
+  error,
+} = await supabase.auth.getUser();
 
-if (error?.message?.includes('expired') || error?.message?.includes('invalid')) {
+if (error?.message?.includes("expired") || error?.message?.includes("invalid")) {
   const returnTo = encodeURIComponent(url.pathname);
   return context.redirect(`/admin/login?expired=true&returnTo=${returnTo}`);
 }
@@ -517,7 +544,7 @@ class ClientAuthService implements AuthService {
     if (error) {
       return {
         success: false,
-        error: this.mapErrorMessage(error.message)
+        error: this.mapErrorMessage(error.message),
       };
     }
 
@@ -536,7 +563,7 @@ class ClientAuthService implements AuthService {
     if (error) {
       return {
         success: false,
-        error: this.mapErrorMessage(error.message)
+        error: this.mapErrorMessage(error.message),
       };
     }
 
@@ -551,7 +578,7 @@ class ClientAuthService implements AuthService {
     if (error) {
       return {
         success: false,
-        error: this.mapErrorMessage(error.message)
+        error: this.mapErrorMessage(error.message),
       };
     }
 
@@ -561,13 +588,13 @@ class ClientAuthService implements AuthService {
   private mapErrorMessage(message: string): string {
     // Mapowanie komunikatów Supabase na przyjazne użytkownikowi
     const errorMap: Record<string, string> = {
-      'Invalid login credentials': 'Nieprawidłowy email lub hasło',
-      'Email not confirmed': 'Konto nie zostało potwierdzone',
-      'User not found': 'Nieprawidłowy email lub hasło', // Nie ujawniamy czy email istnieje
+      "Invalid login credentials": "Nieprawidłowy email lub hasło",
+      "Email not confirmed": "Konto nie zostało potwierdzone",
+      "User not found": "Nieprawidłowy email lub hasło", // Nie ujawniamy czy email istnieje
       // ... inne mapowania
     };
 
-    return errorMap[message] || 'Wystąpił nieoczekiwany błąd';
+    return errorMap[message] || "Wystąpił nieoczekiwany błąd";
   }
 }
 ```
@@ -583,7 +610,7 @@ interface RateLimitState {
   blockedUntil: number | null;
 }
 
-const STORAGE_KEY = 'auth_rate_limit';
+const STORAGE_KEY = "auth_rate_limit";
 const MAX_ATTEMPTS = 5;
 const BLOCK_DURATION_MS = 5 * 60 * 1000; // 5 minut
 
@@ -645,17 +672,18 @@ export function getBlockTimeRemaining(): number {
 
 #### 3.5.1 Ustawienia w Supabase Dashboard
 
-| Parametr | Wartość | Opis |
-|----------|---------|------|
-| Site URL | `https://yourdomain.com` | Bazowy URL aplikacji |
-| Redirect URLs | `https://yourdomain.com/admin/set-password` | Dozwolone URL przekierowań |
-| JWT Expiry | `86400` (24h) | Czas wygaśnięcia sesji |
-| Password min length | `8` | Minimalna długość hasła |
-| Enable email confirmations | `false` | Wyłączone dla MVP (jeden użytkownik) |
+| Parametr                   | Wartość                                     | Opis                                 |
+| -------------------------- | ------------------------------------------- | ------------------------------------ |
+| Site URL                   | `https://yourdomain.com`                    | Bazowy URL aplikacji                 |
+| Redirect URLs              | `https://yourdomain.com/admin/set-password` | Dozwolone URL przekierowań           |
+| JWT Expiry                 | `86400` (24h)                               | Czas wygaśnięcia sesji               |
+| Password min length        | `8`                                         | Minimalna długość hasła              |
+| Enable email confirmations | `false`                                     | Wyłączone dla MVP (jeden użytkownik) |
 
 #### 3.5.2 Email Templates
 
 **Reset Password Email:**
+
 ```html
 <h2>Resetowanie hasła</h2>
 <p>Kliknij poniższy link, aby ustawić nowe hasło:</p>
@@ -833,6 +861,7 @@ export function getBlockTimeRemaining(): number {
 #### 4.2.1 Przechowywanie sesji
 
 Supabase Auth przechowuje sesję w:
+
 - **Cookies** (httpOnly, secure) - dla server-side
 - **localStorage** - dla client-side refresh
 
@@ -847,6 +876,7 @@ Supabase Auth przechowuje sesję w:
 Zgodnie z US-029: sesja wygasa po 24 godzinach nieaktywności.
 
 Konfiguracja w Supabase:
+
 - JWT Expiry: 86400 sekund (24h)
 - Session timeout obsługiwany przez Supabase
 
@@ -890,10 +920,12 @@ Konfiguracja w Supabase:
 **Aktor:** Fotograf (administrator)
 
 **Warunki wstępne:**
+
 - Użytkownik nie jest zalogowany
 - Użytkownik posiada konto w systemie
 
 **Kroki:**
+
 1. Użytkownik wchodzi na `/admin/photos`
 2. System przekierowuje do `/admin/login?returnTo=/admin/photos`
 3. Użytkownik wprowadza email i hasło
@@ -909,9 +941,11 @@ Konfiguracja w Supabase:
 **Aktor:** Fotograf
 
 **Warunki wstępne:**
+
 - Użytkownik nie jest zalogowany
 
 **Kroki:**
+
 1. Użytkownik wchodzi na `/admin/login`
 2. Użytkownik wprowadza nieprawidłowe dane
 3. Użytkownik klika "Zaloguj"
@@ -925,9 +959,11 @@ Konfiguracja w Supabase:
 **Aktor:** Fotograf
 
 **Warunki wstępne:**
+
 - Użytkownik wykonał 4 nieudane próby logowania
 
 **Kroki:**
+
 1. Użytkownik wprowadza nieprawidłowe dane (5. próba)
 2. System wyświetla ostrzeżenie o blokadzie
 3. Formularz jest zablokowany
@@ -941,10 +977,12 @@ Konfiguracja w Supabase:
 **Aktor:** Fotograf
 
 **Warunki wstępne:**
+
 - Użytkownik zapomniał hasła
 - Użytkownik ma dostęp do skrzynki email
 
 **Kroki:**
+
 1. Użytkownik klika "Nie pamiętam hasła" na stronie logowania
 2. System przekierowuje do `/admin/reset-password`
 3. Użytkownik wprowadza email
@@ -963,10 +1001,12 @@ Konfiguracja w Supabase:
 **Aktor:** Fotograf
 
 **Warunki wstępne:**
+
 - Użytkownik był zalogowany
 - Minęło 24 godziny od ostatniej aktywności
 
 **Kroki:**
+
 1. Użytkownik próbuje wykonać akcję (np. kliknięcie w link)
 2. System wykrywa wygasłą sesję
 3. System przekierowuje do `/admin/login?expired=true&returnTo=...`
@@ -981,9 +1021,11 @@ Konfiguracja w Supabase:
 **Aktor:** Fotograf
 
 **Warunki wstępne:**
+
 - Użytkownik jest zalogowany
 
 **Kroki:**
+
 1. Użytkownik klika awatar w nawigacji
 2. System wyświetla menu użytkownika
 3. Użytkownik klika "Wyloguj"
@@ -998,55 +1040,55 @@ Konfiguracja w Supabase:
 
 ### 6.1 Walidacja formularza logowania
 
-| Pole | Reguła | Komunikat błędu |
-|------|--------|-----------------|
-| Email | Wymagane | "Email jest wymagany" |
+| Pole  | Reguła       | Komunikat błędu              |
+| ----- | ------------ | ---------------------------- |
+| Email | Wymagane     | "Email jest wymagany"        |
 | Email | Format email | "Nieprawidłowy format email" |
-| Hasło | Wymagane | "Hasło jest wymagane" |
+| Hasło | Wymagane     | "Hasło jest wymagane"        |
 
 ### 6.2 Walidacja formularza resetowania hasła
 
-| Pole | Reguła | Komunikat błędu |
-|------|--------|-----------------|
-| Email | Wymagane | "Email jest wymagany" |
+| Pole  | Reguła       | Komunikat błędu              |
+| ----- | ------------ | ---------------------------- |
+| Email | Wymagane     | "Email jest wymagany"        |
 | Email | Format email | "Nieprawidłowy format email" |
 
 ### 6.3 Walidacja formularza ustawienia hasła
 
-| Pole | Reguła | Komunikat błędu |
-|------|--------|-----------------|
-| Hasło | Wymagane | "Hasło jest wymagane" |
-| Hasło | Min 8 znaków | "Hasło musi mieć minimum 8 znaków" |
-| Potwierdzenie | Wymagane | "Potwierdzenie hasła jest wymagane" |
-| Potwierdzenie | Zgodność | "Hasła muszą być identyczne" |
+| Pole          | Reguła       | Komunikat błędu                     |
+| ------------- | ------------ | ----------------------------------- |
+| Hasło         | Wymagane     | "Hasło jest wymagane"               |
+| Hasło         | Min 8 znaków | "Hasło musi mieć minimum 8 znaków"  |
+| Potwierdzenie | Wymagane     | "Potwierdzenie hasła jest wymagane" |
+| Potwierdzenie | Zgodność     | "Hasła muszą być identyczne"        |
 
 ### 6.4 Komunikaty błędów API
 
-| Błąd Supabase | Komunikat dla użytkownika |
-|---------------|---------------------------|
-| Invalid login credentials | "Nieprawidłowy email lub hasło" |
-| Email not confirmed | "Konto nie zostało potwierdzone" |
-| User not found | "Nieprawidłowy email lub hasło" |
-| Too many requests | "Zbyt wiele prób. Spróbuj ponownie za chwilę" |
-| Network error | "Błąd połączenia. Sprawdź internet" |
-| Invalid token | "Link resetujący wygasł lub jest nieprawidłowy" |
-| Weak password | "Hasło jest zbyt słabe" |
+| Błąd Supabase             | Komunikat dla użytkownika                       |
+| ------------------------- | ----------------------------------------------- |
+| Invalid login credentials | "Nieprawidłowy email lub hasło"                 |
+| Email not confirmed       | "Konto nie zostało potwierdzone"                |
+| User not found            | "Nieprawidłowy email lub hasło"                 |
+| Too many requests         | "Zbyt wiele prób. Spróbuj ponownie za chwilę"   |
+| Network error             | "Błąd połączenia. Sprawdź internet"             |
+| Invalid token             | "Link resetujący wygasł lub jest nieprawidłowy" |
+| Weak password             | "Hasło jest zbyt słabe"                         |
 
 ### 6.5 Komunikaty sukcesu
 
-| Akcja | Komunikat |
-|-------|-----------|
+| Akcja               | Komunikat                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------- |
 | Reset hasła wysłany | "Sprawdź swoją skrzynkę email. Wysłaliśmy link do resetowania hasła na adres {email}" |
-| Hasło zmienione | "Hasło zostało zmienione. Możesz się teraz zalogować" |
-| Wylogowanie | Brak komunikatu (przekierowanie) |
+| Hasło zmienione     | "Hasło zostało zmienione. Możesz się teraz zalogować"                                 |
+| Wylogowanie         | Brak komunikatu (przekierowanie)                                                      |
 
 ### 6.6 Komunikaty ostrzegawcze
 
-| Sytuacja | Komunikat |
-|----------|-----------|
-| Sesja wygasła | "Twoja sesja wygasła. Zaloguj się ponownie, aby kontynuować" |
-| Blokada logowania | "Zbyt wiele nieudanych prób. Spróbuj ponownie za {czas}" |
-| Link wygasł | "Link do resetowania hasła wygasł. Wygeneruj nowy link" |
+| Sytuacja                    | Komunikat                                                            |
+| --------------------------- | -------------------------------------------------------------------- |
+| Sesja wygasła               | "Twoja sesja wygasła. Zaloguj się ponownie, aby kontynuować"         |
+| Blokada logowania           | "Zbyt wiele nieudanych prób. Spróbuj ponownie za {czas}"             |
+| Link wygasł                 | "Link do resetowania hasła wygasł. Wygeneruj nowy link"              |
 | Niezapisane zmiany (US-029) | "Masz niezapisane zmiany. Czy chcesz je zapisać przed wylogowaniem?" |
 
 ---
@@ -1055,26 +1097,26 @@ Konfiguracja w Supabase:
 
 ### Pliki do utworzenia
 
-| Plik | Typ |
-|------|-----|
-| `src/pages/admin/reset-password.astro` | Strona Astro |
-| `src/pages/admin/set-password.astro` | Strona Astro |
-| `src/components/admin/auth/ForgotPasswordForm.tsx` | Komponent React |
-| `src/components/admin/auth/SetPasswordForm.tsx` | Komponent React |
+| Plik                                                 | Typ             |
+| ---------------------------------------------------- | --------------- |
+| `src/pages/admin/reset-password.astro`               | Strona Astro    |
+| `src/pages/admin/set-password.astro`                 | Strona Astro    |
+| `src/components/admin/auth/ForgotPasswordForm.tsx`   | Komponent React |
+| `src/components/admin/auth/SetPasswordForm.tsx`      | Komponent React |
 | `src/components/admin/auth/SessionExpiredBanner.tsx` | Komponent React |
-| `src/components/admin/auth/UnsavedChangesGuard.tsx` | Komponent React |
-| `src/lib/schemas/reset-password.schema.ts` | Schemat Zod |
-| `src/lib/services/auth.service.ts` | Serwis |
-| `src/lib/utils/rate-limit.ts` | Utility |
+| `src/components/admin/auth/UnsavedChangesGuard.tsx`  | Komponent React |
+| `src/lib/schemas/reset-password.schema.ts`           | Schemat Zod     |
+| `src/lib/services/auth.service.ts`                   | Serwis          |
+| `src/lib/utils/rate-limit.ts`                        | Utility         |
 
 ### Pliki do modyfikacji
 
-| Plik | Zakres zmian |
-|------|--------------|
-| `src/pages/admin/login.astro` | Dodanie linku i obsługi query params |
-| `src/components/admin/auth/DirectLoginForm.tsx` | Rate limiting, returnTo |
-| `src/middleware/index.ts` | Rozszerzenie ochrony tras, returnTo |
-| `src/lib/schemas/login.schema.ts` | Drobne rozszerzenia walidacji |
+| Plik                                            | Zakres zmian                         |
+| ----------------------------------------------- | ------------------------------------ |
+| `src/pages/admin/login.astro`                   | Dodanie linku i obsługi query params |
+| `src/components/admin/auth/DirectLoginForm.tsx` | Rate limiting, returnTo              |
+| `src/middleware/index.ts`                       | Rozszerzenie ochrony tras, returnTo  |
+| `src/lib/schemas/login.schema.ts`               | Drobne rozszerzenia walidacji        |
 
 ### Zależności zewnętrzne
 

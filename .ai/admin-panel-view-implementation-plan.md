@@ -14,13 +14,13 @@ Panel jest chroniony przed nieautoryzowanym dostępem poprzez middleware Astro i
 
 ## 2. Routing widoku
 
-| Ścieżka | Plik | Opis |
-|---------|------|------|
-| `/admin/login` | `src/pages/admin/login.astro` | Strona logowania |
-| `/admin` | `src/pages/admin/index.astro` | Redirect do `/admin/photos` lub `/admin/login` |
-| `/admin/categories` | `src/pages/admin/categories.astro` | Zarządzanie kategoriami |
-| `/admin/photos` | `src/pages/admin/photos.astro` | Zarządzanie zdjęciami |
-| `/admin/profile` | `src/pages/admin/profile.astro` | Profil i ustawienia |
+| Ścieżka             | Plik                               | Opis                                           |
+| ------------------- | ---------------------------------- | ---------------------------------------------- |
+| `/admin/login`      | `src/pages/admin/login.astro`      | Strona logowania                               |
+| `/admin`            | `src/pages/admin/index.astro`      | Redirect do `/admin/photos` lub `/admin/login` |
+| `/admin/categories` | `src/pages/admin/categories.astro` | Zarządzanie kategoriami                        |
+| `/admin/photos`     | `src/pages/admin/photos.astro`     | Zarządzanie zdjęciami                          |
+| `/admin/profile`    | `src/pages/admin/profile.astro`    | Profil i ustawienia                            |
 
 ## 3. Struktura komponentów
 
@@ -599,7 +599,7 @@ interface CategoryFormData {
 
 interface CategoryDialogState {
   isOpen: boolean;
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
   category: CategoryDTO | null;
 }
 
@@ -610,15 +610,15 @@ interface DeleteCategoryConfirmation {
 
 // === Photos ===
 
-type UploadStatus = 'pending' | 'validating' | 'compressing' | 'uploading' | 'success' | 'error';
+type UploadStatus = "pending" | "validating" | "compressing" | "uploading" | "success" | "error";
 
 interface PhotoUploadFile {
-  id: string;              // Unique ID dla key w React
-  file: File;              // Oryginalny plik
-  preview: string;         // Data URL dla preview
+  id: string; // Unique ID dla key w React
+  file: File; // Oryginalny plik
+  preview: string; // Data URL dla preview
   status: UploadStatus;
-  progress: number;        // 0-100 (0-50 kompresja, 50-100 upload)
-  error?: string;          // Komunikat błędu
+  progress: number; // 0-100 (0-50 kompresja, 50-100 upload)
+  error?: string; // Komunikat błędu
 }
 
 interface PhotoUploadSettings {
@@ -643,7 +643,7 @@ interface DeletePhotoConfirmation {
 }
 
 interface PhotoFilterState {
-  category_id: string | 'all' | 'uncategorized';
+  category_id: string | "all" | "uncategorized";
   page: number;
   limit: number;
 }
@@ -665,7 +665,7 @@ interface SeoFormData {
 // === Shared ===
 
 interface ToastNotification {
-  type: 'success' | 'error' | 'info';
+  type: "success" | "error" | "info";
   message: string;
   duration?: number;
 }
@@ -682,33 +682,21 @@ export const loginSchema = z.object({
 
 // category.schema.ts (frontend validation)
 export const categoryFormSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Nazwa jest wymagana")
-    .max(100, "Nazwa może mieć maksymalnie 100 znaków"),
-  description: z
-    .string()
-    .max(500, "Opis może mieć maksymalnie 500 znaków")
-    .nullish(),
+  name: z.string().min(1, "Nazwa jest wymagana").max(100, "Nazwa może mieć maksymalnie 100 znaków"),
+  description: z.string().max(500, "Opis może mieć maksymalnie 500 znaków").nullish(),
   cover_photo_id: z.string().uuid().nullish(),
 });
 
 // photo.schema.ts (frontend validation)
 export const photoFormSchema = z.object({
-  title: z
-    .string()
-    .max(200, "Tytuł może mieć maksymalnie 200 znaków")
-    .nullish(),
+  title: z.string().max(200, "Tytuł może mieć maksymalnie 200 znaków").nullish(),
   category_id: z.string().uuid().nullish(),
   is_published: z.boolean(),
 });
 
 // profile.schema.ts (frontend validation)
 export const profileFormSchema = z.object({
-  display_name: z
-    .string()
-    .min(1, "Nazwa wyświetlana jest wymagana")
-    .max(100, "Nazwa może mieć maksymalnie 100 znaków"),
+  display_name: z.string().min(1, "Nazwa wyświetlana jest wymagana").max(100, "Nazwa może mieć maksymalnie 100 znaków"),
   bio: z.string().nullish(),
   contact_email: z
     .string()
@@ -716,22 +704,13 @@ export const profileFormSchema = z.object({
     .max(255, "Email może mieć maksymalnie 255 znaków")
     .nullish()
     .or(z.literal("")),
-  contact_phone: z
-    .string()
-    .max(20, "Telefon może mieć maksymalnie 20 znaków")
-    .nullish(),
+  contact_phone: z.string().max(20, "Telefon może mieć maksymalnie 20 znaków").nullish(),
 });
 
 // seo.schema.ts (frontend validation)
 export const seoFormSchema = z.object({
-  site_title: z
-    .string()
-    .max(100, "Tytuł może mieć maksymalnie 100 znaków")
-    .nullish(),
-  site_description: z
-    .string()
-    .max(300, "Opis może mieć maksymalnie 300 znaków")
-    .nullish(),
+  site_title: z.string().max(100, "Tytuł może mieć maksymalnie 100 znaków").nullish(),
+  site_description: z.string().max(300, "Opis może mieć maksymalnie 300 znaków").nullish(),
 });
 ```
 
@@ -751,10 +730,7 @@ interface AuthContextValue {
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function AuthProvider({ children, initialUser }: {
-  children: React.ReactNode;
-  initialUser: User | null;
-}) {
+export function AuthProvider({ children, initialUser }: { children: React.ReactNode; initialUser: User | null }) {
   const [user, setUser] = useState<User | null>(initialUser);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -1000,64 +976,63 @@ const { data, error } = await supabase.auth.signInWithPassword({
 await supabase.auth.signOut();
 
 // Get session (middleware)
-const { data: { user } } = await supabase.auth.getUser();
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 ```
 
 ### Profile API
 
-| Operacja | Metoda | Endpoint | Request | Response |
-|----------|--------|----------|---------|----------|
-| Pobierz profil | GET | `/api/profile` | - | `ProfileDTO` |
-| Aktualizuj profil | PUT | `/api/profile` | `UpdateProfileCommand` | `ProfileDTO` |
+| Operacja          | Metoda | Endpoint       | Request                | Response     |
+| ----------------- | ------ | -------------- | ---------------------- | ------------ |
+| Pobierz profil    | GET    | `/api/profile` | -                      | `ProfileDTO` |
+| Aktualizuj profil | PUT    | `/api/profile` | `UpdateProfileCommand` | `ProfileDTO` |
 
 ### Settings API
 
-| Operacja | Metoda | Endpoint | Request | Response |
-|----------|--------|----------|---------|----------|
-| Pobierz ustawienia | GET | `/api/settings` | - | `SettingsDTO` |
-| Aktualizuj ustawienia | PUT | `/api/settings` | `UpdateSettingsCommand` | `SettingsDTO` |
+| Operacja              | Metoda | Endpoint        | Request                 | Response      |
+| --------------------- | ------ | --------------- | ----------------------- | ------------- |
+| Pobierz ustawienia    | GET    | `/api/settings` | -                       | `SettingsDTO` |
+| Aktualizuj ustawienia | PUT    | `/api/settings` | `UpdateSettingsCommand` | `SettingsDTO` |
 
 ### Categories API
 
-| Operacja | Metoda | Endpoint | Request | Response |
-|----------|--------|----------|---------|----------|
-| Lista kategorii | GET | `/api/categories` | Query: `sort`, `order` | `CategoryListResponseDTO` |
-| Pojedyncza kategoria | GET | `/api/categories/:id` | - | `CategoryDTO` |
-| Utwórz kategorię | POST | `/api/categories` | `CreateCategoryCommand` | `CategoryDTO` |
-| Aktualizuj kategorię | PUT | `/api/categories/:id` | `UpdateCategoryCommand` | `CategoryDTO` |
-| Zmień kolejność | PUT | `/api/categories/reorder` | `ReorderCategoryCommand` | `MessageResponseDTO` |
-| Usuń kategorię | DELETE | `/api/categories/:id` | - | `DeleteCategoryResponseDTO` |
+| Operacja             | Metoda | Endpoint                  | Request                  | Response                    |
+| -------------------- | ------ | ------------------------- | ------------------------ | --------------------------- |
+| Lista kategorii      | GET    | `/api/categories`         | Query: `sort`, `order`   | `CategoryListResponseDTO`   |
+| Pojedyncza kategoria | GET    | `/api/categories/:id`     | -                        | `CategoryDTO`               |
+| Utwórz kategorię     | POST   | `/api/categories`         | `CreateCategoryCommand`  | `CategoryDTO`               |
+| Aktualizuj kategorię | PUT    | `/api/categories/:id`     | `UpdateCategoryCommand`  | `CategoryDTO`               |
+| Zmień kolejność      | PUT    | `/api/categories/reorder` | `ReorderCategoryCommand` | `MessageResponseDTO`        |
+| Usuń kategorię       | DELETE | `/api/categories/:id`     | -                        | `DeleteCategoryResponseDTO` |
 
 ### Photos API
 
-| Operacja | Metoda | Endpoint | Request | Response |
-|----------|--------|----------|---------|----------|
-| Lista zdjęć | GET | `/api/photos` | Query: `category_id`, `is_published`, `page`, `limit`, `sort`, `order` | `PhotoListResponseDTO` |
-| Pojedyncze zdjęcie | GET | `/api/photos/:id` | - | `PhotoDTO` |
-| Upload zdjęcia | POST | `/api/photos` | FormData | `PhotoDTO` |
-| Batch upload | POST | `/api/photos/batch` | FormData | `BatchPhotoUploadResponseDTO` |
-| Aktualizuj zdjęcie | PUT | `/api/photos/:id` | `UpdatePhotoCommand` | `PhotoDTO` |
-| Toggle publikacji | PATCH | `/api/photos/:id/publish` | `PublishPhotoCommand` | `PublishPhotoResponseDTO` |
-| Usuń zdjęcie | DELETE | `/api/photos/:id` | - | `MessageResponseDTO` |
+| Operacja           | Metoda | Endpoint                  | Request                                                                | Response                      |
+| ------------------ | ------ | ------------------------- | ---------------------------------------------------------------------- | ----------------------------- |
+| Lista zdjęć        | GET    | `/api/photos`             | Query: `category_id`, `is_published`, `page`, `limit`, `sort`, `order` | `PhotoListResponseDTO`        |
+| Pojedyncze zdjęcie | GET    | `/api/photos/:id`         | -                                                                      | `PhotoDTO`                    |
+| Upload zdjęcia     | POST   | `/api/photos`             | FormData                                                               | `PhotoDTO`                    |
+| Batch upload       | POST   | `/api/photos/batch`       | FormData                                                               | `BatchPhotoUploadResponseDTO` |
+| Aktualizuj zdjęcie | PUT    | `/api/photos/:id`         | `UpdatePhotoCommand`                                                   | `PhotoDTO`                    |
+| Toggle publikacji  | PATCH  | `/api/photos/:id/publish` | `PublishPhotoCommand`                                                  | `PublishPhotoResponseDTO`     |
+| Usuń zdjęcie       | DELETE | `/api/photos/:id`         | -                                                                      | `MessageResponseDTO`          |
 
 ### Stats API
 
-| Operacja | Metoda | Endpoint | Request | Response |
-|----------|--------|----------|---------|----------|
-| Pobierz statystyki | GET | `/api/stats` | - | `StatsDTO` |
+| Operacja           | Metoda | Endpoint     | Request | Response   |
+| ------------------ | ------ | ------------ | ------- | ---------- |
+| Pobierz statystyki | GET    | `/api/stats` | -       | `StatsDTO` |
 
 ### Przykład implementacji fetch
 
 ```typescript
 // Generyczna funkcja API
-async function apiRequest<T>(
-  url: string,
-  options?: RequestInit
-): Promise<T> {
+async function apiRequest<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...options?.headers,
     },
   });
@@ -1071,7 +1046,7 @@ async function apiRequest<T>(
 }
 
 // Użycie
-const categories = await apiRequest<CategoryListResponseDTO>('/api/categories');
+const categories = await apiRequest<CategoryListResponseDTO>("/api/categories");
 ```
 
 ## 8. Interakcje użytkownika
@@ -1155,34 +1130,34 @@ const categories = await apiRequest<CategoryListResponseDTO>('/api/categories');
 
 ### Walidacja po stronie klienta (Zod)
 
-| Pole | Warunki | Komunikat błędu |
-|------|---------|-----------------|
-| Email (login) | Wymagane, format email | "Nieprawidłowy format email" |
-| Hasło (login) | Wymagane | "Hasło jest wymagane" |
-| Nazwa kategorii | Wymagane, 1-100 znaków | "Nazwa jest wymagana", "Nazwa może mieć maksymalnie 100 znaków" |
-| Opis kategorii | Opcjonalne, max 500 znaków | "Opis może mieć maksymalnie 500 znaków" |
-| Tytuł zdjęcia | Opcjonalne, max 200 znaków | "Tytuł może mieć maksymalnie 200 znaków" |
-| Display name | Wymagane, 1-100 znaków | "Nazwa wyświetlana jest wymagana" |
-| Contact email | Opcjonalne, format email, max 255 | "Nieprawidłowy format email" |
-| Contact phone | Opcjonalne, max 20 znaków | "Telefon może mieć maksymalnie 20 znaków" |
-| Site title | Opcjonalne, max 100 znaków | "Tytuł może mieć maksymalnie 100 znaków" |
-| Site description | Opcjonalne, max 300 znaków | "Opis może mieć maksymalnie 300 znaków" |
+| Pole             | Warunki                           | Komunikat błędu                                                 |
+| ---------------- | --------------------------------- | --------------------------------------------------------------- |
+| Email (login)    | Wymagane, format email            | "Nieprawidłowy format email"                                    |
+| Hasło (login)    | Wymagane                          | "Hasło jest wymagane"                                           |
+| Nazwa kategorii  | Wymagane, 1-100 znaków            | "Nazwa jest wymagana", "Nazwa może mieć maksymalnie 100 znaków" |
+| Opis kategorii   | Opcjonalne, max 500 znaków        | "Opis może mieć maksymalnie 500 znaków"                         |
+| Tytuł zdjęcia    | Opcjonalne, max 200 znaków        | "Tytuł może mieć maksymalnie 200 znaków"                        |
+| Display name     | Wymagane, 1-100 znaków            | "Nazwa wyświetlana jest wymagana"                               |
+| Contact email    | Opcjonalne, format email, max 255 | "Nieprawidłowy format email"                                    |
+| Contact phone    | Opcjonalne, max 20 znaków         | "Telefon może mieć maksymalnie 20 znaków"                       |
+| Site title       | Opcjonalne, max 100 znaków        | "Tytuł może mieć maksymalnie 100 znaków"                        |
+| Site description | Opcjonalne, max 300 znaków        | "Opis może mieć maksymalnie 300 znaków"                         |
 
 ### Walidacja plików (upload)
 
-| Warunek | Sprawdzenie | Reakcja |
-|---------|-------------|---------|
-| Format JPEG | `file.type === 'image/jpeg'` | Toast error, plik odrzucony |
-| Rozmiar ≤ 10MB | `file.size <= 10 * 1024 * 1024` | Toast error, plik odrzucony |
-| Max 20 plików | `files.length <= 20` | Nadmiarowe pliki odrzucone |
+| Warunek         | Sprawdzenie                      | Reakcja                      |
+| --------------- | -------------------------------- | ---------------------------- |
+| Format JPEG     | `file.type === 'image/jpeg'`     | Toast error, plik odrzucony  |
+| Rozmiar ≤ 10MB  | `file.size <= 10 * 1024 * 1024`  | Toast error, plik odrzucony  |
+| Max 20 plików   | `files.length <= 20`             | Nadmiarowe pliki odrzucone   |
 | Limit 200 zdjęć | `currentCount + newCount <= 200` | Toast error, upload disabled |
 
 ### Walidacja limitów
 
-| Zasób | Limit | Warunek disable | UI feedback |
-|-------|-------|-----------------|-------------|
-| Kategorie | 10 | `categories.length >= 10` | Button disabled + tooltip "Osiągnięto limit kategorii (10)" |
-| Zdjęcia | 200 | `photos.count >= 200` | Button disabled + tooltip "Osiągnięto limit zdjęć (200)" |
+| Zasób     | Limit | Warunek disable           | UI feedback                                                 |
+| --------- | ----- | ------------------------- | ----------------------------------------------------------- |
+| Kategorie | 10    | `categories.length >= 10` | Button disabled + tooltip "Osiągnięto limit kategorii (10)" |
+| Zdjęcia   | 200   | `photos.count >= 200`     | Button disabled + tooltip "Osiągnięto limit zdjęć (200)"    |
 
 ### Wpływ walidacji na UI
 
@@ -1205,29 +1180,29 @@ const categories = await apiRequest<CategoryListResponseDTO>('/api/categories');
 
 ### Błędy autentykacji
 
-| Scenariusz | Handling |
-|------------|----------|
+| Scenariusz                   | Handling                                            |
+| ---------------------------- | --------------------------------------------------- |
 | Nieprawidłowe dane logowania | Alert w formularzu: "Nieprawidłowy email lub hasło" |
-| Wygasła sesja | Redirect do `/admin/login` |
-| Brak autoryzacji (401) | Redirect do `/admin/login` |
+| Wygasła sesja                | Redirect do `/admin/login`                          |
+| Brak autoryzacji (401)       | Redirect do `/admin/login`                          |
 
 ### Błędy API
 
-| Kod | Obsługa |
-|-----|---------|
-| 400 Bad Request | Toast error z komunikatem walidacji |
-| 401 Unauthorized | Redirect do login |
-| 404 Not Found | Toast error "Nie znaleziono zasobu" |
-| 409 Conflict | Toast error z komunikatem (np. "Osiągnięto limit") |
-| 500 Internal Error | Toast error "Wystąpił nieoczekiwany błąd" |
+| Kod                | Obsługa                                            |
+| ------------------ | -------------------------------------------------- |
+| 400 Bad Request    | Toast error z komunikatem walidacji                |
+| 401 Unauthorized   | Redirect do login                                  |
+| 404 Not Found      | Toast error "Nie znaleziono zasobu"                |
+| 409 Conflict       | Toast error z komunikatem (np. "Osiągnięto limit") |
+| 500 Internal Error | Toast error "Wystąpił nieoczekiwany błąd"          |
 
 ### Błędy sieciowe
 
-| Scenariusz | Handling |
-|------------|----------|
-| Brak połączenia | Toast error "Brak połączenia z serwerem" |
-| Timeout | Toast error "Przekroczono czas oczekiwania" |
-| Upload failure | Per-file error message + Retry button |
+| Scenariusz      | Handling                                    |
+| --------------- | ------------------------------------------- |
+| Brak połączenia | Toast error "Brak połączenia z serwerem"    |
+| Timeout         | Toast error "Przekroczono czas oczekiwania" |
+| Upload failure  | Per-file error message + Retry button       |
 
 ### Błędy formularzy
 
@@ -1251,21 +1226,17 @@ const onSubmit = async (data: FormData) => {
 
 ```typescript
 const togglePublish = async (id: string, isPublished: boolean) => {
-  const previousState = photos.find(p => p.id === id)?.is_published;
+  const previousState = photos.find((p) => p.id === id)?.is_published;
 
   // Optimistic update
-  setPhotos(prev => prev.map(p =>
-    p.id === id ? { ...p, is_published: isPublished } : p
-  ));
+  setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, is_published: isPublished } : p)));
 
   try {
     await api.patch(`/api/photos/${id}/publish`, { is_published: isPublished });
     toast.success("Status publikacji zaktualizowany");
   } catch (error) {
     // Rollback
-    setPhotos(prev => prev.map(p =>
-      p.id === id ? { ...p, is_published: previousState } : p
-    ));
+    setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, is_published: previousState } : p)));
     toast.error("Nie udało się zaktualizować statusu");
   }
 };

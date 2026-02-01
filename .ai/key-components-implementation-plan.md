@@ -12,17 +12,17 @@ Celem jest stworzenie spójnego systemu komponentów zgodnego z PRD, wspierając
 
 ## 2. Routing widoków
 
-| Ścieżka | Opis | Komponenty główne |
-|---------|------|-------------------|
-| `/` | Strona główna - kafelki kategorii | `CategoryGrid`, `SEOHead`, `Navigation` |
-| `/kategoria/[slug]` | Galeria zdjęć w kategorii | `PhotoMasonry`, `PhotoLightbox`, `SEOHead`, `Navigation` |
-| `/o-mnie` | Strona "O mnie" | `ContactInfo`, `SEOHead`, `Navigation` |
-| `/admin` | Przekierowanie do `/admin/login` lub dashboard | `AdminLayoutClient` |
-| `/admin/login` | Strona logowania | `LoginForm` |
-| `/admin/categories` | Zarządzanie kategoriami | `CategoriesManager`, `CategoryDialog` |
-| `/admin/photos` | Zarządzanie zdjęciami | `PhotosManager`, `PhotoUploadZone`, `PhotoEditDialog` |
-| `/admin/profile` | Edycja profilu | `ProfileManager`, `ProfileForm`, `SeoSettingsForm`, `StatsCard` |
-| `/404` | Strona błędu | `EmptyState` |
+| Ścieżka             | Opis                                           | Komponenty główne                                               |
+| ------------------- | ---------------------------------------------- | --------------------------------------------------------------- |
+| `/`                 | Strona główna - kafelki kategorii              | `CategoryGrid`, `SEOHead`, `Navigation`                         |
+| `/kategoria/[slug]` | Galeria zdjęć w kategorii                      | `PhotoMasonry`, `PhotoLightbox`, `SEOHead`, `Navigation`        |
+| `/o-mnie`           | Strona "O mnie"                                | `ContactInfo`, `SEOHead`, `Navigation`                          |
+| `/admin`            | Przekierowanie do `/admin/login` lub dashboard | `AdminLayoutClient`                                             |
+| `/admin/login`      | Strona logowania                               | `LoginForm`                                                     |
+| `/admin/categories` | Zarządzanie kategoriami                        | `CategoriesManager`, `CategoryDialog`                           |
+| `/admin/photos`     | Zarządzanie zdjęciami                          | `PhotosManager`, `PhotoUploadZone`, `PhotoEditDialog`           |
+| `/admin/profile`    | Edycja profilu                                 | `ProfileManager`, `ProfileForm`, `SeoSettingsForm`, `StatsCard` |
+| `/404`              | Strona błędu                                   | `EmptyState`                                                    |
 
 ## 3. Struktura komponentów
 
@@ -262,6 +262,7 @@ src/
   - Limit: max 100 plików na raz
   - Limit globalny: nie przekroczyć 200 zdjęć
 - **Typy:**
+
   ```typescript
   interface PhotoUploadZoneProps {
     isOpen: boolean;
@@ -286,6 +287,7 @@ src/
     is_published: boolean;
   }
   ```
+
 - **Propsy:**
   - `isOpen` - czy dialog jest otwarty
   - `onOpenChange` - callback zmiany stanu
@@ -347,6 +349,7 @@ src/
   - Opis: max 500 znaków
   - Slug: auto-generated, unique (sprawdzane po stronie API)
 - **Typy:**
+
   ```typescript
   interface CategoryDialogProps {
     isOpen: boolean;
@@ -362,6 +365,7 @@ src/
     cover_photo_id?: string | null;
   }
   ```
+
 - **Propsy:**
   - `isOpen` - czy dialog jest otwarty
   - `onOpenChange` - callback zmiany stanu
@@ -392,6 +396,7 @@ src/
   - Tytuł: max 200 znaków
   - Kategoria: valid UUID lub null
 - **Typy:**
+
   ```typescript
   interface PhotoEditDialogProps {
     isOpen: boolean;
@@ -407,6 +412,7 @@ src/
     is_published?: boolean;
   }
   ```
+
 - **Propsy:**
   - `isOpen` - czy dialog jest otwarty
   - `onOpenChange` - callback zmiany stanu
@@ -655,20 +661,20 @@ interface LoginFormData {
 
 ### 6.1 Context Providers
 
-| Context | Zakres | Stan | Odświeżanie |
-|---------|--------|------|-------------|
-| `AuthContext` | `/admin/*` | `user`, `isLoading` | Po logowaniu/wylogowaniu |
-| `StatsContext` | `/admin/*` | `stats`, `isLoading`, `error` | Po mutacjach CRUD |
+| Context        | Zakres     | Stan                          | Odświeżanie              |
+| -------------- | ---------- | ----------------------------- | ------------------------ |
+| `AuthContext`  | `/admin/*` | `user`, `isLoading`           | Po logowaniu/wylogowaniu |
+| `StatsContext` | `/admin/*` | `stats`, `isLoading`, `error` | Po mutacjach CRUD        |
 
 ### 6.2 Lokalne stany komponentów
 
-| Komponent | Stan | Opis |
-|-----------|------|------|
-| `PhotoMasonry` | `photos`, `page`, `hasMore`, `isLoading`, `error` | Infinite scroll |
-| `PhotoLightbox` | (props only) | Kontrolowany przez parent |
-| `PhotoUploadZone` | via `usePhotoUpload` | Upload state |
-| `CategoryDialog` | form state (react-hook-form) | Formularz |
-| `PhotoEditDialog` | form state (react-hook-form) | Formularz |
+| Komponent         | Stan                                              | Opis                      |
+| ----------------- | ------------------------------------------------- | ------------------------- |
+| `PhotoMasonry`    | `photos`, `page`, `hasMore`, `isLoading`, `error` | Infinite scroll           |
+| `PhotoLightbox`   | (props only)                                      | Kontrolowany przez parent |
+| `PhotoUploadZone` | via `usePhotoUpload`                              | Upload state              |
+| `CategoryDialog`  | form state (react-hook-form)                      | Formularz                 |
+| `PhotoEditDialog` | form state (react-hook-form)                      | Formularz                 |
 
 ### 6.3 Custom Hooks
 
@@ -741,129 +747,129 @@ Użycie: `PhotoUploadZone` - logika uploadu
 
 ### 7.1 Publiczne endpointy
 
-| Endpoint | Metoda | Request | Response | Komponent |
-|----------|--------|---------|----------|-----------|
-| `/api/public/profile` | GET | - | `PublicProfileDTO` | ContactInfo |
-| `/api/public/settings` | GET | - | `PublicSettingsDTO` | SEOHead |
-| `/api/public/categories` | GET | - | `{ data: PublicCategoryDTO[] }` | CategoryGrid |
-| `/api/public/categories/:slug` | GET | - | `PublicCategoryDetailDTO` | PhotoMasonry page |
-| `/api/public/categories/:slug/photos` | GET | `?page=&limit=` | `PublicPhotoListResponseDTO` | PhotoMasonry |
+| Endpoint                              | Metoda | Request         | Response                        | Komponent         |
+| ------------------------------------- | ------ | --------------- | ------------------------------- | ----------------- |
+| `/api/public/profile`                 | GET    | -               | `PublicProfileDTO`              | ContactInfo       |
+| `/api/public/settings`                | GET    | -               | `PublicSettingsDTO`             | SEOHead           |
+| `/api/public/categories`              | GET    | -               | `{ data: PublicCategoryDTO[] }` | CategoryGrid      |
+| `/api/public/categories/:slug`        | GET    | -               | `PublicCategoryDetailDTO`       | PhotoMasonry page |
+| `/api/public/categories/:slug/photos` | GET    | `?page=&limit=` | `PublicPhotoListResponseDTO`    | PhotoMasonry      |
 
 ### 7.2 Chronione endpointy (admin)
 
-| Endpoint | Metoda | Request | Response | Komponent |
-|----------|--------|---------|----------|-----------|
-| `/api/profile` | GET | - | `ProfileDTO` | ProfileForm |
-| `/api/profile` | PUT | `UpdateProfileCommand` | `ProfileDTO` | ProfileForm |
-| `/api/settings` | GET | - | `SettingsDTO` | SeoSettingsForm |
-| `/api/settings` | PUT | `UpdateSettingsCommand` | `SettingsDTO` | SeoSettingsForm |
-| `/api/categories` | GET | `?sort=&order=` | `CategoryListResponseDTO` | CategoriesManager |
-| `/api/categories` | POST | `CreateCategoryCommand` | `CategoryDTO` | CategoryDialog |
-| `/api/categories/:id` | PUT | `UpdateCategoryCommand` | `CategoryDTO` | CategoryDialog |
-| `/api/categories/:id` | DELETE | - | `DeleteCategoryResponseDTO` | CategoriesManager |
-| `/api/photos` | GET | `?category_id=&is_published=&page=&limit=` | `PhotoListResponseDTO` | PhotosManager |
-| `/api/photos` | POST | FormData (thumbnail, preview, metadata) | `PhotoDTO` | PhotoUploadZone |
-| `/api/photos/:id` | PUT | `UpdatePhotoCommand` | `PhotoDTO` | PhotoEditDialog |
-| `/api/photos/:id` | DELETE | - | `MessageResponseDTO` | PhotosManager |
-| `/api/photos/:id/publish` | PATCH | `PublishPhotoCommand` | `PublishPhotoResponseDTO` | PhotoCard |
-| `/api/stats` | GET | - | `StatsDTO` | StatsContext |
+| Endpoint                  | Metoda | Request                                    | Response                    | Komponent         |
+| ------------------------- | ------ | ------------------------------------------ | --------------------------- | ----------------- |
+| `/api/profile`            | GET    | -                                          | `ProfileDTO`                | ProfileForm       |
+| `/api/profile`            | PUT    | `UpdateProfileCommand`                     | `ProfileDTO`                | ProfileForm       |
+| `/api/settings`           | GET    | -                                          | `SettingsDTO`               | SeoSettingsForm   |
+| `/api/settings`           | PUT    | `UpdateSettingsCommand`                    | `SettingsDTO`               | SeoSettingsForm   |
+| `/api/categories`         | GET    | `?sort=&order=`                            | `CategoryListResponseDTO`   | CategoriesManager |
+| `/api/categories`         | POST   | `CreateCategoryCommand`                    | `CategoryDTO`               | CategoryDialog    |
+| `/api/categories/:id`     | PUT    | `UpdateCategoryCommand`                    | `CategoryDTO`               | CategoryDialog    |
+| `/api/categories/:id`     | DELETE | -                                          | `DeleteCategoryResponseDTO` | CategoriesManager |
+| `/api/photos`             | GET    | `?category_id=&is_published=&page=&limit=` | `PhotoListResponseDTO`      | PhotosManager     |
+| `/api/photos`             | POST   | FormData (thumbnail, preview, metadata)    | `PhotoDTO`                  | PhotoUploadZone   |
+| `/api/photos/:id`         | PUT    | `UpdatePhotoCommand`                       | `PhotoDTO`                  | PhotoEditDialog   |
+| `/api/photos/:id`         | DELETE | -                                          | `MessageResponseDTO`        | PhotosManager     |
+| `/api/photos/:id/publish` | PATCH  | `PublishPhotoCommand`                      | `PublishPhotoResponseDTO`   | PhotoCard         |
+| `/api/stats`              | GET    | -                                          | `StatsDTO`                  | StatsContext      |
 
 ## 8. Interakcje użytkownika
 
 ### 8.1 Publiczna galeria
 
-| Interakcja | Komponent | Wynik |
-|------------|-----------|-------|
-| Kliknięcie kafelka kategorii | CategoryGrid | Nawigacja do `/kategoria/[slug]` |
-| Kliknięcie zdjęcia w galerii | PhotoMasonry | Otwarcie PhotoLightbox |
-| Scroll do końca galerii | PhotoMasonry | Załadowanie kolejnych zdjęć |
-| Kliknięcie X w lightbox | PhotoLightbox | Zamknięcie lightboxa |
-| Arrow keys w lightbox | PhotoLightbox | Nawigacja między zdjęciami |
-| Swipe w lightbox (mobile) | PhotoLightbox | Nawigacja między zdjęciami |
+| Interakcja                   | Komponent     | Wynik                            |
+| ---------------------------- | ------------- | -------------------------------- |
+| Kliknięcie kafelka kategorii | CategoryGrid  | Nawigacja do `/kategoria/[slug]` |
+| Kliknięcie zdjęcia w galerii | PhotoMasonry  | Otwarcie PhotoLightbox           |
+| Scroll do końca galerii      | PhotoMasonry  | Załadowanie kolejnych zdjęć      |
+| Kliknięcie X w lightbox      | PhotoLightbox | Zamknięcie lightboxa             |
+| Arrow keys w lightbox        | PhotoLightbox | Nawigacja między zdjęciami       |
+| Swipe w lightbox (mobile)    | PhotoLightbox | Nawigacja między zdjęciami       |
 
 ### 8.2 Panel admina
 
-| Interakcja | Komponent | Wynik |
-|------------|-----------|-------|
-| Submit formularza logowania | LoginForm | Logowanie, redirect do dashboard |
-| Kliknięcie "Dodaj kategorię" | CategoriesManager | Otwarcie CategoryDialog (create) |
-| Kliknięcie "Edytuj" na kategorii | CategoriesManager | Otwarcie CategoryDialog (edit) |
-| Kliknięcie "Usuń" na kategorii | CategoriesManager | Otwarcie AlertDialog (confirm) |
-| Drag & drop plików | PhotoUploadZone | Dodanie plików do listy |
-| Kliknięcie "Wyślij" | PhotoUploadZone | Start uploadu |
-| Toggle publikacji na zdjęciu | PhotoCard | PATCH /api/photos/:id/publish |
-| Kliknięcie "Edytuj" na zdjęciu | PhotosManager | Otwarcie PhotoEditDialog |
-| Kliknięcie "Usuń" na zdjęciu | PhotosManager | Otwarcie AlertDialog (confirm) |
-| Zmiana filtra kategorii | PhotosManager | Filtrowanie listy zdjęć |
+| Interakcja                       | Komponent         | Wynik                            |
+| -------------------------------- | ----------------- | -------------------------------- |
+| Submit formularza logowania      | LoginForm         | Logowanie, redirect do dashboard |
+| Kliknięcie "Dodaj kategorię"     | CategoriesManager | Otwarcie CategoryDialog (create) |
+| Kliknięcie "Edytuj" na kategorii | CategoriesManager | Otwarcie CategoryDialog (edit)   |
+| Kliknięcie "Usuń" na kategorii   | CategoriesManager | Otwarcie AlertDialog (confirm)   |
+| Drag & drop plików               | PhotoUploadZone   | Dodanie plików do listy          |
+| Kliknięcie "Wyślij"              | PhotoUploadZone   | Start uploadu                    |
+| Toggle publikacji na zdjęciu     | PhotoCard         | PATCH /api/photos/:id/publish    |
+| Kliknięcie "Edytuj" na zdjęciu   | PhotosManager     | Otwarcie PhotoEditDialog         |
+| Kliknięcie "Usuń" na zdjęciu     | PhotosManager     | Otwarcie AlertDialog (confirm)   |
+| Zmiana filtra kategorii          | PhotosManager     | Filtrowanie listy zdjęć          |
 
 ## 9. Warunki i walidacja
 
 ### 9.1 Walidacja po stronie klienta
 
-| Warunek | Komponent | Efekt UI |
-|---------|-----------|----------|
-| Nazwa kategorii wymagana | CategoryDialog | Error message, button disabled |
-| Nazwa max 100 znaków | CategoryDialog | Error message przy przekroczeniu |
-| Opis max 500 znaków | CategoryDialog | Error message przy przekroczeniu |
+| Warunek                      | Komponent       | Efekt UI                         |
+| ---------------------------- | --------------- | -------------------------------- |
+| Nazwa kategorii wymagana     | CategoryDialog  | Error message, button disabled   |
+| Nazwa max 100 znaków         | CategoryDialog  | Error message przy przekroczeniu |
+| Opis max 500 znaków          | CategoryDialog  | Error message przy przekroczeniu |
 | Tytuł zdjęcia max 200 znaków | PhotoEditDialog | Error message przy przekroczeniu |
-| Email format | ProfileForm | Error message przy niepoprawnym |
-| Password wymagane | LoginForm | Error message, button disabled |
-| Plik JPEG only | PhotoUploadZone | Toast error, plik odrzucony |
-| Plik max 50MB | PhotoUploadZone | Toast error, plik odrzucony |
+| Email format                 | ProfileForm     | Error message przy niepoprawnym  |
+| Password wymagane            | LoginForm       | Error message, button disabled   |
+| Plik JPEG only               | PhotoUploadZone | Toast error, plik odrzucony      |
+| Plik max 50MB                | PhotoUploadZone | Toast error, plik odrzucony      |
 
 ### 9.2 Walidacja limitów
 
-| Warunek | Komponent | Efekt UI |
-|---------|-----------|----------|
-| Kategorie 10/10 | CategoriesManager | Button "Dodaj" disabled, tooltip |
-| Zdjęcia 200/200 | PhotosManager | Button "Dodaj" disabled, tooltip |
-| Przekroczenie limitu przy upload | PhotoUploadZone | Pliki ponad limit odrzucone |
+| Warunek                          | Komponent         | Efekt UI                         |
+| -------------------------------- | ----------------- | -------------------------------- |
+| Kategorie 10/10                  | CategoriesManager | Button "Dodaj" disabled, tooltip |
+| Zdjęcia 200/200                  | PhotosManager     | Button "Dodaj" disabled, tooltip |
+| Przekroczenie limitu przy upload | PhotoUploadZone   | Pliki ponad limit odrzucone      |
 
 ### 9.3 Walidacja po stronie API
 
-| Warunek | Response | Efekt UI |
-|---------|----------|----------|
-| Duplicate slug | 400 Bad Request | Toast error |
-| Limit kategorii | 409 Conflict | Toast error |
-| Limit zdjęć | 409 Conflict | Toast error |
-| Unauthorized | 401 | Redirect do /admin/login |
-| Not found | 404 | Toast error lub strona 404 |
+| Warunek         | Response        | Efekt UI                   |
+| --------------- | --------------- | -------------------------- |
+| Duplicate slug  | 400 Bad Request | Toast error                |
+| Limit kategorii | 409 Conflict    | Toast error                |
+| Limit zdjęć     | 409 Conflict    | Toast error                |
+| Unauthorized    | 401             | Redirect do /admin/login   |
+| Not found       | 404             | Toast error lub strona 404 |
 
 ## 10. Obsługa błędów
 
 ### 10.1 Błędy sieciowe
 
-| Scenariusz | Komponent | Obsługa |
-|------------|-----------|---------|
-| Network error w infinite scroll | PhotoMasonry | ErrorState z retry |
-| Network error w upload | PhotoUploadZone | Per-file error, retry button |
-| Network timeout | Wszystkie | Toast "Przekroczono limit czasu" |
-| Server error (500) | Wszystkie | Toast "Coś poszło nie tak" |
+| Scenariusz                      | Komponent       | Obsługa                          |
+| ------------------------------- | --------------- | -------------------------------- |
+| Network error w infinite scroll | PhotoMasonry    | ErrorState z retry               |
+| Network error w upload          | PhotoUploadZone | Per-file error, retry button     |
+| Network timeout                 | Wszystkie       | Toast "Przekroczono limit czasu" |
+| Server error (500)              | Wszystkie       | Toast "Coś poszło nie tak"       |
 
 ### 10.2 Błędy autentykacji
 
-| Scenariusz | Obsługa |
-|------------|---------|
+| Scenariusz                | Obsługa                               |
+| ------------------------- | ------------------------------------- |
 | Nieprawidłowe credentials | Alert "Nieprawidłowy email lub hasło" |
-| Session expired | Auto-redirect do /admin/login + Toast |
-| 401 w trakcie używania | Auto-redirect do /admin/login |
+| Session expired           | Auto-redirect do /admin/login + Toast |
+| 401 w trakcie używania    | Auto-redirect do /admin/login         |
 
 ### 10.3 Błędy walidacji
 
-| Scenariusz | Obsługa |
-|------------|---------|
-| Form validation error | Inline error messages |
-| API validation error | Toast error z message z API |
+| Scenariusz            | Obsługa                         |
+| --------------------- | ------------------------------- |
+| Form validation error | Inline error messages           |
+| API validation error  | Toast error z message z API     |
 | File validation error | Toast error z listą odrzuconych |
 
 ### 10.4 Stany puste
 
-| Scenariusz | Komponent | UI |
-|------------|-----------|-----|
-| Brak kategorii (public) | CategoryGrid | EmptyState "Galeria w przygotowaniu" |
-| Brak zdjęć w kategorii | PhotoMasonry | EmptyState "Brak zdjęć" |
-| Brak kategorii (admin) | CategoriesManager | EmptyState + button "Dodaj" |
-| Brak zdjęć (admin) | PhotosManager | EmptyState + button "Dodaj" |
+| Scenariusz              | Komponent         | UI                                   |
+| ----------------------- | ----------------- | ------------------------------------ |
+| Brak kategorii (public) | CategoryGrid      | EmptyState "Galeria w przygotowaniu" |
+| Brak zdjęć w kategorii  | PhotoMasonry      | EmptyState "Brak zdjęć"              |
+| Brak kategorii (admin)  | CategoriesManager | EmptyState + button "Dodaj"          |
+| Brak zdjęć (admin)      | PhotosManager     | EmptyState + button "Dodaj"          |
 
 ## 11. Kroki implementacji
 
