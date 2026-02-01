@@ -26,22 +26,14 @@ export default function PublicNavbar({ photographerName, currentPath }: PublicNa
           <ul className="hidden md:flex items-center gap-8">
             {PUBLIC_NAV_ITEMS.map((item) => (
               <li key={item.href}>
-                <NavLink
-                  href={item.href}
-                  label={item.label}
-                  isActive={isActive(item.href)}
-                />
+                <NavLink href={item.href} label={item.label} isActive={isActive(item.href)} />
               </li>
             ))}
           </ul>
 
           {/* Mobile Menu */}
           <div className="md:hidden">
-            <MobileSheet
-              isOpen={isMobileOpen}
-              onOpenChange={setIsMobileOpen}
-              side="right"
-            >
+            <MobileSheet isOpen={isMobileOpen} onOpenChange={setIsMobileOpen} side="right">
               {PUBLIC_NAV_ITEMS.map((item) => (
                 <NavLink
                   key={item.href}

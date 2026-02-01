@@ -28,10 +28,19 @@ interface PhotosManagerProps {
 }
 
 export function PhotosManager({ initialPhotos, categories, stats }: PhotosManagerProps) {
-  const { photos, pagination, filter, isLoading, isLoadingMore, hasMore, updatePhoto, togglePublish, deletePhoto, fetchPhotos, loadMore } = usePhotos(
-    initialPhotos,
-    categories
-  );
+  const {
+    photos,
+    pagination,
+    filter,
+    isLoading,
+    isLoadingMore,
+    hasMore,
+    updatePhoto,
+    togglePublish,
+    deletePhoto,
+    fetchPhotos,
+    loadMore,
+  } = usePhotos(initialPhotos, categories);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Infinite scroll with IntersectionObserver
@@ -45,7 +54,7 @@ export function PhotosManager({ initialPhotos, categories, stats }: PhotosManage
           loadMore();
         }
       },
-      { rootMargin: "800px" }
+      { rootMargin: "400px" }
     );
 
     observer.observe(sentinel);
@@ -197,9 +206,7 @@ export function PhotosManager({ initialPhotos, categories, stats }: PhotosManage
           </div>
         )}
         {!hasMore && photos.length > 0 && (
-          <span className="text-sm text-muted-foreground">
-            Wyświetlono wszystkie zdjęcia ({pagination.total})
-          </span>
+          <span className="text-sm text-muted-foreground">Wyświetlono wszystkie zdjęcia ({pagination.total})</span>
         )}
       </div>
 

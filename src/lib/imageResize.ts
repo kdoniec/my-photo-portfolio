@@ -58,17 +58,11 @@ function loadImage(file: File): Promise<HTMLImageElement> {
 /**
  * Scale down dimensions if they exceed canvas limits
  */
-function clampToCanvasLimits(
-  width: number,
-  height: number
-): { width: number; height: number; scale: number } {
+function clampToCanvasLimits(width: number, height: number): { width: number; height: number; scale: number } {
   let scale = 1;
 
   if (width > MAX_CANVAS_DIMENSION || height > MAX_CANVAS_DIMENSION) {
-    scale = Math.min(
-      MAX_CANVAS_DIMENSION / width,
-      MAX_CANVAS_DIMENSION / height
-    );
+    scale = Math.min(MAX_CANVAS_DIMENSION / width, MAX_CANVAS_DIMENSION / height);
   }
 
   return {
@@ -81,11 +75,7 @@ function clampToCanvasLimits(
 /**
  * Calculate new dimensions maintaining aspect ratio
  */
-function calculateDimensions(
-  width: number,
-  height: number,
-  maxSize: number
-): { width: number; height: number } {
+function calculateDimensions(width: number, height: number, maxSize: number): { width: number; height: number } {
   if (width <= maxSize && height <= maxSize) {
     return { width, height };
   }
@@ -128,17 +118,8 @@ export interface ResizeOptions {
  * @param options - Resize options
  * @returns Resized image as File
  */
-export async function resizeImage(
-  file: File,
-  options: ResizeOptions
-): Promise<File> {
-  const {
-    maxSize,
-    quality = 0.85,
-    unsharpAmount = 80,
-    unsharpRadius = 0.6,
-    unsharpThreshold = 2,
-  } = options;
+export async function resizeImage(file: File, options: ResizeOptions): Promise<File> {
+  const { maxSize, quality = 0.85, unsharpAmount = 80, unsharpRadius = 0.6, unsharpThreshold = 2 } = options;
 
   try {
     // Load the image
@@ -148,9 +129,7 @@ export async function resizeImage(
     // Clamp source dimensions to canvas limits
     const srcDims = clampToCanvasLimits(img.width, img.height);
     if (srcDims.scale < 1) {
-      console.log(
-        `Source image too large, scaling to ${srcDims.width}x${srcDims.height}`
-      );
+      console.log(`Source image too large, scaling to ${srcDims.width}x${srcDims.height}`);
     }
 
     // Calculate target dimensions from (potentially scaled) source
@@ -158,11 +137,7 @@ export async function resizeImage(
     console.log(`Target dimensions: ${targetDims.width}x${targetDims.height}`);
 
     // Skip resize if image is already smaller than target
-    if (
-      srcDims.scale === 1 &&
-      targetDims.width === img.width &&
-      targetDims.height === img.height
-    ) {
+    if (srcDims.scale === 1 && targetDims.width === img.width && targetDims.height === img.height) {
       return file;
     }
 

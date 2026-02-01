@@ -44,19 +44,11 @@ export default function UserMenu({ displayName, email, onSignOut }: UserMenuProp
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 px-2"
-          aria-label="Menu użytkownika"
-        >
+        <Button variant="ghost" className="flex items-center gap-2 px-2" aria-label="Menu użytkownika">
           <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-              {initials}
-            </AvatarFallback>
+            <AvatarFallback className="bg-primary text-primary-foreground text-sm">{initials}</AvatarFallback>
           </Avatar>
-          <span className="hidden sm:inline-block text-sm font-medium">
-            {displayName}
-          </span>
+          <span className="hidden sm:inline-block text-sm font-medium">{displayName}</span>
           <ChevronDown className="h-4 w-4 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
@@ -64,9 +56,7 @@ export default function UserMenu({ displayName, email, onSignOut }: UserMenuProp
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium">{displayName}</p>
-            {email && (
-              <p className="text-xs text-muted-foreground">{email}</p>
-            )}
+            {email && <p className="text-xs text-muted-foreground">{email}</p>}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

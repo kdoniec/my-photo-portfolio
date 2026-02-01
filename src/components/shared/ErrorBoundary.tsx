@@ -59,7 +59,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 <AlertTriangle className="h-6 w-6 text-destructive" aria-hidden="true" />
               </div>
               <CardTitle>Coś poszło nie tak</CardTitle>
-              <CardDescription>Wystąpił nieoczekiwany błąd. Spróbuj odświeżyć stronę lub wrócić później.</CardDescription>
+              <CardDescription>
+                Wystąpił nieoczekiwany błąd. Spróbuj odświeżyć stronę lub wrócić później.
+              </CardDescription>
             </CardHeader>
             {import.meta.env.DEV && this.state.error && (
               <CardContent>
