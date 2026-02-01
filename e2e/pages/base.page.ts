@@ -7,7 +7,7 @@ export abstract class BasePage {
     this.page = page;
   }
 
-  async navigate(path: string = "/"): Promise<void> {
+  async navigate(path = "/"): Promise<void> {
     await this.page.goto(path);
   }
 
