@@ -18,7 +18,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "clean": "npx rimraf node_modules dist .astro",
-    "clean:build": "npx rimraf dist .astro"
+    "clean:build": "npx rimraf dist .astro",
+    "dev:e2e": "astro dev --mode test"
   },
   "dependencies": {
     "@astrojs/node": "^9.4.3",

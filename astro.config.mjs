@@ -13,6 +13,9 @@ export default defineConfig({
   server: { port: 3000, host: true },
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ["msw", "@mswjs/interceptors"],
+    },
   },
   adapter: node({
     mode: "standalone",
