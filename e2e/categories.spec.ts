@@ -1,10 +1,18 @@
 import { test, expect } from "./fixtures/test-fixtures";
 
 // Test credentials from .env.test
-const TEST_USER = {
-  email: process.env.TEST_USER_EMAIL,
-  password: process.env.TEST_USER_PASSWORD,
-};
+function getTestCredentials() {
+  const email = process.env.TEST_USER_EMAIL;
+  const password = process.env.TEST_USER_PASSWORD;
+
+  if (!email || !password) {
+    throw new Error("Missing TEST_USER_EMAIL or TEST_USER_PASSWORD environment variables");
+  }
+
+  return { email, password };
+}
+
+const TEST_USER = getTestCredentials();
 
 /**
  * Generate unique category name with timestamp
