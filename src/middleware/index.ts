@@ -3,7 +3,7 @@ import { createServerClient, parseCookieHeader, type CookieOptions } from "@supa
 import type { Database } from "../db/database.types";
 
 // Public admin routes that don't require authentication
-const PUBLIC_ADMIN_ROUTES = ["/admin/login", "/admin/reset-password", "/admin/set-password"];
+const PUBLIC_ADMIN_ROUTES = ["/admin/login", "/admin/signup", "/admin/reset-password", "/admin/set-password"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createServerClient<Database>(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY, {
