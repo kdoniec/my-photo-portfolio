@@ -114,8 +114,8 @@ The application consists of two main parts:
    Create a `.env` file in the root directory with the following variables:
 
    ```env
-   PUBLIC_SUPABASE_URL=your_supabase_project_url
-   PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   SUPABASE_URL=your_supabase_project_url
+   SUPABASE_KEY=your_supabase_anon_key
    ```
 
 5. Start the development server:
