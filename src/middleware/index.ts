@@ -1,12 +1,15 @@
 import { defineMiddleware } from "astro:middleware";
 import { createServerClient, parseCookieHeader, type CookieOptions } from "@supabase/ssr";
 import type { Database } from "../db/database.types";
+import { getSupabaseCredentials } from "../lib/env";
 
 // Public admin routes that don't require authentication
 const PUBLIC_ADMIN_ROUTES = ["/admin/login", "/admin/signup", "/admin/reset-password", "/admin/set-password"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const supabase = createServerClient<Database>(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY, {
+  const { url: supabaseUrl, key: supabaseKey } = getSupabaseCredentials(context.locals);
+
+  const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
         return parseCookieHeader(context.request.headers.get("Cookie") ?? "").map((cookie) => ({

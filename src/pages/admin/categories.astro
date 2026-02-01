@@ -2,6 +2,8 @@
 import AdminLayout from "@/layouts/AdminLayout.astro";
 import { CategoriesPage } from "@/components/admin/categories/CategoriesPage";
 import type { CategoryListResponseDTO, StatsDTO } from "@/types";
+import { CategoryService } from "@/lib/services/category.service";
+import { StatsService } from "@/lib/services/stats.service";
 
 // Defense in depth: Page-level auth guard (middleware provides primary protection)
 const user = Astro.locals.user;
@@ -11,44 +13,26 @@ if (!user) {
 
 const supabase = Astro.locals.supabase;
 
-// Fetch categories
+// Fetch categories directly from service (avoid self-fetch on Cloudflare)
 let categories: CategoryListResponseDTO["data"] = [];
 let categoriesError: string | null = null;
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/categories`, {
-    headers: {
-      Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Nie udało się pobrać kategorii");
-  }
-
-  const data: CategoryListResponseDTO = await response.json();
+  const categoryService = new CategoryService(supabase);
+  const data = await categoryService.getCategories(user.id);
   categories = data.data;
 } catch (err) {
   categoriesError = err instanceof Error ? err.message : "Nieznany błąd";
   console.error("Błąd podczas pobierania kategorii:", err);
 }
 
-// Fetch stats
+// Fetch stats directly from service (avoid self-fetch on Cloudflare)
 let stats: StatsDTO | null = null;
 let statsError: string | null = null;
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/stats`, {
-    headers: {
-      Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Nie udało się pobrać statystyk");
-  }
-
-  stats = await response.json();
+  const statsService = new StatsService(supabase);
+  stats = await statsService.getStats(user.id);
 } catch (err) {
   statsError = err instanceof Error ? err.message : "Nieznany błąd";
   console.error("Błąd podczas pobierania statystyk:", err);

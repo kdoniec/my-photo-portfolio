@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { User } from "lucide-react";
 import Logo from "./Logo";
 import NavLink from "./NavLink";
 import MobileSheet from "./MobileSheet";
@@ -23,13 +24,23 @@ export default function PublicNavbar({ photographerName, currentPath }: PublicNa
           <Logo name={photographerName} href="/" />
 
           {/* Desktop Navigation Links */}
-          <ul className="hidden md:flex items-center gap-8">
-            {PUBLIC_NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <NavLink href={item.href} label={item.label} isActive={isActive(item.href)} />
-              </li>
-            ))}
-          </ul>
+          <div className="hidden md:flex items-center gap-8">
+            <ul className="flex items-center gap-8">
+              {PUBLIC_NAV_ITEMS.map((item) => (
+                <li key={item.href}>
+                  <NavLink href={item.href} label={item.label} isActive={isActive(item.href)} />
+                </li>
+              ))}
+            </ul>
+            <a
+              href="/admin/login"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Zaloguj się do panelu administratora"
+            >
+              <User className="h-4 w-4" />
+              <span>Zaloguj</span>
+            </a>
+          </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden">
@@ -44,6 +55,14 @@ export default function PublicNavbar({ photographerName, currentPath }: PublicNa
                   className="text-lg py-2"
                 />
               ))}
+              <a
+                href="/admin/login"
+                className="flex items-center gap-2 text-lg py-2 text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => setIsMobileOpen(false)}
+              >
+                <User className="h-5 w-5" />
+                <span>Zaloguj</span>
+              </a>
             </MobileSheet>
           </div>
         </nav>

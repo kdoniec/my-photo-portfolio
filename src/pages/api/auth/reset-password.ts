@@ -1,10 +1,11 @@
 import type { APIRoute } from "astro";
 import { createServerClient, parseCookieHeader, type CookieOptions } from "@supabase/ssr";
 import type { Database } from "@/db/database.types";
+import { getSupabaseCredentials } from "@/lib/env";
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, cookies, url }) => {
+export const POST: APIRoute = async ({ request, cookies, url, locals }) => {
   try {
     const { email } = await request.json();
 
@@ -15,7 +16,8 @@ export const POST: APIRoute = async ({ request, cookies, url }) => {
       });
     }
 
-    const supabase = createServerClient<Database>(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY, {
+    const { url: supabaseUrl, key: supabaseKey } = getSupabaseCredentials(locals);
+    const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
       cookies: {
         getAll() {
           return parseCookieHeader(request.headers.get("Cookie") ?? "").map((cookie) => ({

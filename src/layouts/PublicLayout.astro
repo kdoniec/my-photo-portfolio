@@ -2,7 +2,7 @@
 import "../styles/global.css";
 import SEOHead from "../components/seo/SEOHead.astro";
 import PublicNavbar from "../components/navigation/PublicNavbar";
-import type { PublicProfileDTO } from "@/types";
+import { PublicService } from "../lib/services/public.service";
 
 interface Props {
   title?: string;
@@ -13,12 +13,12 @@ interface Props {
 const { title, description, ogImage } = Astro.props;
 const currentPath = Astro.url.pathname;
 
-// Fetch photographer name from API
+// Fetch photographer name directly from service (avoid self-fetch on Cloudflare)
 let photographerName = "Portfolio";
 try {
-  const response = await fetch(`${Astro.url.origin}/api/public/profile`);
-  if (response.ok) {
-    const profile: PublicProfileDTO = await response.json();
+  const publicService = new PublicService(Astro.locals.supabase);
+  const profile = await publicService.getPublicProfile();
+  if (profile) {
     photographerName = profile.display_name || "Portfolio";
   }
 } catch (error) {

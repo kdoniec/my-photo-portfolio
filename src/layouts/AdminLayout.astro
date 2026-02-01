@@ -3,7 +3,7 @@ import "@/styles/global.css";
 import AdminNavbar from "@/components/navigation/AdminNavbar";
 import { Toaster } from "@/components/ui/sonner";
 import type { NavUser } from "@/components/navigation/types";
-import type { ProfileDTO } from "@/types";
+import { ProfileService } from "@/lib/services/profile.service";
 
 interface Props {
   title?: string;
@@ -19,21 +19,17 @@ if (!user) {
   return Astro.redirect("/admin/login");
 }
 
-// Fetch profile data for display name
+// Fetch profile data directly from service (avoid self-fetch on Cloudflare)
 let navUser: NavUser = {
   displayName: user.email || "Admin",
   email: user.email || "",
 };
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/profile`, {
-    headers: {
-      Cookie: Astro.request.headers.get("Cookie") || "",
-    },
-  });
+  const profileService = new ProfileService(Astro.locals.supabase);
+  const profile = await profileService.getProfile(user.id);
 
-  if (response.ok) {
-    const profile: ProfileDTO = await response.json();
+  if (profile) {
     navUser = {
       displayName: profile.display_name,
       email: profile.contact_email || user.email || "",
